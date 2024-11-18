@@ -1,0 +1,166 @@
+.noScroll {
+  overflow-y: hidden;
+}
+.mapContainer {
+  .ant-card {
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+}
+.card-list {
+  height: 30;
+  margin-bottom: 10px;
+  border-left: solid;
+  border-left-color: red;
+  border-left-width: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.card-list-scroll {
+  overflow-y: auto;
+  max-height: 55vw;
+}
+
+.card-list-bottom {
+  border-bottom: 2px solid rgb(191, 191, 191);
+  padding-bottom: 5px;
+}
+
+.card-list-font-span {
+  color: rgba(26, 67, 69, 1);
+  font-weight: bolder;
+}
+.card-list-font-text {
+  color: rgba(108, 108, 108, 1);
+  font-weight: normal;
+  font-size: 0.87rem;
+  padding-top: 1px;
+}
+.card-list-font-text-names {
+  color: rgba(26, 67, 69, 1);
+  font-weight: bolder;
+  padding-top: 20px;
+}
+.card-list-div {
+  display: flex;
+}
+
+.card-alert-text-avatar {
+  color: rgb(255, 255, 255);
+  font-weight: bolder;
+  font-size: 3rem;
+}
+.card-alert-text-title {
+  color: rgb(255, 255, 255);
+  font-weight: bolder;
+  font-size: 1.2rem;
+  padding-top: 10;
+}
+.card-alert-text-disable {
+  color: #767676;
+  font-weight: bolder;
+  font-size: 1.2rem;
+  padding-top: 10;
+}
+
+.card-SOS-1 {
+  background-color: #f36600;
+  border-color: #f36600;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-style: solid;
+}
+.card-SOS-2 {
+  background-color: #e71900;
+  border-color: #e71900;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-style: solid;
+}
+.card-SOS-3 {
+  background-color: #ffcd2c;
+  border-color: #ffcd2c;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-style: solid;
+}
+
+.card-SOS-disable {
+  background-color: #ededed;
+  border-color: #ededed;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-style: solid;
+}
+
+/* modal CSS */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+}
+.card-modal-text {
+  color: #505050;
+  font-weight: bolder;
+  font-size: 0.8rem;
+}
+.card-modal-text-phone {
+  color: #114474;
+  font-weight: bolder;
+  font-size: 1rem;
+}
+/* modal CSS end */
+
+/* Card List CSS */
+.iconContainer_CL {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+.cardIcon_CL {
+  width: 3vw;
+}
+.contentContainer_CL {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 10px;
+}
+.cardBtn_CL {
+  width: 100%;
+  border-radius: 8px;
+}
+.blueBtn {
+  background-color: var(--primary-color);
+  color: var(--whiteText-color);
+}
+.greenBtn {
+  background-color: var(--success-color);
+  color: var(--whiteText-color);
+}
+/* Card List CSS end */
+/* Card Alert CSS */
+.iconControl_CA {
+  width: 3.5vw;
+}
+.cardContent_CA {
+  display: flex;
+  align-items: center;
+  color: var(--whiteText-color);
+  padding: 12px;
+
+  .innerContent_CA {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+/* Card Alert CSS end */

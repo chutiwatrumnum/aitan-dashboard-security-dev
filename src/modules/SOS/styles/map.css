@@ -1,0 +1,55 @@
+/* pop up styles control */
+.mapboxgl-popup-content {
+  width: 25vw;
+  max-width: 400px;
+  border-radius: 16px;
+  padding: 16px;
+  font-family: var(--font-family);
+}
+
+/* Content in pop up styles */
+.notification {
+  display: flex;
+  align-items: center;
+}
+
+.icon-container {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.info {
+  width: 100%;
+  margin-left: 10px;
+  .titlePopupContainer_PC {
+    border-bottom: 1px var(--grayTrans-color) solid;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  .infoTextContainer_PC {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    .infoText_PC {
+      margin-left: 8px;
+    }
+  }
+}
+
+.status {
+  font-weight: bold;
+}
+
+.marker_AM {
+  width: 40px;
+  height: 40px;
+}

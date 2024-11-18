@@ -1,0 +1,264 @@
+.dashboard-container {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+/* Header */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.main-title {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.status-badge {
+  background-color: #F5A623;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.stat-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+.stat-block:not(:last-child) {
+  border-right: 1px solid #E8EAED;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-count {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.stat-label {
+  color: #5F6368;
+  font-size: 14px;
+}
+
+/* Location Card */
+.location-card {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1f1f1f;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5F6368;
+}
+
+/* Users Card */
+.users-card {
+  margin-bottom: 24px;
+}
+
+.user-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.user-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #1f1f1f;
+  margin-bottom: 4px;
+}
+
+.user-role {
+  color: #5F6368;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.user-phone {
+  color: #4285F4;
+  font-size: 14px;
+}
+
+.last-alert {
+  background: #F8F9FA;
+  padding: 12px;
+  border-radius: 4px;
+  color: #5F6368;
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* Device Card */
+.device-card {
+  height: 100%;
+}
+
+.device-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.device-icon {
+  font-size: 24px;
+}
+
+.device-icon.warning {
+  color: #EA4335;
+}
+
+.device-name {
+  font-weight: 500;
+  color: #1f1f1f;
+}
+
+.device-image {
+  text-align: center;
+  margin-bottom: 20px;
+  background: #F8F9FA;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.device-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.device-alerts {
+  margin-bottom: 20px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.alert-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.alert-icon.sensor {
+  background-color: #F5A623;
+}
+
+.alert-icon.warning {
+  background-color: #EA4335;
+}
+
+.device-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #5F6368;
+  font-size: 14px;
+}
+
+.battery {
+  background-color: #34A853;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.doorbell-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.doorbell-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.doorbell-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-block:nth-child(2) {
+    border-right: none;
+  }
+
+  .stat-block {
+    padding: 16px 0;
+    border-bottom: 1px solid #E8EAED;
+  }
+
+  .stat-block:nth-last-child(1),
+  .stat-block:nth-last-child(2) {
+    border-bottom: none;
+  }
+}

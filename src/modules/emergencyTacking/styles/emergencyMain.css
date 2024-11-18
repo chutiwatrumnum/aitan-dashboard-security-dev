@@ -1,0 +1,161 @@
+
+.dashboard-container {
+  padding: 24px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.page-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #1f1f1f;
+}
+
+.status-cards-wrapper {
+  margin-bottom: 24px;
+  /* background: white; */
+  border-radius: 8px;
+}
+
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 4px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-card.active {
+  border: 2px solid;
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 24px;
+}
+
+.status-card.blue .status-icon {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-card.red .status-icon {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.status-card.orange .status-icon {
+  background: #fff7e6;
+  color: #ffa940;
+}
+
+.status-card.green .status-icon {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.status-info {
+  flex: 1;
+  text-align: right; 
+}
+.status-info > div:first-child {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.status-count {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.custom-tabs {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.status-tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-tag.emergency {
+  background: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ff4d4f;
+}
+
+.status-tag.equipment {
+  background: #fff7e6;
+  color: #ffa940;
+  border: 1px solid #ffa940;
+}
+
+.status-tag.completed {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #52c41a;
+}
+
+.status-tag.confirmed {
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #1890ff;
+}
+
+.step-tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.step-tag.step-1 {
+  color: #ff4d4f;
+}
+
+.step-tag.step-2 {
+  color: #faad14;
+}
+
+.step-tag.step-3 {
+  color: #1890ff;
+}
+
+/* เพิ่ม CSS สำหรับ active state ของ status-icon */
+.status-icon.active.blue {
+  background: #1890ff;
+  color: #ffffff;
+}
+
+.status-icon.active.red {
+  background: #ff4d4f;
+  color: #ffffff;
+}
+
+.status-icon.active.orange {
+  background: #ffa940;
+  color: #ffffff;
+}
+
+.status-icon.active.green {
+  background: #52c41a;
+  color: #ffffff;
+}

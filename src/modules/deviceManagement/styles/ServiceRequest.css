@@ -1,0 +1,519 @@
+/* ServiceRequest.css */
+/* Layout */
+.page-container {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  margin: 30px;
+}
+
+.app-container {
+  display: flex;
+  padding: 0 24px 24px;
+  margin: 0 auto;
+}
+
+/* Steps Section */
+.steps-container {
+  background: white;
+  padding: 24px;
+  margin-bottom: 24px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.step-description {
+  text-align: center !important;
+  padding: 0 8px;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.step-time {
+  color: #666;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+/* Main Section */
+.main-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.full-width-card {
+  grid-column: 1 / -1;
+}
+
+/* Profile Card */
+.info-card {
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left-section {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* เปลี่ยนจาก flex-start เป็น center */
+  text-align: center;
+  gap: 16px;
+}
+
+.profile-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  background-color: #ffa940; /* เพิ่มสีพื้นหลังส้ม */
+}
+
+.left-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sub-title {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* เพิ่ม justify-content: center */
+  gap: 8px;
+  color: #666;
+  text-align: center;
+}
+
+.right-section {
+  padding: 32px;
+  border-left: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* เพิ่ม align-items: center */
+  text-align: center;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.step-list {
+  padding-left: 24px;
+  margin-bottom: 32px;
+  display: inline-block;
+  text-align: left;
+}
+
+.step-list li {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.phone-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.phone-icon {
+  width: 32px;
+  height: 32px;
+  background: #52c41a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+}
+
+.phone-number {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+/* Button Section */
+.button-section {
+  margin-top: auto;
+  text-align: center;
+}
+
+.button-section button {
+  min-width: 120px;
+}
+
+/* Doorbell Section */
+.doorbell-section {
+  width: 380px;
+}
+
+.doorbell-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Device Card */
+.device-card {
+  margin-bottom: 16px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+}
+
+.device-card .ant-card-body {
+  padding: 24px !important;
+}
+
+/* Header */
+.device-header {
+  margin-bottom: 20px !important;
+}
+
+.device-header span {
+  font-size: 20px;
+  font-weight: 600;
+  margin-left: 12px;
+}
+
+.device-icon {
+  background-color: #DC4446;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.device-icon .anticon {
+  color: white;
+  font-size: 24px;
+}
+
+/* Image Section */
+.device-mock {
+  background: #F5F6F7;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.device-mock img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+}
+
+/* Alerts Section */
+.device-alerts {
+  margin-bottom: 24px;
+}
+
+.alert-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-dot.warning {
+  background-color: #E99D42;
+}
+
+.alert-dot.danger {
+  background-color: #DC4446;
+}
+
+.alert-dot .anticon {
+  color: white;
+  font-size: 16px;
+}
+
+.device-alerts span {
+  font-size: 16px;
+  color: #000;
+}
+
+/* Info Section */
+.device-info {
+  border-top: 1px solid #E8E8E8;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.device-info span {
+  color: #666;
+  font-size: 14px;
+}
+
+.battery {
+  background-color: #E8E8E8;
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+.battery-level {
+  color: #52c41a;
+  font-weight: 600;
+}
+/* Failure Reasons Card */
+.failure-reasons-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.failure-title {
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.reasons-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.reason-checkbox {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Scrollbar */
+.doorbell-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.doorbell-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.doorbell-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+/* Custom Dot Styling */
+.custom-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  position: relative;
+}
+
+.custom-dot.completed {
+  background: #1890ff;
+}
+
+.custom-dot.current {
+  background: #1890ff;
+}
+
+.dot-pulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(24, 144, 255, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+/* Custom Steps Line */
+.ant-steps-item-tail {
+  padding: 3.5px 0 !important;
+}
+
+.ant-steps-item-tail::after {
+  height: 1px !important;
+  background: #e8e8e8 !important;
+}
+
+.ant-steps-item-finish .ant-steps-item-tail::after {
+  background: #1890ff !important;
+}
+
+/* Steps Text */
+.ant-steps-item-title {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.ant-steps-item-description {
+  max-width: 140px !important;
+}
+
+
+/* เพิ่ม styles ต่อจากของเดิม */
+.success-icon {
+  width: 120px;
+  height: 120px;
+  background: #1890ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.success-icon .anticon {
+  font-size: 48px;
+  color: #fff;
+}
+
+.success-title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.success-description {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .success-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .success-icon .anticon {
+    font-size: 40px;
+  }
+
+  .success-title {
+    font-size: 24px;
+  }
+
+  .success-description {
+    font-size: 14px;
+  }
+}
+
+/* Responsive Steps */
+@media (max-width: 768px) {
+  .ant-steps-item-description {
+    max-width: 100px !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .doorbell-section {
+    width: 100%;
+  }
+
+  .main-section {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+
+  .right-section {
+    border-left: none;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .button-section {
+    flex-direction: column;
+  }
+
+  .button-section button {
+    width: 100%;
+  }
+
+  .steps-container {
+    padding: 16px;
+  }
+/* 
+  .device-card .ant-card-body {
+    padding: 16px !important;
+  }
+
+  .device-header span {
+    font-size: 18px;
+  }
+
+  .device-mock {
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .device-mock img {
+    height: 150px;
+  }
+
+  .device-alerts span {
+    font-size: 14px;
+  } */
+}
+
+@media (max-width: 576px) {
+  .app-container {
+    padding: 0 8px 8px;
+  }
+
+  .steps-container {
+    padding: 12px;
+  }
+
+  .step-description {
+    font-size: 12px;
+  }
+}
