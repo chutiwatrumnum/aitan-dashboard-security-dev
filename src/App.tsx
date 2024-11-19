@@ -34,6 +34,7 @@ import SignInScreen from "./modules/main/SignInScreen";
 import RecoveryScreen from "./modules/main/RecoveryScreen";
 import ResetPassword from "./modules/main/ResetPassword";
 import SuccessResetScreen from "./modules/main/SuccessResetScreen";
+import HomeDashboard from "./modules/homeManagement/screen/deviceHome";
 
 // components
 
@@ -115,7 +116,7 @@ function App() {
                 <Route path="residentSignUp" element={<ResidentSignUp />} />
                 <Route path="announcement" element={<Announcement />} />
                 {/* User management */} deviceStep
-                <Route path="deviceStep" element={<DeviceStep />} />
+                {/* <Route path="deviceStep" element={<DeviceStep />} /> */}
                 <Route path="deviceManagement" element={<DeviceManagement />} />
                 <Route path="EmergencyMain" element={<EmergencyMain />} />
                 <Route path="HomeMain" element={<HomeMain />} />
@@ -123,6 +124,7 @@ function App() {
                 <Route path="profile" element={<MapView />} />
                 <Route path="changePassword" element={<ChangePassword />} />
                 <Route path="adminManagement" element={<AdminManagement />} />
+                {/* <Route path="deviceHome" element={<HomeDashboard/>} /> */}
               </Route>
               <Route path="*" element={<Navigate to="/auth" />} />
             </Routes>

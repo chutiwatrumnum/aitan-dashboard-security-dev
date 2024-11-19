@@ -118,7 +118,7 @@ const SideMenu = () => {
               >
                 <Link to={`${main_link}/EmergencyMain`}>ติดตามเหตุ</Link>
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
                 key={`${main_link}/deviceStep`}
                 icon={
                   <FileSearchOutlined
@@ -128,7 +128,7 @@ const SideMenu = () => {
                 }
               >
                 <Link to={`${main_link}/deviceStep`}>Step</Link>
-              </Menu.Item>
+              </Menu.Item> */}
 
               {/* User management */}
               {/* <SubMenu

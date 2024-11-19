@@ -1,6 +1,6 @@
 // StatusDashboard.tsx
 import React, { useState } from "react";
-import { Table, Row, Col, Tabs } from "antd";
+import { Table, Row, Col, Tabs, Button } from "antd";
 import {
   DownloadOutlined,
   FileTextOutlined,
@@ -9,6 +9,8 @@ import {
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import "../styles/emergencyMain.css";
+import { EyeIcon } from "../../../assets/icons/Icons";
+import DeviceStep from "../../deviceManagement/screen/deviceStep";
 
 const { TabPane } = Tabs;
 
@@ -59,6 +61,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
 // Main Dashboard Component
 const StatusDashboard: React.FC = () => {
+  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false)
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   // Sample data
@@ -116,7 +119,7 @@ const StatusDashboard: React.FC = () => {
       type: "confirmed",
     },
   ];
-
+  const SetIshowHomeDetail = (Ishow: boolean) => setIshowHomeDetail(Ishow);
   const handleCardClick = (filterType: string) => {
     setActiveFilter(activeFilter === filterType ? null : filterType);
   };
@@ -147,6 +150,22 @@ const StatusDashboard: React.FC = () => {
   };
 
 const columns: ColumnsType<DataType> = [
+  {
+    title: "ดูข้อมูล",
+    key: "action",
+    width: 80,
+    align: "center", // เพิ่มบรรทัดนี้
+    render: (_, record) => (
+      <Button
+        type="primary"
+        icon={<EyeIcon />}
+        onClick={() => {
+          setIshowHomeDetail(true)
+          console.log(record.workId);
+        }}
+      />
+    ),
+  },
   {
     title: "ลำดับ",
     dataIndex: "no",
@@ -234,6 +253,7 @@ const columns: ColumnsType<DataType> = [
 ];
 
   return (
+    !IshowHomeDetail?
     <div className="dashboard-container">
       <div className="page-header">ติดตามสถานะงาน</div>
       <div className="status-cards-wrapper">
@@ -328,7 +348,7 @@ const columns: ColumnsType<DataType> = [
           />
         </TabPane>
       </Tabs>
-    </div>
+    </div>:<DeviceStep callback={SetIshowHomeDetail}/>
   );
 };
 

@@ -217,9 +217,11 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
     </Row>
   </Card>
 );
-
+type DeviceStepProps={
+  callback(Ishow:boolean):any
+}
 // Main Component
-const DeviceStep: React.FC = () => {
+const DeviceStep = ({callback}:DeviceStepProps) => {
   const dispatch = useDispatch<Dispatch>();
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -444,6 +446,9 @@ const DeviceStep: React.FC = () => {
 
   return (
     <div className="page-container">
+        <Button type="primary" onClick={ async()=>{
+await callback(false)
+      } }>back</Button>
       <div className="steps-container">
         <Steps
           current={currentStep}
