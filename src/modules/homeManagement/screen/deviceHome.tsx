@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Row, Col } from "antd";
+import { Card, Row, Col, Button } from "antd";
 import {
   DesktopOutlined,
   WifiOutlined,
@@ -124,8 +124,11 @@ const DEVICE_DATA: DeviceList[] = [
   },
 ];
 
+type HomeDashboardProps={
+  callback(Ishow:boolean):any
+}
 // Card Components
-const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
+const DeviceList: React.FC<{ data: DeviceList}> = ({ data }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
@@ -178,10 +181,13 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
 );
 
 // Component
-const HomeDashboard: React.FC = () => {
+const HomeDashboard = ({callback}:HomeDashboardProps) => {
   return (
     <div className="dashboard-container">
       {/* Header with Status */}
+      <Button type="primary" onClick={ async()=>{
+await callback(false)
+      } }>back</Button>
       <div className="header-container">
         <h1 className="main-title">ข้อมูลของบ้าน</h1>
         <div className="status-badge">Partial Armed</div>

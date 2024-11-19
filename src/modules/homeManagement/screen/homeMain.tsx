@@ -1,27 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Table, Input, Button, Avatar, Row, Col } from "antd";
 import { ExportOutlined, EyeOutlined } from "@ant-design/icons";
 import { EyeIcon } from "../../../assets/icons/Icons";
 import type { ColumnsType } from "antd/es/table";
 import { whiteLabel } from "../../../configs/theme";
+import HomeDashboard from "./deviceHome";
 
-const { Search } = Input;
-
-interface DataType {
-  key: string;
-  no: number;
-  workId: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  description: string;
-  staff: string;
-  phone: string;
-  step: string;
-  type: string;
-}
-
-const homeMain: React.FC = () => {
+const HomeMain = () => {
+  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false)
+  const { Search } = Input;
+  
+  interface DataType {
+    key: string;
+    no: number;
+    workId: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+    description: string;
+    staff: string;
+    phone: string;
+    step: string;
+    type: string;
+  }
   const data: DataType[] = [
     {
       key: "1",
@@ -88,6 +89,7 @@ const homeMain: React.FC = () => {
           type="primary"
           icon={<EyeIcon />}
           onClick={() => {
+            setIshowHomeDetail(true)
             console.log(record.workId);
           }}
         />
@@ -178,8 +180,10 @@ const homeMain: React.FC = () => {
       ),
     },
   ];
-
+  const SetIshowHomeDetail = (Ishow: boolean) => setIshowHomeDetail(Ishow);
   return (
+    
+    !IshowHomeDetail ?
     <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
       {/* Filters */}
       <Row
@@ -212,8 +216,8 @@ const homeMain: React.FC = () => {
           }}
         />
       </Card>
-    </div>
+    </div>:<HomeDashboard callback={SetIshowHomeDetail} />
   );
 };
 
-export default homeMain;
+export default HomeMain;
