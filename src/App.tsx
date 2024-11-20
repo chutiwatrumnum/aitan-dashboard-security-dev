@@ -16,10 +16,6 @@ import AuthorizedLayout from "./navigation/AuthorizedLayout";
 
 // authorize routes
 import MapView from "./modules/SOS/screen/Alertmain";
-import Announcement from "./modules/announcement/screens/Announcement";
-import ManagementMain from "./modules/management/screens/ManagementMain";
-import ResidentInformationMain from "./modules/userManagement/screens/ResidentInformationMain";
-import ResidentSignUp from "./modules/userManagement/screens/ResidentSignUp";
 
 import DeviceManagement from './modules/deviceManagement/screen/deviceMain'
 import EmergencyMain from "./modules/emergencyTacking/screen/emergencyMain";
@@ -108,20 +104,13 @@ function App() {
               </Route>
               {/* authorized_route */}
               <Route path="dashboard" element={<AuthorizedLayout />}>
-                <Route path="managementMain" element={<ManagementMain />} />
-                <Route
-                  path="residentInformation"
-                  element={<ResidentInformationMain />}
-                />
-                <Route path="residentSignUp" element={<ResidentSignUp />} />
-                <Route path="announcement" element={<Announcement />} />
-                {/* User management */} deviceStep
-                {/* <Route path="deviceStep" element={<DeviceStep />} /> */}
+                <Route path="MapView" element={<MapView />} />
+             
+                <Route path="deviceStep" element={<DeviceStep />} />
                 <Route path="deviceManagement" element={<DeviceManagement />} />
                 <Route path="EmergencyMain" element={<EmergencyMain />} />
                 <Route path="HomeMain" element={<HomeMain />} />
                 {/* Setting */}
-                <Route path="profile" element={<MapView />} />
                 <Route path="changePassword" element={<ChangePassword />} />
                 <Route path="adminManagement" element={<AdminManagement />} />
                 {/* <Route path="deviceHome" element={<HomeDashboard/>} /> */}

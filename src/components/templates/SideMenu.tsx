@@ -97,15 +97,15 @@ const SideMenu = () => {
               openKeys={openKeys}
             >
               <Menu.Item
-                key={`${main_link}/profile`}
+                key={`${main_link}/MapView`}
                 icon={
                   <AlertOutlined
-                    color={iconMenuColorSelector(`profile`)}
+                    color={iconMenuColorSelector(`MapView`)}
                     className="sideMenuIcon"
                   />
                 }
               >
-                <Link to={`${main_link}/profile`}>แผนที่หลัก</Link>
+                <Link to={`${main_link}/MapView`}>แผนที่หลัก</Link>
               </Menu.Item>
               <Menu.Item
                 key={`${main_link}/EmergencyMain`}
@@ -118,64 +118,7 @@ const SideMenu = () => {
               >
                 <Link to={`${main_link}/EmergencyMain`}>ติดตามเหตุ</Link>
               </Menu.Item>
-              {/* <Menu.Item
-                key={`${main_link}/deviceStep`}
-                icon={
-                  <FileSearchOutlined
-                    color={iconMenuColorSelector("deviceStep")}
-                    className="sideMenuIcon"
-                  />
-                }
-              >
-                <Link to={`${main_link}/deviceStep`}>Step</Link>
-              </Menu.Item> */}
-
-              {/* User management */}
-              {/* <SubMenu
-                key="userManagement"
-                icon={
-                  <UserManagementIcon
-                    color={iconMenuColorSelector("userManagement")}
-                    className="sideMenuIcon"
-                  />
-                }
-                title="User management">
-                <Menu.Item
-                  key={`${main_link}/residentInformation`}
-                  icon={
-                    <ResidentManagementIcon
-                      color={iconSubMenuColorSelector("residentInformation")}
-                      className="sideMenuIcon"
-                    />
-                  }>
-                  <Link to={`${main_link}/residentInformation`}>
-                    Resident’s information
-                  </Link>
-                </Menu.Item>
-                <Menu.Item
-                  key={`${main_link}/residentSignUp`}
-                  icon={
-                    <RegistrationIcon
-                      color={iconSubMenuColorSelector("residentSignUp")}
-                      className="sideMenuIcon"
-                    />
-                  }>
-                  <Link to={`${main_link}/residentSignUp`}>
-                    Resident’s sign up
-                  </Link>
-                </Menu.Item>
-              </SubMenu> */}
-              {/* <Menu.Item
-                key={`${main_link}/deviceManagement`}
-                icon={
-                  <DesktopOutlined
-                    color={iconMenuColorSelector("deviceManagement")}
-                    className="sideMenuIcon"
-                  />
-                }
-              >
-                <Link to={`${main_link}/deviceManagement`}>ภาพรวมอุปกรณ์</Link>
-              </Menu.Item> */}
+    
               <Menu.Item
                 key={`${main_link}/HomeMain`}
                 icon={

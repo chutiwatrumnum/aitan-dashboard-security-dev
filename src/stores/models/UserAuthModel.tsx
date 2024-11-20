@@ -59,7 +59,7 @@ export const userAuth = createModel<RootModel>()({
             userToken?.data?.acceptedRequestId
           );
         }
-        const userData = await axios.get("/mcst/profile");
+        const userData = await axios.get("/mcst/MapView");
         encryptStorage.setItem("userData", userData.data.result);
         dispatch.userAuth.updateAuthState(true);
       } catch (error) {
