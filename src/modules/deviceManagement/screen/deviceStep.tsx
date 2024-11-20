@@ -90,20 +90,17 @@ const FAILURE_REASONS = [
 const DEVICE_DATA: DeviceList[] = [
   {
     id: "000324",
-    name: "VIDEO DOORBELL 02B",
+    name: "DOOR SENSOR",
     batteryLevel: 80,
     imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
-    alerts: [
-      { type: "warning", message: "เซนเซอร์ตรวจจับควัน" },
-      { type: "danger", message: "คาดว่าอาจจะเกิดเหตุเพลิงไหม้" },
-    ],
+    alerts: [{ type: "danger", message: "ตรวจพบการบุกรุก" }],
   },
   {
     id: "000325",
-    name: "VIDEO DOORBELL 02B",
+    name: "DOOR SENSOR",
     batteryLevel: 75,
     imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
-    alerts: [{ type: "warning", message: "เซนเซอร์ตรวจจับควัน" }],
+    alerts: [{ type: "danger", message: "ตรวจพบการบุกรุก" }],
   },
 ];
 
@@ -115,8 +112,7 @@ const UserProfile: React.FC<{ userInfo: UserInfo }> = ({ userInfo }) => (
       flexDirection: "column",
       alignItems: "center",
       textAlign: "center",
-    }}
-  >
+    }}>
     <img
       src={userInfo.imageUrl}
       alt="Profile"
@@ -142,8 +138,7 @@ const ProgressDot: React.FC<ProgressDotProps> = ({ current, completed }) => (
   <div
     className={`custom-dot ${current ? "current" : ""} ${
       completed ? "completed" : ""
-    }`}
-  >
+    }`}>
     {current && <div className="dot-pulse" />}
   </div>
 );
@@ -159,8 +154,7 @@ const CircleIcon: React.FC = () => (
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "24px",
-    }}
-  >
+    }}>
     <HomeOutlined style={{ fontSize: "48px", color: "#fff" }} />
   </div>
 );
@@ -204,24 +198,25 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
 
     <Row align="middle" justify="space-between" className="device-info">
       <Col>
+        <span>SN : </span>
         <span>{data.id}</span>
       </Col>
       <Col>
         <span>Gateway</span>
       </Col>
       <Col>
-        <div className="battery">
-          <div className="battery-level">{data.batteryLevel}%</div>
-        </div>
+        {/* <div className="battery"> */}
+        <div className="battery-level">{data.batteryLevel}%</div>
+        {/* </div> */}
       </Col>
     </Row>
   </Card>
 );
-type DeviceStepProps={
-  callback(Ishow:boolean):any
-}
+type DeviceStepProps = {
+  callback(Ishow: boolean): any;
+};
 // Main Component
-const DeviceStep = ({callback}:DeviceStepProps) => {
+const DeviceStep = ({ callback }: DeviceStepProps) => {
   const dispatch = useDispatch<Dispatch>();
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -269,13 +264,11 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
           xs={24}
           md={12}
           className="right-section"
-          style={{ textAlign: "center" }}
-        >
+          style={{ textAlign: "center" }}>
           <h3 className="section-title">ขั้นตอนการดำเนินการแก้ไข</h3>
           <ol
             className="step-list"
-            style={{ textAlign: "left", display: "inline-block" }}
-          >
+            style={{ textAlign: "left", display: "inline-block" }}>
             <li>โทรแจ้งเหตุที่ระบบตรวจพบ</li>
             <li>พบความผิดปกติที่เซนเซอร์</li>
             <li>ขออนุญาตเข้าตรวจสอบ</li>
@@ -290,8 +283,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
                 danger
                 type="primary"
                 onClick={handleFail}
-                disabled={isProcessing}
-              >
+                disabled={isProcessing}>
                 ไม่สำเร็จ
               </Button>
             </Col>
@@ -300,8 +292,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
                 type="primary"
                 onClick={() => handleStepChange(2)}
                 disabled={isProcessing}
-                loading={isProcessing}
-              >
+                loading={isProcessing}>
                 ต่อไป
               </Button>
             </Col>
@@ -324,8 +315,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
               flexDirection: "column",
               alignItems: "center",
               width: "100%",
-            }}
-          >
+            }}>
             <CircleIcon />
             <Button
               type="primary"
@@ -338,8 +328,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
                 fontSize: "16px",
                 borderRadius: "8px",
                 marginBottom: "16px",
-              }}
-            >
+              }}>
               เดินทางไปบ้านเลขที่ 11/9
             </Button>
             <div style={{ width: "100%", textAlign: "left" }}>
@@ -371,8 +360,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
               width: "100%",
               height: "100%",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <CircleIcon />
             <h2
               style={{
@@ -380,8 +368,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
                 color: "#333",
                 marginBottom: "16px",
                 textAlign: "center",
-              }}
-            >
+              }}>
               รอดำเนินการสำเร็จ
             </h2>
             <p
@@ -391,8 +378,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
                 textAlign: "center",
                 maxWidth: "300px",
                 margin: "0 auto",
-              }}
-            >
+              }}>
               การดำเนินการทั้งหมดเสร็จสิ้น
             </p>
           </div>
@@ -407,8 +393,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
       <Checkbox.Group
         className="reasons-checkbox-group"
         value={selectedReasons}
-        onChange={setSelectedReasons}
-      >
+        onChange={setSelectedReasons}>
         {FAILURE_REASONS.map((reason, index) => (
           <Checkbox key={index} value={reason} className="reason-checkbox">
             {reason}
@@ -422,8 +407,7 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
             className="success-btn"
             onClick={() => handleStepChange()}
             disabled={isProcessing}
-            loading={isProcessing}
-          >
+            loading={isProcessing}>
             ต่อไป
           </Button>
         </Col>
@@ -446,9 +430,13 @@ const DeviceStep = ({callback}:DeviceStepProps) => {
 
   return (
     <div className="page-container">
-        <Button type="primary" onClick={ async()=>{
-await callback(false)
-      } }>back</Button>
+      <Button
+        type="primary"
+        onClick={async () => {
+          await callback(false);
+        }}>
+        back
+      </Button>
       <div className="steps-container">
         <Steps
           current={currentStep}
@@ -457,8 +445,7 @@ await callback(false)
               current={status === "process"}
               completed={status === "finish"}
             />
-          )}
-        >
+          )}>
           {STEPS.map((step, index) => (
             <Step
               key={index}

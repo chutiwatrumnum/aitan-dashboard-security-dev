@@ -81,54 +81,41 @@ const HOME_USERS: HomeUser[] = [
     name: "วรุณญา ทำเจริญยิ่ง",
     role: "เจ้าของบ้าน",
     phone: "0845625785",
-    avatar: "https://example.com/avatar1.jpg",
+    avatar: "https://i.pravatar.cc/160",
   },
   {
     name: "คมชัย ทำเจริญยิ่ง",
     role: "(ครอบครัว)",
     phone: "0845625799",
-    avatar: "https://example.com/avatar2.jpg",
-  },
-];
-
-const DEVICES: Device[] = [
-  {
-    id: "000324",
-    name: "VIDEO DOORBELL 02B",
-    batteryLevel: 80,
-    alerts: {
-      sensor: "เซนเซอร์ตรวจจับควัน",
-      warning: "คาดว่าอาจจะเกิดเหตุเพลิงไหม้",
-    },
-    imageUrl: "/doorbell.png",
+    avatar: "https://i.pravatar.cc/161",
   },
 ];
 
 const DEVICE_DATA: DeviceList[] = [
   {
     id: "000324",
-    name: "VIDEO DOORBELL 02B",
+    name: "DOOR SENSOR",
     batteryLevel: 80,
     imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
     alerts: [
-      { type: "warning", message: "เซนเซอร์ตรวจจับควัน" },
-      { type: "danger", message: "คาดว่าอาจจะเกิดเหตุเพลิงไหม้" },
+      // { type: "warning", message: "เซนเซอร์ตรวจจับควัน" },
+      { type: "danger", message: "ตรวจพบการบุกรุก" },
     ],
   },
-  {
-    id: "000325",
-    name: "VIDEO DOORBELL 02B",
-    batteryLevel: 75,
-    imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
-    alerts: [{ type: "warning", message: "เซนเซอร์ตรวจจับควัน" }],
-  },
+  // {
+  //   id: "000325",
+  //   name: "DOOR SENSOR",
+  //   batteryLevel: 75,
+  //   imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
+  //   alerts: [{ type: "warning", message: "เซนเซอร์ตรวจจับควัน" }],
+  // },
 ];
 
-type HomeDashboardProps={
-  callback(Ishow:boolean):any
-}
+type HomeDashboardProps = {
+  callback(Ishow: boolean): any;
+};
 // Card Components
-const DeviceList: React.FC<{ data: DeviceList}> = ({ data }) => (
+const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
@@ -140,13 +127,11 @@ const DeviceList: React.FC<{ data: DeviceList}> = ({ data }) => (
         <span>{data.name}</span>
       </Col>
     </Row>
-
     <Row className="device-mock">
       <Col span={24}>
         <img src={data.imageUrl} alt="Door Sensor" />
       </Col>
     </Row>
-
     <Row gutter={[0, 12]} className="device-alerts">
       {data.alerts.map((alert, index) => (
         <Col span={24} key={index}>
@@ -163,31 +148,35 @@ const DeviceList: React.FC<{ data: DeviceList}> = ({ data }) => (
         </Col>
       ))}
     </Row>
-
     <Row align="middle" justify="space-between" className="device-info">
       <Col>
+        <span>SN : </span>
         <span>{data.id}</span>
       </Col>
       <Col>
         <span>Gateway</span>
       </Col>
       <Col>
-        <div className="battery">
+        {/* <div className="battery"> */}
           <div className="battery-level">{data.batteryLevel}%</div>
-        </div>
+        {/* </div> */}
       </Col>
     </Row>
   </Card>
 );
 
 // Component
-const HomeDashboard = ({callback}:HomeDashboardProps) => {
+const HomeDashboard = ({ callback }: HomeDashboardProps) => {
   return (
     <div className="dashboard-container">
       {/* Header with Status */}
-      <Button type="primary" onClick={ async()=>{
-await callback(false)
-      } }>back</Button>
+      <Button
+        type="primary"
+        onClick={async () => {
+          await callback(false);
+        }}>
+        back
+      </Button>
       <div className="header-container">
         <h1 className="main-title">ข้อมูลของบ้าน</h1>
         <div className="status-badge">Partial Armed</div>

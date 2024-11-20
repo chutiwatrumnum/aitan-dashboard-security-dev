@@ -226,11 +226,16 @@
 
 .doorbell-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; 
   gap: 16px;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
   padding-right: 8px;
+}
+
+.battery-level {
+  color: #52c41a;
+  font-weight: 00;
 }
 
 .doorbell-container::-webkit-scrollbar {
