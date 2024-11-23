@@ -50,6 +50,7 @@ export const userAuth = createModel<RootModel>()({
           FailedModal(userToken.data.message);
           return;
         }
+        console.log(userToken);
 
         encryptStorage.setItem("accessToken", userToken.data.accessToken);
         encryptStorage.setItem("refreshToken", userToken.data.refreshToken);
@@ -59,8 +60,8 @@ export const userAuth = createModel<RootModel>()({
             userToken?.data?.acceptedRequestId
           );
         }
-        const userData = await axios.get("/mcst/MapView");
-        encryptStorage.setItem("userData", userData.data.result);
+        // const userData = await axios.get("/mcst/MapView");
+        // encryptStorage.setItem("userData", userData.data.result);
         dispatch.userAuth.updateAuthState(true);
       } catch (error) {
         console.error("ERROR", error);
@@ -95,10 +96,17 @@ export const userAuth = createModel<RootModel>()({
     async refreshTokenNew() {
       try {
         const refreshToken = await encryptStorage.getItem("refreshToken");
-        const res = await axios.post("/users/refresh-token", {
-          token: refreshToken,
+        const headers = {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${refreshToken}`,
+        };
+        const instance = axios.create({
+          baseURL:
+            "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/api/v1.0/",
+          headers,
         });
-        // console.log(refreshToken);
+        const res = await instance.post("/auth/refresh");
 
         if (res.status >= 400) {
           console.error(">400 : ", res.data.message);

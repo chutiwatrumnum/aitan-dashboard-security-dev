@@ -6,6 +6,9 @@ import { MapDataType } from "../../../stores/interfaces/SOS";
 import { MarkerIcon } from "../../../assets/icons/Icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../stores";
+import io from "socket.io-client";
+import { API_URL } from "../../../configs/configs";
+import { encryptStorage } from "../../../utils/encryptStorage";
 
 // components
 import CardAlert from "../components/CardAlert";
@@ -19,14 +22,19 @@ import "../styles/map.css";
 // const { Text, Title } = Typography;
 
 function Alertmain() {
+  const SOCKET_SERVER_URL = `http://${API_URL}/socket/test?event=alert`;
+  const accessToken = encryptStorage.getItem("accessToken");
   const { sideMenuCollapsed } = useSelector((state: RootState) => state.common);
+  const mapContainerRef = useRef<any>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
+
+  // useState
   const [currentPopupIndex, setCurrentPopupIndex] = useState(-1);
   const mapCenterPoint: [number, number] = [
     100.4998173979597, 13.757927837596371,
   ];
-  const mapContainerRef = useRef<any>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const [messages, setMessages] = useState<string[]>([]);
 
   const mapInfoData: MapDataType[] = [
     {
@@ -183,6 +191,23 @@ function Alertmain() {
     return color;
   };
 
+  // Socket IO
+  // useEffect(() => {
+  //   const socket = io(SOCKET_SERVER_URL, { auth: { token: accessToken } });
+  //   socket.on("connect", () => {
+  //     console.log("Socket.IO Connection Opened");
+  //   });
+  //   socket.on("message", (message) => {
+  //     setMessages((prevMessages) => [...prevMessages, message]);
+  //   });
+  //   socket.on("disconnect", () => {
+  //     console.log("Socket.IO Connection Closed");
+  //   });
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
   // Map data effect
   useEffect(() => {
     mapboxgl.accessToken =
@@ -285,6 +310,12 @@ function Alertmain() {
             mapInfoData={mapInfoData}
             onGoButtonClick={onGoButtonClick}
           />
+          <ul>
+            {" "}
+            {messages.map((message, index) => (
+              <li key={index}>{message}</li>
+            ))}{" "}
+          </ul>
         </Col>
       </Row>
     </>

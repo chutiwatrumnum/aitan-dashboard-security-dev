@@ -1,28 +1,33 @@
-import React, { useState } from "react";
-import { Card, Table, Input, Button, Avatar, Row, Col } from "antd";
-import { ExportOutlined, EyeOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Card, Table, Input, Button, Row } from "antd";
 import { EyeIcon } from "../../../assets/icons/Icons";
 import type { ColumnsType } from "antd/es/table";
 import { whiteLabel } from "../../../configs/theme";
 import HomeDashboard from "./deviceHome";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "./stores";
 
+interface DataType {
+  key: string;
+  no: number;
+  workId: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  description: string;
+  staff: string;
+  phone: string;
+  step: string;
+  type: string;
+}
 const HomeMain = () => {
-  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false)
-  const { Search } = Input;
-  
-  interface DataType {
-    key: string;
-    no: number;
-    workId: string;
-    startDate: string;
-    endDate: string;
-    status: string;
-    description: string;
-    staff: string;
-    phone: string;
-    step: string;
-    type: string;
-  }
+  // Variables
+  const dispatch = useDispatch<Dispatch>();
+  const { homeListTableData } = useSelector(
+    (state: RootState) => state.homeList
+  );
+  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false);
+
   const data: DataType[] = [
     {
       key: "1",
@@ -89,7 +94,7 @@ const HomeMain = () => {
           type="primary"
           icon={<EyeIcon />}
           onClick={() => {
-            setIshowHomeDetail(true)
+            setIshowHomeDetail(true);
             console.log(record.workId);
           }}
         />
@@ -110,21 +115,7 @@ const HomeMain = () => {
       align: "center", // เพิ่มบรรทัดนี้
     },
     {
-      title: "เวลาแจ้งเหตุ",
-      dataIndex: "startDate",
-      key: "startDate",
-      width: 150,
-      align: "center", // เพิ่มบรรทัดนี้
-    },
-    {
-      title: "เวลารับเรื่อง",
-      dataIndex: "endDate",
-      key: "endDate",
-      width: 150,
-      align: "center", // เพิ่มบรรทัดนี้
-    },
-    {
-      title: "ประเภทเหตุการณ์",
+      title: "สถานะบ้าน",
       dataIndex: "status",
       key: "status",
       width: 150,
@@ -136,13 +127,10 @@ const HomeMain = () => {
             className = "emergency";
             break;
           case "ปัญหาอุปกรณ์":
-            className = "equipment";
+            className = "confirmed";
             break;
           case "เสร็จสิ้น":
             className = "completed";
-            break;
-          case "ยืนยันแล้ว":
-            className = "confirmed";
             break;
         }
         return <span className={`status-tag ${className}`}>{status}</span>;
@@ -156,34 +144,32 @@ const HomeMain = () => {
       align: "center", // เพิ่มบรรทัดนี้
     },
     {
-      title: "เจ้าหน้าที่",
-      dataIndex: "staff",
-      key: "staff",
-      width: 150,
-      align: "center", // เพิ่มบรรทัดนี้
-    },
-    {
       title: "เบอร์โทรศัพท์",
       dataIndex: "phone",
       key: "phone",
       width: 150,
       align: "center", // เพิ่มบรรทัดนี้
     },
-    {
-      title: "รายงานเหตุการณ์",
-      dataIndex: "step",
-      key: "step",
-      width: 120,
-      align: "center", // เพิ่มบรรทัดนี้
-      render: (step: string) => (
-        <span className={`step-tag step-${step.split(" ")[1]}`}>{step}</span>
-      ),
-    },
   ];
+
+  // Functions
   const SetIshowHomeDetail = (Ishow: boolean) => setIshowHomeDetail(Ishow);
-  return (
-    
-    !IshowHomeDetail ?
+
+  const fetchData = async () => {
+    await dispatch.homeList.getHomeListTableData();
+    // const resReToken = await dispatch.userAuth.refreshTokenNew();
+    // if (!resReToken) throw "accessToken expired";
+  };
+
+  // Actions
+  useEffect(() => {
+    fetchData();
+    return () => {
+      setIshowHomeDetail(false);
+    };
+  }, []);
+
+  return !IshowHomeDetail ? (
     <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
       {/* Filters */}
       <Row
@@ -198,9 +184,9 @@ const HomeMain = () => {
         <h2 style={{ margin: 0, fontWeight: whiteLabel.boldWeight }}>
           รายการบ้านทั้งหมด
         </h2>
-        <Button type="primary" icon={<ExportOutlined />}>
+        {/* <Button type="primary" icon={<ExportOutlined />}>
           Export
-        </Button>
+        </Button> */}
       </Row>
 
       {/* Table */}
@@ -216,7 +202,9 @@ const HomeMain = () => {
           }}
         />
       </Card>
-    </div>:<HomeDashboard callback={SetIshowHomeDetail} />
+    </div>
+  ) : (
+    <HomeDashboard callback={SetIshowHomeDetail} />
   );
 };
 

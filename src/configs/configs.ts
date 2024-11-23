@@ -29,4 +29,4 @@ export const API_URL =
     ? "https://uat.thestage.artanitech.com/api/v1.0"
     : MODE === "prod"
     ? "https://the-stage-mindscape-app-jmsaf.ondigitalocean.app/api/v1.0/"
-    : "https://real-asset-backend-dev-xsfnv.ondigitalocean.app/api/v1.0";
+    : "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/api/v1.0/";

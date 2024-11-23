@@ -1,4 +1,3 @@
-
 .dashboard-container {
   padding: 24px;
   background: #f5f5f5;
@@ -71,7 +70,7 @@
 
 .status-info {
   flex: 1;
-  text-align: right; 
+  text-align: right;
 }
 .status-info > div:first-child {
   color: rgba(0, 0, 0, 0.45);
@@ -97,28 +96,28 @@
   font-size: 12px;
 }
 
-.status-tag.emergency {
-  background: #fff1f0;
+.emergency {
+  /* background: #fff1f0; */
   color: #ff4d4f;
-  border: 1px solid #ff4d4f;
+  /* border: 1px solid #ff4d4f; */
 }
 
-.status-tag.equipment {
-  background: #fff7e6;
+.equipment {
+  /* background: #fff7e6; */
   color: #ffa940;
-  border: 1px solid #ffa940;
+  /* border: 1px solid #ffa940; */
 }
 
-.status-tag.completed {
-  background: #f6ffed;
+.completed {
+  /* background: #f6ffed; */
   color: #52c41a;
-  border: 1px solid #52c41a;
+  /* border: 1px solid #52c41a; */
 }
 
-.status-tag.confirmed {
-  background: #e6f7ff;
+.confirmed {
+  /* background: #e6f7ff; */
   color: #1890ff;
-  border: 1px solid #1890ff;
+  /* border: 1px solid #1890ff; */
 }
 
 .step-tag {

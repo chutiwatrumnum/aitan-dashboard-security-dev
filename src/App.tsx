@@ -17,11 +17,10 @@ import AuthorizedLayout from "./navigation/AuthorizedLayout";
 // authorize routes
 import MapView from "./modules/SOS/screen/Alertmain";
 
-import DeviceManagement from './modules/deviceManagement/screen/deviceMain'
+import DeviceManagement from "./modules/deviceManagement/screen/deviceMain";
 import EmergencyMain from "./modules/emergencyTacking/screen/emergencyMain";
 import HomeMain from "./modules/homeManagement/screen/homeMain";
-import DeviceStep from './modules/deviceManagement/screen/deviceStep'
-
+import DeviceStep from "./modules/deviceManagement/screen/deviceStep";
 
 import ChangePassword from "./modules/setting/screens/ChangePassword";
 import AdminManagement from "./modules/setting/screens/AdminManagement";
@@ -76,7 +75,7 @@ function App() {
         // await dispatch.common.getUnitOptions();
         // await dispatch.common.getMasterData();
         // await dispatch.userAuth.refreshUserDataEffects();
-        await dispatch.common.getRoleAccessToken();
+        // await dispatch.common.getRoleAccessToken();
         dispatch.userAuth.updateAuthState(true);
         return true;
       } catch (e) {
@@ -105,7 +104,7 @@ function App() {
               {/* authorized_route */}
               <Route path="dashboard" element={<AuthorizedLayout />}>
                 <Route path="MapView" element={<MapView />} />
-             
+
                 <Route path="deviceStep" element={<DeviceStep />} />
                 <Route path="deviceManagement" element={<DeviceManagement />} />
                 <Route path="EmergencyMain" element={<EmergencyMain />} />
