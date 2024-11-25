@@ -202,13 +202,13 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
 
-    const showMap = () => {
-      setIsMapVisible(true);
-    };
+  const showMap = () => {
+    setIsMapVisible(true);
+  };
 
-    const handleMapClose = () => {
-      setIsMapVisible(false);
-    };
+  const handleMapClose = () => {
+    setIsMapVisible(false);
+  };
 
   // Handlers
   const handleStepChange = (increment: number = 1) => {
@@ -231,173 +231,171 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
     }, 1000);
   };
 
-
-const renderMemberList = () => (
-  <Row>
-    <Col span={24}>
-      {/* หัวข้อ */}
-      <Title level={4} className="member-list-title">
-        รายชื่อสมาชิกในบ้าน
-      </Title>
-      <Row align="middle" className="address-line">
-        <Col>
-          <HomeOutlined className="home-icon" />
-          <span>11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร</span>
-        </Col>
-      </Row>
-
-      {/* รายชื่อสมาชิก */}
-      <Row gutter={[0, 24]} className="member-list-container">
-        {members.map((member, index) => (
-          <Col span={24} key={index}>
-            <Row
-              className={`member-item ${
-                index !== members.length - 1 ? "with-border" : ""
-              }`}>
-              <Col span={24}>
-                <Row className="member-info-container">
-                  {/* ข้อมูลด้านซ้าย */}
-                  <Col flex="auto">
-                    <Row className="member-main-info">
-                      <Col span={24}>
-                        <span className="member-name">{member.name}</span>
-                      </Col>
-                      <Col span={24}>
-                        <span
-                          className={
-                            member.role === "เจ้าของบ้าน"
-                              ? "member-role-owner"
-                              : "member-role"
-                          }>
-                          {member.role === "เจ้าของบ้าน"
-                            ? "เจ้าของบ้าน"
-                            : `(${member.role})`}
-                        </span>
-                      </Col>
-                      <Col span={24} className="member-phone">
-                        <PhoneOutlined className="phone-icon" />
-                        <span>{member.phone}</span>
-                      </Col>
-                    </Row>
-                  </Col>
-
-                  {/* ปุ่มด้านขวา */}
-                  <Col className="member-buttons">
-                    <Row gutter={8}>
-                      <Col>
-                        <Button className="success-button">สำเร็จ</Button>
-                      </Col>
-                      <Col>
-                        <Button className="fail-button">ไม่สำเร็จ (1)</Button>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <span className="last-call">
-                          (โทรครั้งล่าสุด {member.lastCall})
-                        </span>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+  const renderMemberList = () => (
+    <Row>
+      <Col span={24}>
+        {/* หัวข้อ */}
+        <Title level={4} className="member-list-title">
+          รายชื่อสมาชิกในบ้าน
+        </Title>
+        <Row align="middle" className="address-line">
+          <Col>
+            <HomeOutlined className="home-icon" />
+            <span>11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร</span>
           </Col>
-        ))}
-      </Row>
+        </Row>
 
-      {/* ปุ่มดูแผนที่ */}
-      <Row>
-        <Col span={24}>
-          <Button
-            type="primary"
-            block
-            icon={<EnvironmentOutlined />}
-            className="map-button"
-            onClick={showMap}>
-            ดูแผนที่
-          </Button>
-        </Col>
-      </Row>
-    </Col>
-  </Row>
-);
+        {/* รายชื่อสมาชิก */}
+        <Row gutter={[0, 24]} className="member-list-container">
+          {members.map((member, index) => (
+            <Col span={24} key={index}>
+              <Row
+                className={`member-item ${
+                  index !== members.length - 1 ? "with-border" : ""
+                }`}>
+                <Col span={24}>
+                  <Row className="member-info-container">
+                    {/* ข้อมูลด้านซ้าย */}
+                    <Col flex="auto">
+                      <Row className="member-main-info">
+                        <Col span={24}>
+                          <span className="member-name">{member.name}</span>
+                        </Col>
+                        <Col span={24}>
+                          <span
+                            className={
+                              member.role === "เจ้าของบ้าน"
+                                ? "member-role-owner"
+                                : "member-role"
+                            }>
+                            {member.role === "เจ้าของบ้าน"
+                              ? "เจ้าของบ้าน"
+                              : `(${member.role})`}
+                          </span>
+                        </Col>
+                        <Col span={24} className="member-phone">
+                          <PhoneOutlined className="phone-icon" />
+                          <span>{member.phone}</span>
+                        </Col>
+                      </Row>
+                    </Col>
 
-const renderActionSteps = () => (
-  <Row>
-    <Col span={24} className="right-section">
-      {/* หัวข้อและคำอธิบาย */}
-      <Title level={4} style={{ marginBottom: 4 }}>
-        1. ขั้นตอนการดำเนินการแก้ไข
-      </Title>
-      <Row>
-        <Col span={24}>
-          <div
-            style={{
-              marginBottom: 24,
-              borderBottom: "1px solid #f0f0f0",
-              paddingBottom: 16,
-            }}>
-            โทรติดต่อลูกค้า
-          </div>
-        </Col>
-      </Row>
+                    {/* ปุ่มด้านขวา */}
+                    <Col className="member-buttons">
+                      <Row gutter={8}>
+                        <Col>
+                          <Button className="success-button">สำเร็จ</Button>
+                        </Col>
+                        <Col>
+                          <Button className="fail-button">ไม่สำเร็จ (1)</Button>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                          <span className="last-call">
+                            (โทรครั้งล่าสุด {member.lastCall})
+                          </span>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Col>
+          ))}
+        </Row>
 
-      <Title level={4} style={{ marginBottom: 16 }}>
-        2. ต้องการความช่วยเหลือด้านใด
-      </Title>
+        {/* ปุ่มดูแผนที่ */}
+        <Row>
+          <Col span={24}>
+            <Button
+              type="primary"
+              block
+              icon={<EnvironmentOutlined />}
+              className="map-button"
+              onClick={showMap}>
+              ดูแผนที่
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
+  );
 
-      {/* ปุ่มตัวเลือก */}
-      <Row gutter={[0, 16]}>
-        <Col span={24}>
-          <Button
-            type="primary"
-            block
-            style={{ height: 48 }}
-            onClick={() => handleStepChange(2)}
-            disabled={isProcessing}
-            loading={isProcessing}>
-            ตำรวจ
-          </Button>
-        </Col>
-        <Col span={24}>
-          <Button
-            type="primary"
-            block
-            style={{ height: 48 }}
-            onClick={() => handleStepChange(2)}
-            disabled={isProcessing}
-            loading={isProcessing}>
-            โรงพยาบาล
-          </Button>
-        </Col>
-        <Col span={24}>
-          <Button
-            type="primary"
-            block
-            style={{ height: 48 }}
-            onClick={() => handleStepChange(2)}
-            disabled={isProcessing}
-            loading={isProcessing}>
-            ดับเพลิง
-          </Button>
-        </Col>
-        <Col span={24}>
-          <Button
-            type="primary"
-            block
-            style={{ height: 48 }}
-            onClick={() => handleStepChange(2)}
-            disabled={isProcessing}
-            loading={isProcessing}>
-            ไม่ต้องการขอความช่วยเหลือ
-          </Button>
-        </Col>
-      </Row>
-    </Col>
-  </Row>
-);
-  
+  const renderActionSteps = () => (
+    <Row>
+      <Col span={24} className="right-section">
+        {/* หัวข้อและคำอธิบาย */}
+        <Title level={4} style={{ marginBottom: 4 }}>
+          1. ขั้นตอนการดำเนินการแก้ไข
+        </Title>
+        <Row>
+          <Col span={24}>
+            <div
+              style={{
+                marginBottom: 24,
+                borderBottom: "1px solid #f0f0f0",
+                paddingBottom: 16,
+              }}>
+              โทรติดต่อลูกค้า
+            </div>
+          </Col>
+        </Row>
+
+        <Title level={4} style={{ marginBottom: 16 }}>
+          2. ต้องการความช่วยเหลือด้านใด
+        </Title>
+
+        {/* ปุ่มตัวเลือก */}
+        <Row gutter={[0, 16]}>
+          <Col span={24}>
+            <Button
+              type="primary"
+              block
+              style={{ height: 48 }}
+              onClick={() => handleStepChange(2)}
+              disabled={isProcessing}
+              loading={isProcessing}>
+              ตำรวจ
+            </Button>
+          </Col>
+          <Col span={24}>
+            <Button
+              type="primary"
+              block
+              style={{ height: 48 }}
+              onClick={() => handleStepChange(2)}
+              disabled={isProcessing}
+              loading={isProcessing}>
+              โรงพยาบาล
+            </Button>
+          </Col>
+          <Col span={24}>
+            <Button
+              type="primary"
+              block
+              style={{ height: 48 }}
+              onClick={() => handleStepChange(2)}
+              disabled={isProcessing}
+              loading={isProcessing}>
+              ดับเพลิง
+            </Button>
+          </Col>
+          <Col span={24}>
+            <Button
+              type="primary"
+              block
+              style={{ height: 48 }}
+              onClick={() => handleStepChange(2)}
+              disabled={isProcessing}
+              loading={isProcessing}>
+              ไม่ต้องการขอความช่วยเหลือ
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
+  );
 
   // Content Components
   const InitialStepCard = () => (
@@ -416,86 +414,84 @@ const renderActionSteps = () => (
   );
 
   const TravelDetailCard = () => (
-
-      <Row gutter={24}>
-        <Col xs={24} md={12}>
-          {renderMemberList()}
-        </Col>
-        <Col xs={24} md={12} className="right-section">
-          <div
+    <Row gutter={24}>
+      <Col xs={24} md={12}>
+        {renderMemberList()}
+      </Col>
+      <Col xs={24} md={12} className="right-section">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}>
+          <CircleIcon />
+          <Button
+            type="primary"
+            size="large"
+            block
+            onClick={() => handleStepChange()}
+            loading={isProcessing}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              width: "100%",
+              height: "48px",
+              fontSize: "16px",
+              borderRadius: "8px",
+              marginBottom: "16px",
             }}>
-            <CircleIcon />
-            <Button
-              type="primary"
-              size="large"
-              block
-              onClick={() => handleStepChange()}
-              loading={isProcessing}
-              style={{
-                height: "48px",
-                fontSize: "16px",
-                borderRadius: "8px",
-                marginBottom: "16px",
-              }}>
-              เดินทางไปบ้านเลขที่ 11/9
-            </Button>
-            <div style={{ width: "100%", textAlign: "left" }}>
-              <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
-              <ul style={{ paddingLeft: "20px" }}>
-                <li>ตรวจสอบสถานที่เกิดเหตุ</li>
-                <li>ประเมินความเสียหาย</li>
-                <li>รายงานผลการตรวจสอบ</li>
-              </ul>
-            </div>
+            เดินทางไปบ้านเลขที่ 11/9
+          </Button>
+          <div style={{ width: "100%", textAlign: "left" }}>
+            <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
+            <ul style={{ paddingLeft: "20px" }}>
+              <li>ตรวจสอบสถานที่เกิดเหตุ</li>
+              <li>ประเมินความเสียหาย</li>
+              <li>รายงานผลการตรวจสอบ</li>
+            </ul>
           </div>
-        </Col>
-      </Row>
-  
+        </div>
+      </Col>
+    </Row>
   );
 
   const SuccessCard = () => (
-      <Row gutter={24}>
-        <Col xs={24} md={12}>
-          {renderMemberList()}
-        </Col>
-        <Col xs={24} md={12} className="right-section">
-          <div
+    <Row gutter={24}>
+      <Col xs={24} md={12}>
+        {renderMemberList()}
+      </Col>
+      <Col xs={24} md={12} className="right-section">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+          }}>
+          <CircleIcon />
+          <h2
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
+              fontSize: "28px",
+              color: "#333",
+              marginBottom: "16px",
+              textAlign: "center",
             }}>
-            <CircleIcon />
-            <h2
-              style={{
-                fontSize: "28px",
-                color: "#333",
-                marginBottom: "16px",
-                textAlign: "center",
-              }}>
-              รอดำเนินการสำเร็จ
-            </h2>
-            <p
-              style={{
-                fontSize: "16px",
-                color: "#666",
-                textAlign: "center",
-                maxWidth: "300px",
-                margin: "0 auto",
-              }}>
-              การดำเนินการทั้งหมดเสร็จสิ้น
-            </p>
-          </div>
-        </Col>
-      </Row>
+            รอดำเนินการสำเร็จ
+          </h2>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "#666",
+              textAlign: "center",
+              maxWidth: "300px",
+              margin: "0 auto",
+            }}>
+            การดำเนินการทั้งหมดเสร็จสิ้น
+          </p>
+        </div>
+      </Col>
+    </Row>
   );
 
   const FailureReasonsCard = () => (
