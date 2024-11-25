@@ -5,11 +5,14 @@ import {
   ClockCircleOutlined,
   BellOutlined,
   WarningOutlined,
+  EnvironmentOutlined,
+  PhoneOutlined,
 } from "@ant-design/icons";
 import { encryptStorage } from "../../../utils/encryptStorage";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../../../stores";
 import "../styles/ServiceRequest.css";
+import Title from "antd/es/typography/Title";
 
 const { Step } = Steps;
 
@@ -253,53 +256,174 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
     }
   };
 
-  // Content Components
-  const InitialStepCard = () => (
-    <Card className="info-card">
-      <Row>
-        <Col xs={24} md={12} className="left-section">
-          <UserProfile userInfo={USER_INFO} />
-        </Col>
-        <Col
-          xs={24}
-          md={12}
-          className="right-section"
-          style={{ textAlign: "center" }}>
-          <h3 className="section-title">ขั้นตอนการดำเนินการแก้ไข</h3>
-          <ol
-            className="step-list"
-            style={{ textAlign: "left", display: "inline-block" }}>
-            <li>โทรแจ้งเหตุที่ระบบตรวจพบ</li>
-            <li>พบความผิดปกติที่เซนเซอร์</li>
-            <li>ขออนุญาตเข้าตรวจสอบ</li>
-          </ol>
-          <div className="phone-section" style={{ justifyContent: "center" }}>
-            <div className="phone-icon">2</div>
-            <span className="phone-number">0845625799</span>
-          </div>
-          <Row justify="center" gutter={16} style={{ marginTop: "24px" }}>
-            <Col>
-              <Button
-                danger
-                type="primary"
-                onClick={handleFail}
-                disabled={isProcessing}>
-                ไม่สำเร็จ
+const MemberList = () => (
+  <Card className="member-card">
+    <Title level={5} style={{ color: "#1890ff", marginBottom: "16px" }}>
+      รายชื่อสมาชิกในบ้าน
+    </Title>
+
+    <div className="address-line">
+      <HomeOutlined style={{ marginRight: "8px" }} />
+      11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร
+    </div>
+
+    {/* Member 1 */}
+    <div className="member-row">
+      <div className="member-info">
+        <div className="member-name">วรุณญา ทำเจริญยิ่ง</div>
+        <div className="member-role owner">เจ้าของบ้าน</div>
+        <div className="phone-row">
+          <PhoneOutlined style={{ color: "#69c0ff" }} />
+          <span className="phone-number">0845625785</span>
+          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
+        </div>
+      </div>
+      <div className="action-buttons">
+        <Button type="primary" className="success-button">
+          สำเร็จ
+        </Button>
+        <Button danger>ไม่สำเร็จ (1)</Button>
+      </div>
+    </div>
+
+    {/* Member 2 */}
+    <div className="member-row">
+      <div className="member-info">
+        <div className="member-name">คมชัย ทำเจริญยิ่ง</div>
+        <div className="member-role">(ครอบครัว)</div>
+        <div className="phone-row">
+          <PhoneOutlined style={{ color: "#69c0ff" }} />
+          <span className="phone-number">0845625799</span>
+          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
+        </div>
+      </div>
+      <div className="action-buttons">
+        <Button type="primary" className="success-button">
+          สำเร็จ
+        </Button>
+        <Button danger>ไม่สำเร็จ (1)</Button>
+      </div>
+    </div>
+
+    {/* Member 3 */}
+    <div className="member-row">
+      <div className="member-info">
+        <div className="member-name">คมสัน ทำเจริญยิ่ง</div>
+        <div className="member-role">(ครอบครัว)</div>
+        <div className="phone-row">
+          <PhoneOutlined style={{ color: "#69c0ff" }} />
+          <span className="phone-number">0845625888</span>
+          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
+        </div>
+      </div>
+      <div className="action-buttons">
+        <Button type="primary" className="success-button">
+          สำเร็จ
+        </Button>
+        <Button danger>ไม่สำเร็จ (1)</Button>
+      </div>
+    </div>
+
+    <Button
+      type="primary"
+      icon={<EnvironmentOutlined />}
+      block
+      className="map-button">
+      ดูแผนที่
+    </Button>
+  </Card>
+);
+
+const ActionSection = () => (
+  <Card className="action-card">
+    <Row>
+      <Col span={24}>
+        <Title level={4}>1. ขั้นตอนการดำเนินการแก้ไข</Title>
+        <Title level={4} className="action-subtitle">
+          โทรติดต่อลูกค้า
+        </Title>
+        <Title level={4}>2. ต้องการความช่วยเหลือด้านใด</Title>
+
+        <div className="help-buttons">
+          <Row gutter={[0, 12]}>
+            <Col span={24}>
+              <Button type="primary" block>
+                ตำรวจ
               </Button>
             </Col>
-            <Col>
-              <Button
-                type="primary"
-                onClick={() => handleStepChange(2)}
-                disabled={isProcessing}
-                loading={isProcessing}>
-                ต่อไป
+            <Col span={24}>
+              <Button type="primary" block>
+                โรงพยาบาล
+              </Button>
+            </Col>
+            <Col span={24}>
+              <Button type="primary" block>
+                ดับเพลิง
+              </Button>
+            </Col>
+            <Col span={24}>
+              <Button type="primary" block>
+                ไม่ต้องการขอความช่วยเหลือ
               </Button>
             </Col>
           </Row>
-        </Col>
-      </Row>
-    </Card>
+        </div>
+      </Col>
+    </Row>
+  </Card>
+);
+
+
+  // Content Components
+  const InitialStepCard = () => (
+    <>
+      <Card className="info-card">
+        <Row>
+          <Col xs={24} md={12} className="left-section">
+            <MemberList /> 
+            {/* <UserProfile userInfo={USER_INFO} /> */}
+          </Col>
+          <Col
+            xs={24}
+            md={12}
+            className="right-section"
+            style={{ textAlign: "center" }}>
+            <h3 className="section-title">ขั้นตอนการดำเนินการแก้ไข</h3>
+            <ol
+              className="step-list"
+              style={{ textAlign: "left", display: "inline-block" }}>
+              <li>โทรแจ้งเหตุที่ระบบตรวจพบ</li>
+              <li>พบความผิดปกติที่เซนเซอร์</li>
+              <li>ขออนุญาตเข้าตรวจสอบ</li>
+            </ol>
+            <div className="phone-section" style={{ justifyContent: "center" }}>
+              <div className="phone-icon">2</div>
+              <span className="phone-number">0845625799</span>
+            </div>
+            <Row justify="center" gutter={16} style={{ marginTop: "24px" }}>
+              <Col>
+                <Button
+                  danger
+                  type="primary"
+                  onClick={handleFail}
+                  disabled={isProcessing}>
+                  ไม่สำเร็จ
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  onClick={() => handleStepChange(2)}
+                  disabled={isProcessing}
+                  loading={isProcessing}>
+                  ต่อไป
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Card>
+    </>
   );
 
   const TravelDetailCard = () => (

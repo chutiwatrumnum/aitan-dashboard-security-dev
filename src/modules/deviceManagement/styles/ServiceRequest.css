@@ -517,3 +517,89 @@
     font-size: 12px;
   }
 }
+
+.member-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  margin-bottom: 24px;
+}
+
+.address-line {
+  color: #666;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.member-row {
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.member-row:last-child {
+  border-bottom: none;
+}
+
+.member-info {
+  margin-bottom: 12px;
+}
+
+.member-name {
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 4px;
+}
+
+.member-role {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.member-role.owner {
+  color: #1890ff;
+}
+
+.phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.call-time {
+  color: #999;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.success-button {
+  background: #52c41a;
+  border-color: #52c41a;
+}
+
+.success-button:hover {
+  background: #49ad17;
+  border-color: #49ad17;
+}
+
+.map-button {
+  margin-top: 16px;
+  height: 48px;
+  background: #1890ff;
+}
+
+@media (max-width: 576px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}

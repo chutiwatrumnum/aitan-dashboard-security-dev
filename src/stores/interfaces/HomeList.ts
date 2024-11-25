@@ -10,6 +10,7 @@ export interface HomeListTableDataType {
   long: number;
   active: boolean;
   homeOwner: HomeOwner;
+  homeAlarmStatus: HomeAlarmStatus | null;
 }
 
 export interface HomeOwner {
@@ -18,4 +19,14 @@ export interface HomeOwner {
   mobile: string;
   isOwner: boolean;
   active: boolean;
+}
+
+export interface HomeAlarmStatus {
+  statusArming: number;
+  status: Status;
+}
+
+export interface Status {
+  name: string;
+  code: string;
 }

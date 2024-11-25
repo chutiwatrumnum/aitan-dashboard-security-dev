@@ -18,7 +18,10 @@ export const homeList = createModel<RootModel>()({
       await axios
         .get("/home-security/home-list")
         .then((value) => {
-          console.log(value);
+          console.log(value.data.result.rows);
+          dispatch.homeList.updateHomeListTableDataState(
+            value.data.result.rows
+          );
         })
         .catch((err) => {
           console.error(err);

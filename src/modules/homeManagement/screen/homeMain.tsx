@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Card, Table, Input, Button, Row } from "antd";
 import { EyeIcon } from "../../../assets/icons/Icons";
 import type { ColumnsType } from "antd/es/table";
+import { HomeListTableDataType } from "../../../stores/interfaces/HomeList";
 import { whiteLabel } from "../../../configs/theme";
 import HomeDashboard from "./deviceHome";
 import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, RootState } from "./stores";
+import { Dispatch, RootState } from "../../../stores";
 
 interface DataType {
   key: string;
@@ -28,62 +29,7 @@ const HomeMain = () => {
   );
   const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false);
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      no: 1,
-      workId: "111/546",
-      startDate: "15/10/2024 09:18",
-      endDate: "15/10/2024 10:20",
-      status: "เสร็จสิ้น",
-      description: "สมชาย ใจดี",
-      staff: "เจ้าหน้าที่คนที่ 1",
-      phone: "0845625777",
-      step: "Step 4",
-      type: "completed",
-    },
-    {
-      key: "2",
-      no: 2,
-      workId: "111/547",
-      startDate: "15/10/2024 10:30",
-      endDate: "15/10/2024 11:45",
-      status: "ฉุกเฉิน",
-      description: "วันดี มีสุข",
-      staff: "เจ้าหน้าที่คนที่ 2",
-      phone: "0845625778",
-      step: "Step 1",
-      type: "emergency",
-    },
-    {
-      key: "3",
-      no: 3,
-      workId: "111/548",
-      startDate: "15/10/2024 11:00",
-      endDate: "15/10/2024 12:15",
-      status: "ปัญหาอุปกรณ์",
-      description: "มานี รักดี",
-      staff: "เจ้าหน้าที่คนที่ 3",
-      phone: "0845625779",
-      step: "Step 2",
-      type: "equipment",
-    },
-    {
-      key: "4",
-      no: 4,
-      workId: "111/549",
-      startDate: "15/10/2024 13:20",
-      endDate: "15/10/2024 14:30",
-      status: "ยืนยันแล้ว",
-      description: "สมศรี ดีใจ",
-      staff: "เจ้าหน้าที่คนที่ 4",
-      phone: "0845625780",
-      step: "Step 4",
-      type: "confirmed",
-    },
-  ];
-
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<HomeListTableDataType> = [
     {
       title: "ดูข้อมูล",
       key: "action",
@@ -94,8 +40,9 @@ const HomeMain = () => {
           type="primary"
           icon={<EyeIcon />}
           onClick={() => {
-            setIshowHomeDetail(true);
-            console.log(record.workId);
+            // setIshowHomeDetail(true);
+            // console.log(record.workId);
+            // console.log("HOME LIST DATA =>", homeListTableData);
           }}
         />
       ),
@@ -106,67 +53,72 @@ const HomeMain = () => {
       key: "no",
       width: 80,
       align: "center", // เพิ่มบรรทัดนี้
+      render: (_, record, index) => <span>{index + 1}</span>,
     },
     {
       title: "บ้านเลขที่",
-      dataIndex: "workId",
-      key: "workId",
+      dataIndex: "address",
+      key: "address",
       width: 100,
       align: "center", // เพิ่มบรรทัดนี้
     },
     {
       title: "สถานะบ้าน",
-      dataIndex: "status",
       key: "status",
       width: 150,
       align: "center", // เพิ่มบรรทัดนี้
-      render: (status: string) => {
+      render: (_, record) => {
         let className = "";
-        switch (status) {
-          case "ฉุกเฉิน":
-            className = "emergency";
+        switch (record?.homeAlarmStatus?.status?.code) {
+          case "away":
+            className = "away";
             break;
-          case "ปัญหาอุปกรณ์":
-            className = "confirmed";
+          case "stay":
+            className = "stay";
             break;
-          case "เสร็จสิ้น":
-            className = "completed";
+          case "disarm":
+            className = "disarmed";
             break;
         }
-        return <span className={`status-tag ${className}`}>{status}</span>;
+        return (
+          <span className={`status-tag ${className}`}>
+            {record?.homeAlarmStatus?.status?.name ?? "ยังไม่เปิดใช้งาน"}
+          </span>
+        );
       },
     },
     {
       title: "ชื่อเจ้าของบ้าน",
-      dataIndex: "description",
-      key: "description",
+      key: "ownerName",
       width: 200,
       align: "center", // เพิ่มบรรทัดนี้
+      render: (_, record) => {
+        return <span>{record.homeOwner?.fullname ?? "-"}</span>;
+      },
     },
     {
       title: "เบอร์โทรศัพท์",
-      dataIndex: "phone",
       key: "phone",
       width: 150,
       align: "center", // เพิ่มบรรทัดนี้
+      render: (_, record) => {
+        return <span>{record.homeOwner?.mobile ?? "-"}</span>;
+      },
     },
   ];
 
   // Functions
-  const SetIshowHomeDetail = (Ishow: boolean) => setIshowHomeDetail(Ishow);
+  const SetIshowHomeDetail = (Ishow: boolean) => {
+    setIshowHomeDetail(Ishow);
+  };
 
   const fetchData = async () => {
     await dispatch.homeList.getHomeListTableData();
-    // const resReToken = await dispatch.userAuth.refreshTokenNew();
-    // if (!resReToken) throw "accessToken expired";
   };
 
   // Actions
   useEffect(() => {
     fetchData();
-    return () => {
-      setIshowHomeDetail(false);
-    };
   }, []);
 
   return !IshowHomeDetail ? (
@@ -193,10 +145,10 @@ const HomeMain = () => {
       <Card>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={homeListTableData}
           scroll={{ x: 1500 }}
           pagination={{
-            total: 200,
+            total: homeListTableData.length,
             pageSize: 10,
             showSizeChanger: true,
           }}

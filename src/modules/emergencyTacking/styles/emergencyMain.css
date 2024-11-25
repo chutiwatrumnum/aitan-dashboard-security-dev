@@ -96,28 +96,16 @@
   font-size: 12px;
 }
 
-.emergency {
-  /* background: #fff1f0; */
+.away {
+  color: #01a171;
+}
+
+.disarmed {
   color: #ff4d4f;
-  /* border: 1px solid #ff4d4f; */
 }
 
-.equipment {
-  /* background: #fff7e6; */
-  color: #ffa940;
-  /* border: 1px solid #ffa940; */
-}
-
-.completed {
-  /* background: #f6ffed; */
-  color: #52c41a;
-  /* border: 1px solid #52c41a; */
-}
-
-.confirmed {
-  /* background: #e6f7ff; */
+.stay {
   color: #1890ff;
-  /* border: 1px solid #1890ff; */
 }
 
 .step-tag {
