@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Row, Col, Button } from "antd";
 import {
   DesktopOutlined,
@@ -10,6 +10,8 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import "../styles/AlertMain.css";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "../../../stores";
 
 // Types
 interface DeviceStats {
@@ -111,10 +113,11 @@ const DEVICE_DATA: DeviceList[] = [
   // },
 ];
 
+// Card Components
 type HomeDashboardProps = {
   callback(Ishow: boolean): any;
+  HomeId:number | undefined
 };
-// Card Components
 const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
@@ -166,7 +169,22 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
 );
 
 // Component
-const HomeDashboard = ({ callback }: HomeDashboardProps) => {
+const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
+    // Variables
+    const dispatch = useDispatch<Dispatch>();
+    const { DeviceTableData } = useSelector(
+      (state: RootState) => state.deviceList
+    );
+    const fetchData = async (HomeId: number) => {
+      await dispatch.deviceList.getDeviceListTableData(HomeId);
+     console.log("DeviceTableData:",DeviceTableData);
+    };
+  useEffect(() => {
+
+    if (HomeId) {
+     fetchData(HomeId)
+    }
+  }, [HomeId]);
   return (
     <div className="dashboard-container">
       {/* Header with Status */}
@@ -205,7 +223,7 @@ const HomeDashboard = ({ callback }: HomeDashboardProps) => {
             <h2 className="section-title">ที่อยู่</h2>
             <div className="address">
               <HomeOutlined />
-              <span>11/9 ซอยอรัญสมินทวงศ์ 79 กรุงเทพมหานคร</span>
+              <span>{DeviceTableData!== undefined? DeviceTableData?.address : "-"}</span>
             </div>
           </Card>
 

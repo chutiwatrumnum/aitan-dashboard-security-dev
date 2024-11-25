@@ -28,6 +28,7 @@ const HomeMain = () => {
     (state: RootState) => state.homeList
   );
   const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false);
+  const [HomeId, setHomeId] = useState<number|undefined>(undefined)
 
   const columns: ColumnsType<HomeListTableDataType> = [
     {
@@ -40,7 +41,8 @@ const HomeMain = () => {
           type="primary"
           icon={<EyeIcon />}
           onClick={() => {
-            // setIshowHomeDetail(true);
+            setHomeId(record.id);
+            setIshowHomeDetail(true);
             // console.log(record.workId);
             // console.log("HOME LIST DATA =>", homeListTableData);
           }}
@@ -156,7 +158,7 @@ const HomeMain = () => {
       </Card>
     </div>
   ) : (
-    <HomeDashboard callback={SetIshowHomeDetail} />
+    <HomeDashboard callback={SetIshowHomeDetail} HomeId={HomeId} />
   );
 };
 
