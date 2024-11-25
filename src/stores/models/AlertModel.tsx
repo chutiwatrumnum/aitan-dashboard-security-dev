@@ -1,60 +1,61 @@
 import { createModel } from "@rematch/core";
-import { dataAlertType, conditionpage } from "../interfaces/alert";
+import { SOSDataType } from "../interfaces/SOS";
 import { RootModel } from "./index";
-// import { getDataAlertLists } from "../../modules/alertManagement/service/api/AlertServiceAPI";
-const filterDataInit:conditionpage={
-  perPage: 0,
-  curPage: 0
-}
+import axios from "axios";
+
 export const alert = createModel<RootModel>()({
   state: {
-    tableData: [],
-    loading: false,
-    total: 0,
-    EventMaxLength: 0,
-    filterData:filterDataInit,
-    countSecurityAlert: 0,
-    countSOSAlert: 0,
-    countWarningAlert: 0
-  } as dataAlertType,
+    pieEventData: [],
+    pieStatusData: [],
+    mapInfoData: [],
+  } as SOSDataType,
   reducers: {
-    updateloadingDataState: (state, payload) => ({
+    updatePieEventDataState: (state, payload) => ({
       ...state,
-      loading: payload,
+      pieEventData: payload,
     }),
-    updatetotalgDataState: (state, payload) => ({
+    updatePieStatusDataState: (state, payload) => ({
       ...state,
-      total: payload,
+      pieStatusData: payload,
     }),
-    updateTableDataState: (state, payload) => ({
+    updateMapInfoDataState: (state, payload) => ({
       ...state,
-      tableData: payload,
-    }),
-    updateCountSOSAlertState: (state, payload) => ({
-      ...state,
-      countSOSAlert: payload,
-    }), updateCountSecurityState: (state, payload) => ({
-      ...state,
-      countSecurityAlert: payload,
-    }), updateCountWarningState: (state, payload) => ({
-      ...state,
-      countWarningAlert: payload,
+      mapInfoData: payload,
     }),
   },
   effects: (dispatch) => ({
-    async getTableData(payload: conditionpage) {
-      dispatch.alert.updateloadingDataState(true);
-      const data: any = await getDataAlertLists(payload);
-      if (data?.status) {
-        dispatch.alert.updateTableDataState(data.datavalue);
-        dispatch.alert.updatetotalgDataState(data.total);
-        dispatch.alert.updateCountSOSAlertState(data.countSOSAlert)
-        dispatch.alert.updateCountSecurityState(data.countSecurityAlert)
-        dispatch.alert.updateCountWarningState(data.countWarningAlert)
-        dispatch.alert.updateloadingDataState(false);
-      } else {
-        dispatch.alert.updateloadingDataState(false);
-      }
+    async getPieEventData() {
+      await axios
+        .get("/home-security/total-event")
+        .then((value) => {
+          // console.log(value.data.result);
+          dispatch.alert.updatePieEventDataState(value.data.result);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    async getPieStatusData() {
+      await axios
+        .get("/home-security/total-status")
+        .then((value) => {
+          // console.log(value.data.result);
+          dispatch.alert.updatePieStatusDataState(value.data.result);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    async getMapInfoData() {
+      await axios
+        .get("/home-security/event-list")
+        .then((value) => {
+          // console.log(value.data.result.rows);
+          dispatch.alert.updateMapInfoDataState(value.data.result.rows);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
   }),
 });

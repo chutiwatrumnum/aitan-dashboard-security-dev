@@ -16,13 +16,13 @@ const PopupContent = (props: MapDataType) => {
   const iconSelector = (alertType: string) => {
     let icon = <SOSIcon />;
     switch (alertType) {
-      case "SOS":
+      case "ฉุกเฉิน":
         icon = <SOSIcon className="cardIcon_CL" />;
         break;
-      case "warning":
+      case "อุปกรณ์มีปัญหา":
         icon = <WarningIcon className="cardIcon_CL" />;
         break;
-      case "offline":
+      case "อุปกรณ์ออฟไลน์":
         icon = <OfflineIcon className="cardIcon_CL" />;
         break;
 
@@ -35,13 +35,13 @@ const PopupContent = (props: MapDataType) => {
   const colorSelector = (alertType: string) => {
     let color = whiteLabel.mainTextColor;
     switch (alertType) {
-      case "SOS":
+      case "ฉุกเฉิน":
         color = whiteLabel.dangerTextColor;
         break;
-      case "warning":
+      case "อุปกรณ์มีปัญหา":
         color = whiteLabel.warningTextColor;
         break;
-      case "offline":
+      case "อุปกรณ์ออฟไลน์":
         color = whiteLabel.grayTextColor;
         break;
 
@@ -54,28 +54,28 @@ const PopupContent = (props: MapDataType) => {
   return (
     <Row className="notification">
       <Col span={6} className="icon-container">
-        {iconSelector(props.properties.alertType)}
+        {iconSelector(props.eventTypeNameTH)}
       </Col>
       <Col span={18} className="info">
         <div className="titlePopupContainer_PC">
           <h2
-            style={{ color: colorSelector(props.properties.alertType) }}
+            style={{ color: colorSelector(props.eventTypeNameTH) }}
             className="status"
           >
-            {props.properties.title}
+            {props.eventTypeNameTH}
           </h2>
         </div>
         <Row className="infoTextContainer_PC">
           <NameIcon />
-          <span className="infoText_PC">{props.properties.fullName}</span>
+          <span className="infoText_PC">{props.homeOwnerFullname ?? "-"}</span>
         </Row>
         <Row className="infoTextContainer_PC">
           <AddressIcon />
-          <span className="infoText_PC">{props.properties.address}</span>
+          <span className="infoText_PC">{props.homeAddress ?? "-"}</span>
         </Row>
         <Row className="infoTextContainer_PC">
           <PhoneIcon />
-          <span className="infoText_PC">{props.properties.phone ?? "-"}</span>
+          <span className="infoText_PC">{props.homeOwnerMobile ?? "-"}</span>
         </Row>
       </Col>
     </Row>

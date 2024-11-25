@@ -1,162 +1,124 @@
 import { useState } from "react";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
-const { Header, Content, Footer, Sider } = Layout;
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, RootState } from "../../stores";
-import { APP_VERSION } from "../../configs/configs";
+import { Layout, Menu } from "antd";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import type { Dispatch } from "../../stores";
 import { whiteLabel } from "../../configs/theme";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import { LogOutIcon } from "../../assets/icons/Icons";
-
 import {
   UserOutlined,
   AlertOutlined,
-  DesktopOutlined,
   FileSearchOutlined,
 } from "@ant-design/icons";
-//icon svg
 import MENU_LOGO from "../../assets/images/AiTAN-logo.png";
-
 import "../styles/sideMenu.css";
 
-//antd constraints components
-const { SubMenu } = Menu;
-const main_link = "/dashboard";
-// const path = window.location.pathname.split("/");
+const { Sider } = Layout;
+
+interface MenuItem {
+  key: string;
+  icon: React.ReactNode;
+  label: string;
+  path?: string;
+  onClick?: () => void;
+}
+
+const MAIN_LINK = "/dashboard";
 
 const SideMenu = () => {
-  const { sideMenuCollapsed } = useSelector((state: RootState) => state.common);
   const dispatch = useDispatch<Dispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [keyPath, setKeyPath] = useState<string>("");
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
+  const [activeKey, setActiveKey] = useState<string>(location.pathname);
 
-  const logoutHandler = () => {
+  const handleLogout = () => {
     ConfirmModal({
-      title: "Do you want to log out?",
-      okMessage: "Yes",
-      cancelMessage: "Cancel",
-      onOk: onLogoutOk,
-      onCancel: onLogoutCancel,
+      title: "ต้องการออกจากระบบใช่หรือไม่?",
+      okMessage: "ใช่",
+      cancelMessage: "ยกเลิก",
+      onOk: async () => {
+        await dispatch.userAuth.onLogout();
+        dispatch.userAuth.updateAuthState(false);
+        navigate("/auth", { replace: true });
+      },
+      onCancel: () => {
+        console.log("Cancel logout");
+      },
     });
   };
 
-  const onLogoutOk = async () => {
-    await dispatch.userAuth.onLogout();
-    dispatch.userAuth.updateAuthState(false);
-    navigate("/auth", { replace: true });
-  };
+  const menuItems: MenuItem[] = [
+    {
+      key: `${MAIN_LINK}/MapView`,
+      icon: <AlertOutlined className="sideMenuIcon" />,
+      label: "แผนที่หลัก",
+      path: `${MAIN_LINK}/MapView`,
+    },
+    {
+      key: `${MAIN_LINK}/EmergencyMain`,
+      icon: <FileSearchOutlined className="sideMenuIcon" />,
+      label: "ติดตามเหตุ",
+      path: `${MAIN_LINK}/EmergencyMain`,
+    },
+    {
+      key: `${MAIN_LINK}/HomeMain`,
+      icon: <UserOutlined className="sideMenuIcon" />,
+      label: "ภาพรวมผู้ใช้",
+      path: `${MAIN_LINK}/HomeMain`,
+    },
+    {
+      key: "logout",
+      icon: (
+        <LogOutIcon
+          color={whiteLabel.whiteTransColor}
+          className="sideMenuIcon"
+        />
+      ),
+      label: "ออกจากระบบ",
+      onClick: handleLogout,
+    },
+  ];
 
-  const onLogoutCancel = async () => {
-    console.log("Cancel");
+  const handleMenuClick = (key: string) => {
+    const item = menuItems.find((menuItem) => menuItem.key === key);
+    if (item?.onClick) {
+      item.onClick();
+    } else if (item?.path) {
+      navigate(item.path);
+      setActiveKey(item.path);
+    }
   };
-
-  const iconMenuColorSelector = (key: string) => {
-    // console.log(keyPath);
-    // console.log(key);
-    // console.log(keyPath.includes(key));
-
-    if (keyPath.includes(key)) return whiteLabel.whiteColor;
-    return whiteLabel.whiteColor;
-  };
-
-  const iconSubMenuColorSelector = (key: string) => {
-    if (keyPath.includes(key)) return whiteLabel.primaryColor;
-    return whiteLabel.mainTextColor;
-  };
-  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <>
-      <Sider
-        collapsible
-        collapsed={sideMenuCollapsed}
-        onCollapse={(value) => dispatch.common.updateSideMenuCollapsed(value)}
-        className="sideContainer"
-      >
+    <Sider
+      collapsed={true}
+      collapsible={false}
+      className="sideContainer"
+      width={80}
+      collapsedWidth={80}>
+      <div className="layout-container">
         <div className="sideMenuLogo">
-          <img style={{ width: "50%" }} src={MENU_LOGO} alt="menuLogo" />
+          <img src={MENU_LOGO} alt="AiTAN Logo" style={{ width: "60%" }} />
         </div>
-        <div className="menuContainer">
-          <div>
-            <Menu
-              defaultSelectedKeys={[window.location.pathname]}
-              mode="inline"
-              theme="dark"
-              onSelect={({ keyPath }) => {
-                setKeyPath(keyPath.toString());
-              }}
-              onOpenChange={(keys) => {
-                const latestOpenKey = keys.find(
-                  (key) => openKeys.indexOf(key) === -1
-                );
-                setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-              }}
-              openKeys={openKeys}
-            >
-              <Menu.Item
-                key={`${main_link}/MapView`}
-                icon={
-                  <AlertOutlined
-                    color={iconMenuColorSelector(`MapView`)}
-                    className="sideMenuIcon"
-                  />
-                }
-              >
-                <Link to={`${main_link}/MapView`}>แผนที่หลัก</Link>
-              </Menu.Item>
-              <Menu.Item
-                key={`${main_link}/EmergencyMain`}
-                icon={
-                  <FileSearchOutlined
-                    color={iconMenuColorSelector("EmergencyMain")}
-                    className="sideMenuIcon"
-                  />
-                }
-              >
-                <Link to={`${main_link}/EmergencyMain`}>ติดตามเหตุ</Link>
-              </Menu.Item>
-    
-              <Menu.Item
-                key={`${main_link}/HomeMain`}
-                icon={
-                  <UserOutlined
-                    color={iconMenuColorSelector("/HomeMain")}
-                    className="sideMenuIcon"
-                  />
-                }
-              >
-                <Link to={`${main_link}/HomeMain`}>ภาพรวมผู้ใช้</Link>
-              </Menu.Item>
-            </Menu>
-          </div>
-          <div style={{ display: "none" }}>
-            <Menu
-              style={{ marginBottom: "auto" }}
-              mode="inline"
-              selectable={false}
-            >
-              <Menu.Item
-                key="auth"
-                icon={
-                  <LogOutIcon
-                    color={whiteLabel.logoutColor}
-                    className="sideMenuIcon"
-                  />
-                }
-                onClick={logoutHandler}
-                style={{ alignSelf: "end", bottom: 0 }}
-              >
-                <span style={{ color: whiteLabel.logoutColor }}>Logout</span>
-              </Menu.Item>
-              {/* <div className="textVersion">version {APP_VERSION}</div> */}
-            </Menu>
-          </div>
-        </div>
-      </Sider>
-    </>
+
+        <Menu
+          selectedKeys={[activeKey]}
+          mode="inline"
+          theme="dark"
+          className="main-menu">
+          {menuItems.map((item) => (
+            <Menu.Item
+              key={item.key}
+              icon={item.icon}
+              onClick={() => handleMenuClick(item.key)}>
+              {item.label}
+            </Menu.Item>
+          ))}
+        </Menu>
+      </div>
+    </Sider>
   );
 };
 

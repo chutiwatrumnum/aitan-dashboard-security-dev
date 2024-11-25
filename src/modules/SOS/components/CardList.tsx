@@ -33,13 +33,13 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
   const iconSelector = (alertType: string) => {
     let icon = <SOSIcon />;
     switch (alertType) {
-      case "SOS":
+      case "ฉุกเฉิน":
         icon = <SOSIcon className="cardIcon_CL" />;
         break;
-      case "warning":
+      case "อุปกรณ์มีปัญหา":
         icon = <WarningIcon className="cardIcon_CL" />;
         break;
-      case "offline":
+      case "อุปกรณ์ออฟไลน์":
         icon = <OfflineIcon className="cardIcon_CL" />;
         break;
 
@@ -49,7 +49,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     return icon;
   };
 
-  const acceptRequest = (id: string) => {
+  const acceptRequest = (id: number) => {
     encryptStorage.setItem("acceptedRequestId", id);
     navigate("/dashboard/deviceStep", { replace: true });
   };
@@ -58,7 +58,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     const updateTimes = () => {
       const now = dayjs();
       const newTimes = mapInfoData.map((date) => {
-        const past = dayjs(date.properties.contactedAt);
+        const past = dayjs(date.eventDateTime);
         const diffDuration = dayjs.duration(now.diff(past));
         const totalMinutes = Math.floor(diffDuration.asMinutes());
         const totalSeconds = Math.floor(diffDuration.asSeconds());
@@ -87,16 +87,16 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     };
 
     updateTimes();
-    setInterval(updateTimes, 1000);
+    const intervalId = setInterval(updateTimes, 1000);
 
-    return () => clearInterval;
+    return () => clearInterval(intervalId);
   }, [mapInfoData]);
 
   return (
     <div style={{ padding: "5px" }}>
       {mapInfoData.map((item, index) => (
         <Card
-          key={item.properties.id}
+          key={index}
           style={{
             marginBottom: "10px",
             borderRadius: "8px",
@@ -107,7 +107,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
           <Col span={24}>
             <Row>
               <Col className="iconContainer_CL" span={4}>
-                {iconSelector(item.properties.alertType)}
+                {iconSelector(item.eventTypeNameTH)}
               </Col>
               <Col className="contentContainer_CL" span={20}>
                 <h2
@@ -125,7 +125,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
                     {timeAgos[index]?.formattedDuration}
                   </span>
                 </h2>
-                <span>งาน : {item.properties.title}</span>
+                <span>งาน : {item.eventTypeNameTH}</span>
               </Col>
             </Row>
             <Row justify="space-around">
@@ -144,7 +144,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
               <Col span={8}>
                 <Button
                   onClick={() => {
-                    acceptRequest(item.properties.id);
+                    acceptRequest(item.homeId);
                   }}
                   className="cardBtn_CL greenBtn"
                 >

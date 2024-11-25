@@ -1,27 +1,27 @@
 export interface alertDataLists {
-  countHomeAlert: number
-  countSOSAlert: number
-  countWarningAlert: number
-  allDataAlert: dataAlert[]
+  countHomeAlert: number;
+  countSOSAlert: number;
+  countWarningAlert: number;
+  allDataAlert: dataAlert[];
 }
 type alertType = "sos" | "securityAlert" | "warning" | "successfully";
 export interface dataAlert {
-  id: number | string
-  title: string
-  fullname: string
-  address: string
-  date: string
-  contact_time: string
-  status: boolean,
-  lat: number,
-  long: number,
-  alertType: alertType
-  phone: string
+  id: number | string;
+  title: string;
+  fullname: string;
+  address: string;
+  date: string;
+  contact_time: string;
+  status: boolean;
+  lat: number;
+  long: number;
+  alertType: alertType;
+  phone: string;
 }
 
 export interface selectedAnswerType {
-  status: boolean
-  data: any
+  status: boolean;
+  data: any;
 }
 export interface conditionpage {
   perPage: number;
@@ -38,19 +38,17 @@ export interface dataAlertType {
   total: number;
   EventMaxLength: number;
   filterData: conditionpage;
-  countSecurityAlert: number
-  countSOSAlert: number
-  countWarningAlert: number
+  countSecurityAlert: number;
+  countSOSAlert: number;
+  countWarningAlert: number;
 }
 
-export interface dataMapType{
-  
-    lat: number,
-    lng: number,
-    show: boolean,
-    title: string,
-    address: string,
-    name: string,
-    phone: string,
-  
+export interface dataMapType {
+  lat: number;
+  lng: number;
+  show: boolean;
+  title: string;
+  address: string;
+  name: string;
+  phone: string;
 }

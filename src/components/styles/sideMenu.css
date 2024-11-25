@@ -1,7 +1,13 @@
 .sideContainer {
-  height: 100vh;
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  height: 100vh !important;
   overflow: hidden;
+  z-index: 1000;
+  width: 80px !important; /* กำหนดความกว้างคงที่ */
 }
+
 .sideMenuContainer .ant-menu {
   border-inline-end: none !important;
 }
@@ -19,6 +25,7 @@
   align-items: center;
   margin-bottom: 30px;
   box-sizing: border-box;
+  padding-top: 30px;
 }
 
 .sideMenuIcon {
@@ -88,3 +95,11 @@
   justify-content: center;
   display: flex;
 }
+
+
+.ant-layout-content {
+  min-height: 100vh;
+  margin-left: 40px !important; /* เพิ่ม margin เท่ากับความกว้างของ sidebar */
+  background: #fff;
+}
+

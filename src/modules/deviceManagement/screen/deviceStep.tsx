@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Steps, Button, Col, Checkbox, message, Row } from "antd";
+import { Card, Steps, Button, Col, Checkbox, message, Row, Modal } from "antd";
 import {
   HomeOutlined,
   ClockCircleOutlined,
@@ -22,28 +22,11 @@ interface ProgressDotProps {
   completed?: boolean;
 }
 
-interface UserInfo {
-  name: string;
-  role: string;
-  address: string;
-  incidentDate: string;
-  imageUrl: string;
-}
-
 interface StepInfo {
   title: string;
   subTitle: string;
   description: string;
 }
-
-// Constants
-const USER_INFO: UserInfo = {
-  name: "คมชัย ทำเจริญยิ่ง",
-  role: "บุคคลที่2 (ครอบครัว)",
-  address: "11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร",
-  incidentDate: "26/8/64 09:10",
-  imageUrl: "https://i.pravatar.cc/160",
-};
 
 const STEPS: StepInfo[] = [
   {
@@ -107,35 +90,28 @@ const DEVICE_DATA: DeviceList[] = [
   },
 ];
 
+const members = [
+  {
+    name: "วรุณญา ทำเจริญยิ่ง",
+    role: "เจ้าของบ้าน",
+    phone: "0845625785",
+    lastCall: "22/11/2024 11:11",
+  },
+  {
+    name: "คมชัย ทำเจริญยิ่ง",
+    role: "ครอบครัว",
+    phone: "0845625799",
+    lastCall: "22/11/2024 11:11",
+  },
+  {
+    name: "คมสัน ทำเจริญยิ่ง",
+    role: "ครอบครัว",
+    phone: "0845625888",
+    lastCall: "22/11/2024 11:11",
+  },
+];
+
 // Reusable Components
-const UserProfile: React.FC<{ userInfo: UserInfo }> = ({ userInfo }) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      textAlign: "center",
-    }}>
-    <img
-      src={userInfo.imageUrl}
-      alt="Profile"
-      className="profile-image"
-      style={{ marginBottom: "16px" }}
-    />
-    <h2 style={{ fontSize: "24px", marginBottom: "8px" }}>{userInfo.name}</h2>
-    <p className="sub-title" style={{ marginBottom: "16px" }}>
-      {userInfo.role}
-    </p>
-    <div className="info-row">
-      <HomeOutlined />
-      <span>{userInfo.address}</span>
-    </div>
-    <div className="info-row">
-      <ClockCircleOutlined />
-      <span>วันเกิดเหตุ {userInfo.incidentDate}</span>
-    </div>
-  </div>
-);
 
 const ProgressDot: React.FC<ProgressDotProps> = ({ current, completed }) => (
   <div
@@ -224,6 +200,15 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [isMapVisible, setIsMapVisible] = useState(false);
+
+    const showMap = () => {
+      setIsMapVisible(true);
+    };
+
+    const handleMapClose = () => {
+      setIsMapVisible(false);
+    };
 
   // Handlers
   const handleStepChange = (increment: number = 1) => {
@@ -246,180 +231,184 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
     }, 1000);
   };
 
-  const handleFail = () => {
-    if (currentStep === 0) {
-      setCurrentStep(currentStep + 1);
-    } else if (selectedReasons.length === 0) {
-      message.error("กรุณาเลือกเหตุผลที่ไม่สามารถติดต่อได้");
-    } else {
-      message.error("การดำเนินการไม่สำเร็จ");
-    }
-  };
 
-const MemberList = () => (
-  <Card className="member-card">
-    <Title level={5} style={{ color: "#1890ff", marginBottom: "16px" }}>
-      รายชื่อสมาชิกในบ้าน
-    </Title>
+const renderMemberList = () => (
+  <Row>
+    <Col span={24}>
+      {/* หัวข้อ */}
+      <Title level={4} className="member-list-title">
+        รายชื่อสมาชิกในบ้าน
+      </Title>
+      <Row align="middle" className="address-line">
+        <Col>
+          <HomeOutlined className="home-icon" />
+          <span>11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร</span>
+        </Col>
+      </Row>
 
-    <div className="address-line">
-      <HomeOutlined style={{ marginRight: "8px" }} />
-      11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร
-    </div>
+      {/* รายชื่อสมาชิก */}
+      <Row gutter={[0, 24]} className="member-list-container">
+        {members.map((member, index) => (
+          <Col span={24} key={index}>
+            <Row
+              className={`member-item ${
+                index !== members.length - 1 ? "with-border" : ""
+              }`}>
+              <Col span={24}>
+                <Row className="member-info-container">
+                  {/* ข้อมูลด้านซ้าย */}
+                  <Col flex="auto">
+                    <Row className="member-main-info">
+                      <Col span={24}>
+                        <span className="member-name">{member.name}</span>
+                      </Col>
+                      <Col span={24}>
+                        <span
+                          className={
+                            member.role === "เจ้าของบ้าน"
+                              ? "member-role-owner"
+                              : "member-role"
+                          }>
+                          {member.role === "เจ้าของบ้าน"
+                            ? "เจ้าของบ้าน"
+                            : `(${member.role})`}
+                        </span>
+                      </Col>
+                      <Col span={24} className="member-phone">
+                        <PhoneOutlined className="phone-icon" />
+                        <span>{member.phone}</span>
+                      </Col>
+                    </Row>
+                  </Col>
 
-    {/* Member 1 */}
-    <div className="member-row">
-      <div className="member-info">
-        <div className="member-name">วรุณญา ทำเจริญยิ่ง</div>
-        <div className="member-role owner">เจ้าของบ้าน</div>
-        <div className="phone-row">
-          <PhoneOutlined style={{ color: "#69c0ff" }} />
-          <span className="phone-number">0845625785</span>
-          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
-        </div>
-      </div>
-      <div className="action-buttons">
-        <Button type="primary" className="success-button">
-          สำเร็จ
-        </Button>
-        <Button danger>ไม่สำเร็จ (1)</Button>
-      </div>
-    </div>
+                  {/* ปุ่มด้านขวา */}
+                  <Col className="member-buttons">
+                    <Row gutter={8}>
+                      <Col>
+                        <Button className="success-button">สำเร็จ</Button>
+                      </Col>
+                      <Col>
+                        <Button className="fail-button">ไม่สำเร็จ (1)</Button>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={24}>
+                        <span className="last-call">
+                          (โทรครั้งล่าสุด {member.lastCall})
+                        </span>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+        ))}
+      </Row>
 
-    {/* Member 2 */}
-    <div className="member-row">
-      <div className="member-info">
-        <div className="member-name">คมชัย ทำเจริญยิ่ง</div>
-        <div className="member-role">(ครอบครัว)</div>
-        <div className="phone-row">
-          <PhoneOutlined style={{ color: "#69c0ff" }} />
-          <span className="phone-number">0845625799</span>
-          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
-        </div>
-      </div>
-      <div className="action-buttons">
-        <Button type="primary" className="success-button">
-          สำเร็จ
-        </Button>
-        <Button danger>ไม่สำเร็จ (1)</Button>
-      </div>
-    </div>
-
-    {/* Member 3 */}
-    <div className="member-row">
-      <div className="member-info">
-        <div className="member-name">คมสัน ทำเจริญยิ่ง</div>
-        <div className="member-role">(ครอบครัว)</div>
-        <div className="phone-row">
-          <PhoneOutlined style={{ color: "#69c0ff" }} />
-          <span className="phone-number">0845625888</span>
-          <span className="call-time">(โทรครั้งล่าสุด 22/11/2024 11:11)</span>
-        </div>
-      </div>
-      <div className="action-buttons">
-        <Button type="primary" className="success-button">
-          สำเร็จ
-        </Button>
-        <Button danger>ไม่สำเร็จ (1)</Button>
-      </div>
-    </div>
-
-    <Button
-      type="primary"
-      icon={<EnvironmentOutlined />}
-      block
-      className="map-button">
-      ดูแผนที่
-    </Button>
-  </Card>
+      {/* ปุ่มดูแผนที่ */}
+      <Row>
+        <Col span={24}>
+          <Button
+            type="primary"
+            block
+            icon={<EnvironmentOutlined />}
+            className="map-button"
+            onClick={showMap}>
+            ดูแผนที่
+          </Button>
+        </Col>
+      </Row>
+    </Col>
+  </Row>
 );
 
-const ActionSection = () => (
-  <Card className="action-card">
-    <Row>
-      <Col span={24}>
-        <Title level={4}>1. ขั้นตอนการดำเนินการแก้ไข</Title>
-        <Title level={4} className="action-subtitle">
-          โทรติดต่อลูกค้า
-        </Title>
-        <Title level={4}>2. ต้องการความช่วยเหลือด้านใด</Title>
+const renderActionSteps = () => (
+  <Row>
+    <Col span={24} className="right-section">
+      {/* หัวข้อและคำอธิบาย */}
+      <Title level={4} style={{ marginBottom: 4 }}>
+        1. ขั้นตอนการดำเนินการแก้ไข
+      </Title>
+      <Row>
+        <Col span={24}>
+          <div
+            style={{
+              marginBottom: 24,
+              borderBottom: "1px solid #f0f0f0",
+              paddingBottom: 16,
+            }}>
+            โทรติดต่อลูกค้า
+          </div>
+        </Col>
+      </Row>
 
-        <div className="help-buttons">
-          <Row gutter={[0, 12]}>
-            <Col span={24}>
-              <Button type="primary" block>
-                ตำรวจ
-              </Button>
-            </Col>
-            <Col span={24}>
-              <Button type="primary" block>
-                โรงพยาบาล
-              </Button>
-            </Col>
-            <Col span={24}>
-              <Button type="primary" block>
-                ดับเพลิง
-              </Button>
-            </Col>
-            <Col span={24}>
-              <Button type="primary" block>
-                ไม่ต้องการขอความช่วยเหลือ
-              </Button>
-            </Col>
-          </Row>
-        </div>
-      </Col>
-    </Row>
-  </Card>
+      <Title level={4} style={{ marginBottom: 16 }}>
+        2. ต้องการความช่วยเหลือด้านใด
+      </Title>
+
+      {/* ปุ่มตัวเลือก */}
+      <Row gutter={[0, 16]}>
+        <Col span={24}>
+          <Button
+            type="primary"
+            block
+            style={{ height: 48 }}
+            onClick={() => handleStepChange(2)}
+            disabled={isProcessing}
+            loading={isProcessing}>
+            ตำรวจ
+          </Button>
+        </Col>
+        <Col span={24}>
+          <Button
+            type="primary"
+            block
+            style={{ height: 48 }}
+            onClick={() => handleStepChange(2)}
+            disabled={isProcessing}
+            loading={isProcessing}>
+            โรงพยาบาล
+          </Button>
+        </Col>
+        <Col span={24}>
+          <Button
+            type="primary"
+            block
+            style={{ height: 48 }}
+            onClick={() => handleStepChange(2)}
+            disabled={isProcessing}
+            loading={isProcessing}>
+            ดับเพลิง
+          </Button>
+        </Col>
+        <Col span={24}>
+          <Button
+            type="primary"
+            block
+            style={{ height: 48 }}
+            onClick={() => handleStepChange(2)}
+            disabled={isProcessing}
+            loading={isProcessing}>
+            ไม่ต้องการขอความช่วยเหลือ
+          </Button>
+        </Col>
+      </Row>
+    </Col>
+  </Row>
 );
-
+  
 
   // Content Components
   const InitialStepCard = () => (
     <>
       <Card className="info-card">
-        <Row>
-          <Col xs={24} md={12} className="left-section">
-            <MemberList /> 
-            {/* <UserProfile userInfo={USER_INFO} /> */}
+        <Row gutter={24}>
+          <Col xs={24} md={12}>
+            {renderMemberList()}
           </Col>
-          <Col
-            xs={24}
-            md={12}
-            className="right-section"
-            style={{ textAlign: "center" }}>
-            <h3 className="section-title">ขั้นตอนการดำเนินการแก้ไข</h3>
-            <ol
-              className="step-list"
-              style={{ textAlign: "left", display: "inline-block" }}>
-              <li>โทรแจ้งเหตุที่ระบบตรวจพบ</li>
-              <li>พบความผิดปกติที่เซนเซอร์</li>
-              <li>ขออนุญาตเข้าตรวจสอบ</li>
-            </ol>
-            <div className="phone-section" style={{ justifyContent: "center" }}>
-              <div className="phone-icon">2</div>
-              <span className="phone-number">0845625799</span>
-            </div>
-            <Row justify="center" gutter={16} style={{ marginTop: "24px" }}>
-              <Col>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={handleFail}
-                  disabled={isProcessing}>
-                  ไม่สำเร็จ
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  type="primary"
-                  onClick={() => handleStepChange(2)}
-                  disabled={isProcessing}
-                  loading={isProcessing}>
-                  ต่อไป
-                </Button>
-              </Col>
-            </Row>
+          <Col xs={24} md={12}>
+            {renderActionSteps()}
           </Col>
         </Row>
       </Card>
@@ -427,10 +416,10 @@ const ActionSection = () => (
   );
 
   const TravelDetailCard = () => (
-    <Card className="info-card">
-      <Row>
-        <Col xs={24} md={12} className="left-section">
-          <UserProfile userInfo={USER_INFO} />
+
+      <Row gutter={24}>
+        <Col xs={24} md={12}>
+          {renderMemberList()}
         </Col>
         <Col xs={24} md={12} className="right-section">
           <div
@@ -466,14 +455,13 @@ const ActionSection = () => (
           </div>
         </Col>
       </Row>
-    </Card>
+  
   );
 
   const SuccessCard = () => (
-    <Card className="info-card">
-      <Row>
-        <Col xs={24} md={12} className="left-section">
-          <UserProfile userInfo={USER_INFO} />
+      <Row gutter={24}>
+        <Col xs={24} md={12}>
+          {renderMemberList()}
         </Col>
         <Col xs={24} md={12} className="right-section">
           <div
@@ -508,7 +496,6 @@ const ActionSection = () => (
           </div>
         </Col>
       </Row>
-    </Card>
   );
 
   const FailureReasonsCard = () => (
@@ -585,9 +572,15 @@ const ActionSection = () => (
         </Steps>
       </div>
 
-      <Row gutter={24} className="app-container">
-        <Col xs={24} xl={16} md={16}>
-          {renderContent()}
+      <Row gutter={24} className="content-section">
+        <Col span={16}>
+          <Card>
+            <Row gutter={24}>
+              <Col xs={24} xl={24} md={24}>
+                {renderContent()}
+              </Col>
+            </Row>
+          </Card>
         </Col>
         <Col xs={24} xl={8} md={8}>
           <div className="doorbell-container">
@@ -597,6 +590,36 @@ const ActionSection = () => (
           </div>
         </Col>
       </Row>
+
+      <Modal
+        title="แผนที่บ้าน"
+        open={isMapVisible}
+        onCancel={handleMapClose}
+        footer={[
+          <Button key="close" type="primary" onClick={handleMapClose}>
+            ปิด
+          </Button>,
+        ]}
+        width={800}>
+        <div
+          style={{
+            width: "100%",
+            height: "400px",
+            background: "#f5f5f5",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.9572635011583!2d100.5982313!3d13.7238899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ed419c84529%3A0x8f84e39892588c24!2z4LiL4Lit4Lii4Lit4Lij4Lij4LiW4Liq4Li44LiZ4LiX4Lij!5e0!3m2!1sth!2sth!4v1701144444444!5m2!1sth!2sth"
+            width="100%"
+            height="400"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </Modal>
     </div>
   );
 };

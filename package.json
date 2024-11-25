@@ -11,6 +11,7 @@
     "deploy-dev": "firebase deploy -P realasset-dev"
   },
   "dependencies": {
+    "@ant-design/charts": "v1",
     "@ant-design/plots": "^1.2.5",
     "@react-google-maps/api": "^2.20.3",
     "@rematch/core": "^2.2.0",

@@ -30,3 +30,10 @@ export const API_URL =
     : MODE === "prod"
     ? "https://the-stage-mindscape-app-jmsaf.ondigitalocean.app/api/v1.0/"
     : "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/api/v1.0/";
+
+export const SOCKET_API_URL =
+  MODE === "uat"
+    ? "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/"
+    : MODE === "prod"
+    ? "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/"
+    : "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/";
