@@ -116,7 +116,7 @@ const DEVICE_DATA: DeviceList[] = [
 // Card Components
 type HomeDashboardProps = {
   callback(Ishow: boolean): any;
-  HomeId:number | undefined
+  HomeId: number | undefined;
 };
 const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
   <Card className="device-card">
@@ -161,7 +161,7 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
       </Col>
       <Col>
         {/* <div className="battery"> */}
-          <div className="battery-level">{data.batteryLevel}%</div>
+        <div className="battery-level">{data.batteryLevel}%</div>
         {/* </div> */}
       </Col>
     </Row>
@@ -169,22 +169,17 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
 );
 
 // Component
-const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
-    // Variables
-    const dispatch = useDispatch<Dispatch>();
-    const { DeviceTableData } = useSelector(
-      (state: RootState) => state.deviceList
-    );
-    const fetchData = async (HomeId: number) => {
-      await dispatch.deviceList.getDeviceListTableData(HomeId);
-     console.log("DeviceTableData:",DeviceTableData);
-    };
-  useEffect(() => {
+const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
+  const dispatch = useDispatch<Dispatch>();
+  const { DeviceTableData } = useSelector(
+    (state: RootState) => state.deviceList
+  );
 
-    if (HomeId) {
-     fetchData(HomeId)
+  useEffect(() => {
+    if (HomeId && typeof HomeId === "number") {
+      dispatch.deviceList.getDeviceListTableData(HomeId);
     }
-  }, [HomeId]);
+  }, [HomeId, dispatch]);
   return (
     <div className="dashboard-container">
       {/* Header with Status */}
@@ -216,20 +211,15 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
       </div>
 
       <Row gutter={[24, 24]}>
-        {/* Left Column */}
         <Col xs={24} md={8}>
-          {/* Location Card */}
           <Card className="location-card">
             <h2 className="section-title">ที่อยู่</h2>
             <div className="address">
               <HomeOutlined />
-              <span>
-                {DeviceTableData !== undefined ? DeviceTableData?.address : "-"}
-              </span>
+              <span>{DeviceTableData?.address || "-"}</span>
             </div>
           </Card>
 
-          {/* Users Card */}
           <Card className="users-card">
             <h2 className="section-title">รายชื่อสมาชิกในบ้าน</h2>
             {DeviceTableData?.homeSecurityMember?.length ? (

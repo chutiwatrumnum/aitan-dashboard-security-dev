@@ -8,34 +8,33 @@ export const deviceList = createModel<RootModel>()({
     DeviceListTableData: undefined,
   } as DeviceListDataType,
   reducers: {
-    updateDeviceListTableDataState: (state, payload) => ({
-      ...state,
-      DeviceListTableData: payload,
-    }),
+    updateDeviceListTableDataState: (state, payload) => {
+      console.log("State before update:", state);
+      return {
+        ...state,
+        DeviceTableData: payload,
+      };
+    },
   },
   effects: (dispatch) => ({
-    async getDeviceListTableData(id :number) {
-      await axios
-        .get(`/home-security/home-by-id/${id}`)
-        .then((value) => {
-          const data:HomeSecurityMemberDetail={
-            id: value.data.result.id,
-            address: value.data.result.address,
-            homeId: value.data.result.homeId,
-            lat: value.data.result.lat,
-            long: value.data.result.long,
-            active: value.data.result.active,
-            homeSecurityMember: value.data.result.homeSecurityMember
-          }
-          console.log("device-list",data);
-          dispatch.deviceList.updateDeviceListTableDataState(
-            data
-          );
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-        
+    async getDeviceListTableData(id: number) {
+      try {
+        const response = await axios.get(`/home-security/home-by-id/${id}`);
+        const data: HomeSecurityMemberDetail = {
+          id: response.data.result.id,
+          address: response.data.result.address,
+          homeId: response.data.result.homeId,
+          lat: response.data.result.lat,
+          long: response.data.result.long,
+          active: response.data.result.active,
+          homeSecurityMember: response.data.result.homeSecurityMember,
+          status: response.data.result.homeAlarmStatus,
+        };
+        dispatch.deviceList.updateDeviceListTableDataState(data);
+      } catch (error) {
+        console.error("API Error:", error);
+        // จัดการ error
+      }
     },
   }),
 });

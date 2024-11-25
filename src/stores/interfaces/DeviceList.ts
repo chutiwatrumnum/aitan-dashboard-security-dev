@@ -4,6 +4,7 @@ export interface DeviceListDataType {
 export interface HomeSecurityMemberDetail{
     id:                 number;
     address:            string;
+    status:             string;
     homeId:             number;
     lat:                number;
     long:               number;
