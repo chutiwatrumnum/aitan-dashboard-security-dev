@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Steps, Button, Col, Checkbox, message, Row, Modal } from "antd";
+import { Card, Steps, Button, Col, Checkbox, message, Row, Modal, Input } from "antd";
 import {
   HomeOutlined,
   WifiOutlined,
@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { DeviceListType } from "../../../stores/interfaces/DeviceList";
 
 const { Step } = Steps;
+const { TextArea } = Input;
 
 // Types
 interface ProgressDotProps {
@@ -286,6 +287,7 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
             <HomeOutlined className="home-icon" />
             <span>{EmergencyData ? EmergencyData.address : "-"}</span>
           </Col>
+          {EmergencyData?.}
         </Row>
 
         {/* รายชื่อสมาชิก */}
@@ -298,7 +300,6 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
                 }`}>
                 <Col span={24}>
                   <Row className="member-info-container">
-                    {/* ข้อมูลด้านซ้าย */}
                     <Col flex="auto">
                       <Row className="member-main-info">
                         <Col span={24}>
@@ -416,6 +417,7 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
                   disabled={isProcessing}
                   loading={isProcessing}>
                   {step.nameTh}
+                  {step.nameTh}
                 </Button>
               </Col>
             ))
@@ -459,10 +461,30 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
           <div style={{ width: "100%", textAlign: "left" }}>
             <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
             <ul style={{ paddingLeft: "20px" }}>
-              <li>โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
-              <li>ประเมินความเสียหาย</li>
-              <li>รายงานผลการตรวจสอบ</li>
+              <li>1.โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
+              <li>1.1ติดต่อรถพยาบาล 1669</li>
+              <li>1.2ติดต่อรถพยาบาล 191</li>
             </ul>
+            <Row gutter={[0, 16]}>
+              {HelpStepData?.length ? (
+                HelpStepData?.map((step) => (
+                  <Col key={step.id} span={24}>
+                    <Button
+                      type="primary"
+                      block
+                      style={{ height: 48 }}
+                      onClick={() => handleStepChange(1, step.id)}
+                      disabled={isProcessing}
+                      loading={isProcessing}>
+                      {step.nameTh}
+                      {step.nameTh}
+                    </Button>
+                  </Col>
+                ))
+              ) : (
+                <div>ไม่มีข้อมูล</div>
+              )}
+            </Row>
           </div>
           <CircleIcon />
           <Button
@@ -477,14 +499,95 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
               borderRadius: "8px",
               marginBottom: "16px",
             }}>
-            เดินทางไปบ้านเลขที่ 11/9
+            ติดต่อสำเร็จ
           </Button>
         </div>
       </Col>
     </Row>
   );
 
-  const StepCardThree = () => (
+const StepCardThree = () => {
+  const [note, setNote] = useState(""); 
+   const [isSubmitting, setIsSubmitting] = useState(false);
+  return (
+    <Row gutter={24}>
+      <Col xs={24} md={12}>
+        {renderMemberList()}
+      </Col>
+      <Col xs={24} md={12} className="right-section">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+          }}>
+          <CircleIcon />
+          <h2
+            style={{
+              fontSize: "28px",
+              color: "#333",
+              marginBottom: "16px",
+              textAlign: "center",
+            }}>
+            รอดำเนินการสำเร็จ
+          </h2>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "#666",
+              textAlign: "center",
+              maxWidth: "300px",
+              margin: "0 auto 24px", // เพิ่ม margin-bottom
+            }}>
+            การดำเนินการทั้งหมดเสร็จสิ้น
+          </p>
+
+          {/* เพิ่มส่วน TextArea */}
+          <div style={{ width: "100%", maxWidth: "500px" }}>
+            <div style={{ marginBottom: "8px", fontWeight: "500" }}>
+              บันทึกเพิ่มเติม
+            </div>
+            <TextArea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="กรอกรายละเอียดเพิ่มเติม..."
+              autoSize={{ minRows: 4, maxRows: 6 }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Button
+              type="primary"
+              block
+              onClick={async () => {
+  if (note.trim()) {
+    try {
+      setIsSubmitting(true); // เพิ่ม loading state
+      // สมมติว่ามีการเรียก API
+      // await saveNote(note);
+      
+      message.success("บันทึกข้อมูลเรียบร้อย");
+      handleStepChange();
+    } catch (error) {
+      message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    } finally {
+      setIsSubmitting(false);
+    }
+  } else {
+    message.warning("กรุณากรอกรายละเอียด");
+  }
+}}
+loading={isSubmitting}>
+              บันทึกข้อมูล
+            </Button>
+          </div>
+        </div>
+      </Col>
+    </Row>
+  );
+};
+  const StepCardFour = () => (
     <Row gutter={24}>
       <Col xs={24} md={12}>
         {renderMemberList()}
@@ -521,62 +624,15 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
           </p>
           <Button
             type="primary"
-            size="large"
-            block
-            onClick={() => handleStepChange()}
-            loading={isProcessing}
-            style={{
-              height: "48px",
-              fontSize: "16px",
-              borderRadius: "8px",
-              marginBottom: "16px",
+            onClick={async () => {
+              await callback(false);
             }}>
-            ดำเนินการสำเร็จ
+            back
           </Button>
         </div>
       </Col>
     </Row>
   );
-
-  const StepCardFour = () => (
-     <Row gutter={24}>
-       <Col xs={24} md={12}>
-         {renderMemberList()}
-       </Col>
-       <Col xs={24} md={12} className="right-section">
-         <div
-           style={{
-             display: "flex",
-             flexDirection: "column",
-             alignItems: "center",
-             width: "100%",
-             height: "100%",
-             justifyContent: "center",
-           }}>
-           <CircleIcon />
-           <h2
-             style={{
-               fontSize: "28px",
-               color: "#333",
-               marginBottom: "16px",
-               textAlign: "center",
-             }}>
-             รอดำเนินการสำเร็จ
-           </h2>
-           <p
-             style={{
-               fontSize: "16px",
-               color: "#666",
-               textAlign: "center",
-               maxWidth: "300px",
-               margin: "0 auto",
-             }}>
-             การดำเนินการทั้งหมดเสร็จสิ้น
-           </p>
-         </div>
-       </Col>
-     </Row>
-   );
 
   const FailureReasonsCard = () => (
     <Card className="failure-reasons-card">
