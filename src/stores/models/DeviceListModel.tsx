@@ -6,6 +6,7 @@ import axios from "axios";
 export const deviceList = createModel<RootModel>()({
   state: {
     DeviceListTableData: undefined,
+    DeviceListData:[]
   } as DeviceListDataType,
   reducers: {
     updateDeviceListTableDataState: (state, payload) => {
@@ -13,6 +14,12 @@ export const deviceList = createModel<RootModel>()({
       return {
         ...state,
         DeviceTableData: payload,
+      };
+    },
+    updateDeviceListDataState: (state, payload) => {
+      return {
+        ...state,
+        DeviceListData: payload,
       };
     },
   },
@@ -28,9 +35,20 @@ export const deviceList = createModel<RootModel>()({
           long: response.data.result.long,
           active: response.data.result.active,
           homeSecurityMember: response.data.result.homeSecurityMember,
-          status: response.data.result.homeAlarmStatus,
+        //  status: response.data.result.homeAlarmStatus,
         };
-        dispatch.deviceList.updateDeviceListTableDataState(data);
+        dispatch.deviceList.updateDeviceListTableDataState(data)
+      } catch (error) {
+        console.error("API Error:", error);
+        // จัดการ error
+      }
+    },
+    async getDeviceList(id: number) {
+      try {
+        const response = await axios.get(`/home-security/device-under-home/${id}`);
+console.log("getDeviceList:",response.data.result);
+
+        dispatch.deviceList.updateDeviceListDataState(response.data.result);
       } catch (error) {
         console.error("API Error:", error);
         // จัดการ error

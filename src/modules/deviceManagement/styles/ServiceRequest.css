@@ -213,6 +213,24 @@
   align-items: center;
 }
 
+.device-icon-online {
+  background-color: #0ec6ab;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.device-icon-offline {
+  background-color: #bcc8c6;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+}
+
 .device-icon .anticon {
   color: white;
   font-size: 24px;

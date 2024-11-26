@@ -12,6 +12,8 @@ import {
 import "../styles/AlertMain.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../../../stores";
+import dayjs from "dayjs";
+import { DeviceListType } from "../../../stores/interfaces/DeviceList";
 
 // Types
 interface DeviceStats {
@@ -118,11 +120,11 @@ type HomeDashboardProps = {
   callback(Ishow: boolean): any;
   HomeId:number | undefined
 };
-const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
+const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
-        <div className="device-icon">
+        <div className={data.online?"device-icon-online":"device-icon-offline"}>
           <BellOutlined className="bell-icon" />
         </div>
       </Col>
@@ -132,36 +134,37 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
     </Row>
     <Row className="device-mock">
       <Col span={24}>
-        <img src={data.imageUrl} alt="Door Sensor" />
+        <img src={data.iconFullUrl} alt="Door Sensor" />
       </Col>
     </Row>
-    <Row gutter={[0, 12]} className="device-alerts">
-      {data.alerts.map((alert, index) => (
+    {/* <Row gutter={[0, 12]} className="device-alerts">
+      {data.status.map((alert, index) => (
         <Col span={24} key={index}>
           <Row align="middle" gutter={12}>
             <Col>
-              <div className={`alert-dot ${alert.type}`}>
+              <div className={`alert-dot ${alert.value}`}>
                 <WarningOutlined />
               </div>
             </Col>
             <Col flex="auto">
-              <span>{alert.message}</span>
+              <span>{alert.code}</span>
             </Col>
           </Row>
         </Col>
       ))}
-    </Row>
+    </Row> */}
     <Row align="middle" justify="space-between" className="device-info">
       <Col>
         <span>SN : </span>
-        <span>{data.id}</span>
+        <span>{data.product_id}</span>
       </Col>
       <Col>
-        <span>Gateway</span>
+        <span>{data.product_name}</span>
       </Col>
       <Col>
+
         {/* <div className="battery"> */}
-          <div className="battery-level">{data.batteryLevel}%</div>
+          <div className="battery-level">{data.status.find(item => item.code === "battery_percentage")?.value || "-"}</div>
         {/* </div> */}
       </Col>
     </Row>
@@ -172,12 +175,12 @@ const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
 const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
     // Variables
     const dispatch = useDispatch<Dispatch>();
-    const { DeviceTableData } = useSelector(
+    const { DeviceTableData,DeviceListData } = useSelector(
       (state: RootState) => state.deviceList
     );
     const fetchData = async (HomeId: number) => {
       await dispatch.deviceList.getDeviceListTableData(HomeId);
-     console.log("DeviceTableData:",DeviceTableData);
+      await dispatch.deviceList.getDeviceList(HomeId);
     };
   useEffect(() => {
 
@@ -224,7 +227,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
             <div className="address">
               <HomeOutlined />
               <span>
-                {DeviceTableData !== undefined ? DeviceTableData?.address : "-"}
+                {DeviceTableData? DeviceTableData?.address : "-"}
               </span>
             </div>
           </Card>
@@ -242,7 +245,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
                   />
                   <div className="user-info">
                     <div className="user-name">{member.fullname}</div>
-                    <div className="user-role">สมาชิก</div>
+                    <div className="user-role">{member.isOwner ? "เจ้าของบ้าน" : "สมาชิกในครอบครัว"}</div>
                     <div className="user-phone">{member.mobile}</div>
                   </div>
                 </div>
@@ -251,13 +254,24 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
               <div>ไม่มีสมาชิกในบ้าน</div>
             )}
             <div className="last-alert">
-              <ClockCircleOutlined /> แจ้งเตือนครั้งล่าสุด 31/10/2024 18:00
+              <ClockCircleOutlined /> แจ้งเตือนครั้งล่าสุด {dayjs().format("DD/MM/YYYY HH:mm")}
             </div>
           </Card>
         </Col>
 
         {/* Right Column - Devices */}
+                {DeviceListData?DeviceListData?.map((doorbell) => (
         <Col xs={24} md={8}>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} xl={24} md={24}>
+              <div className="doorbell-container">
+                  <DeviceList key={doorbell.id} data={doorbell} />
+              </div>
+            </Col>
+          </Row>
+        </Col>
+                )):<div>no device list</div>}
+        {/* <Col xs={24} md={8}>
           <Row gutter={[16, 16]}>
             <Col xs={24} xl={24} md={24}>
               <div className="doorbell-container">
@@ -267,18 +281,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
               </div>
             </Col>
           </Row>
-        </Col>
-        <Col xs={24} md={8}>
-          <Row gutter={[16, 16]}>
-            <Col xs={24} xl={24} md={24}>
-              <div className="doorbell-container">
-                {DEVICE_DATA.map((doorbell) => (
-                  <DeviceList key={doorbell.id} data={doorbell} />
-                ))}
-              </div>
-            </Col>
-          </Row>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   );
