@@ -5,12 +5,12 @@ export interface DeviceListDataType {
 export interface HomeSecurityMemberDetail{
     id:                 number;
     address:            string;
-    //status:             string;
     homeId:             number;
     lat:                number;
     long:               number;
     active:             boolean;
     homeSecurityMember: HomeSecurityMember[];
+    homeAlarmStatus:    any | null;
 }
 
 export interface HomeSecurityMember {

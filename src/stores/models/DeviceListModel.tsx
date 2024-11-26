@@ -10,7 +10,6 @@ export const deviceList = createModel<RootModel>()({
   } as DeviceListDataType,
   reducers: {
     updateDeviceListTableDataState: (state, payload) => {
-      console.log("State before update:", state);
       return {
         ...state,
         DeviceTableData: payload,
@@ -35,6 +34,7 @@ export const deviceList = createModel<RootModel>()({
           long: response.data.result.long,
           active: response.data.result.active,
           homeSecurityMember: response.data.result.homeSecurityMember,
+          homeAlarmStatus: response.data.result.homeAlarmStatus,
         //  status: response.data.result.homeAlarmStatus,
         };
         dispatch.deviceList.updateDeviceListTableDataState(data)
