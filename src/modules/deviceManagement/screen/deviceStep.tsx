@@ -17,6 +17,7 @@ import "../styles/ServiceRequest.css";
 import Title from "antd/es/typography/Title";
 import dayjs from "dayjs";
 import { DeviceListType } from "../../../stores/interfaces/DeviceList";
+import { callToMember, nextStep2, nextStep3, nextStep4 } from "../service/emergencyApi";
 
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -231,21 +232,29 @@ type DeviceStepProps = {
 // Main Component
 const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
   const dispatch = useDispatch<Dispatch>();
-  const { EmergencyData, HelpStepData, EmergencyDeviceData } = useSelector(
+  const { EmergencyData, HelpStepData, EmergencyDeviceData,MyHelperStep } = useSelector(
     (state: RootState) => state.emergencyList
   );
 
-  useEffect(() => {
-    if (ticketId) {
-      dispatch.emergencyList.getEmergencyListData(ticketId);
-      dispatch.emergencyList.getEmergencyDeviceList(ticketId);
-      dispatch.emergencyList.getHelperStepList();
-    }
-  }, [ticketId]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
+  const [HelpStepName, setHelpStepName] = useState<string>("")
+  useEffect(() => {
+    if (ticketId) {
+      dispatch.emergencyList.getEmergencyListData(ticketId);
+      dispatch.emergencyList.getEmergencyDeviceList(ticketId);
+      dispatch.emergencyList.getHelperStepList(ticketId);
+      if (MyHelperStep?.step) {
+        setCurrentSteps(MyHelperStep.step)
+        setHelpStepName(MyHelperStep.helpStepName)
+      }
+    }
+  }, [ticketId]);
+const setCurrentSteps=async(step:number) => {
+  await setCurrentStep(step-1)
+}
 
   const showMap = () => {
     setIsMapVisible(true);
@@ -256,24 +265,36 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
   };
 
   // Handlers
-  const handleStepChange = (increment: number = 1, helpId: number) => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      if (currentStep < STEPS.length - 1) {
-        setCurrentStep(currentStep + increment);
-        if (currentStep + increment === 2) {
-          encryptStorage.removeItem("acceptedRequestId");
-          // console.log("acceptedRequestId => REMOVED");
-        }
-        setSelectedReasons([]);
+  const handleStepChange = async(increment: number = 1, helpId: number,helpStepName?:string) => {
+    const Issuccess= await nextStep2(ticketId,helpId)
+    if (Issuccess) {
+              setSelectedReasons([]);
         message.success(
-          `ดำเนินการขั้นตอนที่ ${currentStep + increment} เรียบร้อย`
+          `ดำเนินการขั้นตอนที่ 1 เรียบร้อย`
         );
-      } else {
-        message.success("ดำเนินการทั้งหมดเสร็จสิ้น");
-      }
-      setIsProcessing(false);
-    }, 1000);
+      setCurrentSteps(2)
+      setHelpStepName(helpStepName?helpStepName:"")
+    }else{
+
+    }
+    // setIsProcessing(true);
+    // setTimeout(() => {
+    //   if (currentStep < STEPS.length - 1) {
+    //     setCurrentStep(currentStep + increment);
+    //     if (currentStep + increment === 2) {
+    //       encryptStorage.removeItem("acceptedRequestId");
+    //       // console.log("acceptedRequestId => REMOVED");
+    //     }
+    //     setSelectedReasons([]);
+    //     message.success(
+    //       `ดำเนินการขั้นตอนที่ ${currentStep + increment} เรียบร้อย`
+    //     );
+    //   } else {
+    //     message.success("ดำเนินการทั้งหมดเสร็จสิ้น");
+    //   }
+
+    //   setIsProcessing(false);
+    // }, 1000);
   };
 
   const renderMemberList = () => (
@@ -328,13 +349,35 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
                       <Row gutter={8}>
                         <Col>
                           <Button
+                            onClick={async() => {
+                              const Issuccess=await callToMember(ticketId,member.id,true)
+                              if (Issuccess) {
+                                message.success("ติดต่อสำเร็จ")
+                               await dispatch.emergencyList.getEmergencyListData(ticketId);
+                              }else{
+                                message.destroy("ไม่สำเร็จ")
+                              }
+                             
+                            }}
                             disabled={EmergencyData.homeCallSuccess}
                             className="success-button">
-                            สำเร็จ
+                          {member.callSuccessTotal > 0
+                              ? `เดิม' (${member.callSuccessTotal})`
+                              : "ไม่สำเร็จ"}
                           </Button>
                         </Col>
                         <Col>
                           <Button
+                            onClick={async() => {
+                              const Issuccess=await callToMember(ticketId,member.id,false)
+                              if (Issuccess) {
+                                message.success("ติดต่อสำเร็จ")
+                               await dispatch.emergencyList.getEmergencyListData(ticketId);
+                              }else{
+                                message.destroy("ไม่สำเร็จ")
+                              }
+                             
+                            }}
                             disabled={EmergencyData.homeCallSuccess}
                             className="fail-button">
                             {member.callFailTotal > 0
@@ -405,18 +448,18 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
         </Title>
         {/* ปุ่มตัวเลือก */}
         <Row gutter={[0, 16]}>
-          {HelpStepData?.length ? (
-            HelpStepData?.map((step) => (
+          {MyHelperStep?.HelpStepData?.length ? (
+            MyHelperStep?.HelpStepData?.map((step) => (
               <Col key={step.id} span={24}>
                 <Button
                   type="primary"
                   block
                   style={{ height: 48 }}
-                  onClick={() => handleStepChange(1, step.id)}
+                  onClick={() => handleStepChange(1, step.id,step.nameTh)}
                   disabled={isProcessing}
                   loading={isProcessing}>
                   {step.nameTh}
-                  {step.nameTh}
+                 
                 </Button>
               </Col>
             ))
@@ -443,6 +486,15 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
       </Card>
     </>
   );
+const handleStepTWo=async(ticketId:number) => {
+ const IsSuccess= await nextStep3(ticketId)
+ if (IsSuccess) {
+  await setCurrentSteps(3)
+  alert("ติดต่อสำเร็จ")
+ }else{
+alert("ไม่สำเร็จ")
+ }
+}
 
   const StepCardTwo = () => (
     <Row gutter={24}>
@@ -464,33 +516,15 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
               <li>1.1ติดต่อรถพยาบาล 1669</li>
               <li>1.2ติดต่อรถพยาบาล 191</li>
             </ul>
-            <Row gutter={[0, 16]}>
-              {HelpStepData?.length ? (
-                HelpStepData?.map((step) => (
-                  <Col key={step.id} span={24}>
-                    <Button
-                      type="primary"
-                      block
-                      style={{ height: 48 }}
-                      onClick={() => handleStepChange(1, step.id)}
-                      disabled={isProcessing}
-                      loading={isProcessing}>
-                      {step.nameTh}
-                      {step.nameTh}
-                    </Button>
-                  </Col>
-                ))
-              ) : (
-                <div>ไม่มีข้อมูล</div>
-              )}
-            </Row>
+           
           </div>
           <CircleIcon />
+          <p>{HelpStepName}</p>
           <Button
             type="primary"
             size="large"
             block
-            onClick={() => handleStepChange()}
+            onClick={() => handleStepTWo(ticketId)}
             loading={isProcessing}
             style={{
               height: "48px",
@@ -504,7 +538,15 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
       </Col>
     </Row>
   );
-
+  const handleStepThree=async(ticketId:number,note:string) => {
+    const IsSuccess= await nextStep4(ticketId,note)
+    if (IsSuccess) {
+     await setCurrentSteps(4)
+     alert("ติดต่อสำเร็จ")
+    }else{
+   alert("ไม่สำเร็จ")
+    }
+   }
 const StepCardThree = () => {
   const [note, setNote] = useState(""); 
    const [isSubmitting, setIsSubmitting] = useState(false);
@@ -561,13 +603,14 @@ const StepCardThree = () => {
               block
               onClick={async () => {
   if (note.trim()) {
+    handleStepThree(ticketId,note)
+    return
     try {
       setIsSubmitting(true); // เพิ่ม loading state
       // สมมติว่ามีการเรียก API
       // await saveNote(note);
       
       message.success("บันทึกข้อมูลเรียบร้อย");
-      handleStepChange();
     } catch (error) {
       message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
     } finally {

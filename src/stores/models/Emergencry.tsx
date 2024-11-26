@@ -1,5 +1,5 @@
 import { createModel } from "@rematch/core";
-import { EmergencyListDataType } from "../interfaces/emergencry";
+import { EmergencyListDataType, MyHelperStep } from "../interfaces/emergencry";
 import { RootModel } from "./index";
 import axios from "axios";
 
@@ -7,7 +7,8 @@ export const emergencyList = createModel<RootModel>()({
   state: {
     EmergencyDeviceData:[],
    EmergencyData: undefined,
-   HelpStepData:[]
+   HelpStepData:[],
+   MyHelperStep:undefined
   } as EmergencyListDataType,
   reducers: {
     updateEmergencyListDataState: (state, payload) => {
@@ -18,7 +19,7 @@ export const emergencyList = createModel<RootModel>()({
     },    updateHelpStepListDataState: (state, payload) => {
       return {
         ...state,
-        HelpStepData: payload,
+        MyHelperStep: payload,
       };
     },
     updateEmergencyDeviceListDataState: (state, payload) => {
@@ -40,12 +41,16 @@ export const emergencyList = createModel<RootModel>()({
         // จัดการ error
       }
     },
-    async getHelperStepList() {
+    async getHelperStepList(id:number) {
       try {
-        const response = await axios.get(`/home-security/ticket`);
-console.log("getHelperStepList:",response.data.masterData.helpStep);
-
-        dispatch.emergencyList.updateHelpStepListDataState(response.data.masterData.helpStep);
+        const response = await axios.get(`/home-security/ticket/${id}`);
+        const data : MyHelperStep={
+          helpStepName:response.data.ticket.helpStep?.nameTh,
+          step:response.data.ticket.step,
+          HelpStepData:response.data.masterData.helpStep
+        }
+        console.log("getHelperStepList:",data);
+       dispatch.emergencyList.updateHelpStepListDataState(data);
       } catch (error) {
         console.error("API Error:", error);
         // จัดการ error
