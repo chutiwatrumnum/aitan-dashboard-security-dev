@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Steps, Button, Col, Checkbox, message, Row, Modal } from "antd";
 import {
   HomeOutlined,
-  ClockCircleOutlined,
+  WifiOutlined,
   BellOutlined,
-  WarningOutlined,
+  DisconnectOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
 import { encryptStorage } from "../../../utils/encryptStorage";
-import { useDispatch } from "react-redux";
-import { Dispatch } from "../../../stores";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "../../../stores";
 import "../styles/ServiceRequest.css";
 import Title from "antd/es/typography/Title";
+import dayjs from "dayjs";
+import { DeviceListType } from "../../../stores/interfaces/DeviceList";
 
 const { Step } = Steps;
 
@@ -137,66 +139,88 @@ const CircleIcon: React.FC = () => (
     <HomeOutlined style={{ fontSize: "48px", color: "#fff" }} />
   </div>
 );
-
+const IconAlert = ({ status }: { status: string }) => {
+  switch (status) {
+    case "ฉุกเฉิน":
+      return <div
+      className={`alert-dot ${
+         "device-icon-online" 
+      }`}>
+      <WifiOutlined />    </div>
+    case "offline":
+      return <DisconnectOutlined />;
+    default:
+      return null;
+  }
+};
 // Card Components
-const DeviceList: React.FC<{ data: DeviceList }> = ({ data }) => (
+const DeviceList: React.FC<{ data: DeviceListType,alertType: string }> = ({ data,alertType }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
-        <div className="device-icon">
+        <div
+          className={
+            data.online ? "device-icon-online" : "device-icon-offline"
+          }>
           <BellOutlined className="bell-icon" />
         </div>
       </Col>
       <Col flex="auto">
-        <span>{data.name}</span>
+        <h3>{data.name}</h3>
       </Col>
     </Row>
-
     <Row className="device-mock">
       <Col span={24}>
-        <img src={data.imageUrl} alt="Door Sensor" />
+        <img src={data.iconFullUrl} alt="Device" />
       </Col>
     </Row>
-
     <Row gutter={[0, 12]} className="device-alerts">
-      {data.alerts.map((alert, index) => (
-        <Col span={24} key={index}>
-          <Row align="middle" gutter={12}>
-            <Col>
-              <div className={`alert-dot ${alert.type}`}>
-                <WarningOutlined />
-              </div>
-            </Col>
-            <Col flex="auto">
-              <span>{alert.message}</span>
-            </Col>
-          </Row>
-        </Col>
-      ))}
+      <Col span={24}>
+        <Row align="middle" gutter={12}>
+          <Col>
+        <IconAlert status={alertType} />
+          </Col>
+          <Col flex="auto">
+            <span>{alertType}</span>
+          </Col>
+        </Row>
+      </Col>
     </Row>
-
     <Row align="middle" justify="space-between" className="device-info">
       <Col>
         <span>SN : </span>
-        <span>{data.id}</span>
+        <span>{data.product_id}</span>
       </Col>
       <Col>
-        <span>Gateway</span>
+        <span>{data.product_name}</span>
       </Col>
       <Col>
-        {/* <div className="battery"> */}
-        <div className="battery-level">{data.batteryLevel}%</div>
-        {/* </div> */}
+        <div className="battery-level">
+          {data.status.find((item) => item.code === "battery_percentage")
+            ?.value || "-"}
+        </div>
       </Col>
     </Row>
   </Card>
 );
 type DeviceStepProps = {
   callback(Ishow: boolean): any;
+  ticketId:number
 };
 // Main Component
-const DeviceStep = ({ callback }: DeviceStepProps) => {
+const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
   const dispatch = useDispatch<Dispatch>();
+  const { EmergencyData,HelpStepData,EmergencyDeviceData } = useSelector(
+    (state: RootState) => state.emergencyList
+  );
+
+  useEffect(() => {
+    if (ticketId) {
+      dispatch.emergencyList.getEmergencyListData(ticketId);
+      dispatch.emergencyList.getEmergencyDeviceList(ticketId);
+      dispatch.emergencyList.getHelperStepList();
+    }
+  }, [ticketId]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
@@ -211,7 +235,7 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
   };
 
   // Handlers
-  const handleStepChange = (increment: number = 1) => {
+  const handleStepChange = (increment: number = 1,helpId:number) => {
     setIsProcessing(true);
     setTimeout(() => {
       if (currentStep < STEPS.length - 1) {
@@ -241,13 +265,13 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
         <Row align="middle" className="address-line">
           <Col>
             <HomeOutlined className="home-icon" />
-            <span>11/9 ซอยอรรถสุนทรงค์ 79 กรุงเทพมหานคร</span>
+            <span>{EmergencyData? EmergencyData.address:"-"}</span>
           </Col>
         </Row>
 
         {/* รายชื่อสมาชิก */}
         <Row gutter={[0, 24]} className="member-list-container">
-          {members.map((member, index) => (
+          {EmergencyData?.member.map((member, index) => (
             <Col span={24} key={index}>
               <Row
                 className={`member-item ${
@@ -259,23 +283,21 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
                     <Col flex="auto">
                       <Row className="member-main-info">
                         <Col span={24}>
-                          <span className="member-name">{member.name}</span>
+                          <span className="member-name">{member.fullname}</span>
                         </Col>
                         <Col span={24}>
                           <span
                             className={
-                              member.role === "เจ้าของบ้าน"
+                              member.isOwner
                                 ? "member-role-owner"
                                 : "member-role"
                             }>
-                            {member.role === "เจ้าของบ้าน"
-                              ? "เจ้าของบ้าน"
-                              : `(${member.role})`}
+                           {member.isOwner ? "เจ้าของบ้าน" : "สมาชิกในครอบครัว"}
                           </span>
                         </Col>
                         <Col span={24} className="member-phone">
                           <PhoneOutlined className="phone-icon" />
-                          <span>{member.phone}</span>
+                          <span>{member.mobile}</span>
                         </Col>
                       </Row>
                     </Col>
@@ -284,16 +306,17 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
                     <Col className="member-buttons">
                       <Row gutter={8}>
                         <Col>
-                          <Button className="success-button">สำเร็จ</Button>
+                          <Button disabled={EmergencyData.homeCallSuccess} className="success-button">{member.callSuccessTotal>0?  `สำเร็จ (${member.callSuccessTotal})` : "สำเร็จ"}</Button>
                         </Col>
                         <Col>
-                          <Button className="fail-button">ไม่สำเร็จ (1)</Button>
+                          <Button disabled={EmergencyData.homeCallSuccess} className="fail-button">{member.callFailTotal>0?  `ไม่สำเร็จ (${member.callFailTotal})` : "ไม่สำเร็จ"}</Button>
                         </Col>
                       </Row>
                       <Row>
                         <Col span={24}>
                           <span className="last-call">
-                            (โทรครั้งล่าสุด {member.lastCall})
+                          {member.callHistory.length>0?  `โทรครั้งล่าสุด ${dayjs(member.callHistory[0].createdAt).format("DD/MM/YYYY HH:mm")}` : "ยังไม่มีข้อมูล"}
+                            {/* (โทรครั้งล่าสุด {dayjs().format("DD/MM/YYYY HH:mm")}) */}
                           </span>
                         </Col>
                       </Row>
@@ -348,7 +371,20 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
 
         {/* ปุ่มตัวเลือก */}
         <Row gutter={[0, 16]}>
-          <Col span={24}>
+          {HelpStepData?.length? HelpStepData?.map((step) => (
+               <Col key={step.id} span={24}>
+               <Button
+                 type="primary"
+                 block
+                 style={{ height: 48 }}
+                 onClick={() => handleStepChange(2,step.id)}
+                 disabled={isProcessing}
+                 loading={isProcessing}>
+                 {step.nameTh}
+               </Button>
+             </Col>
+          )):<div>ไม่มีข้อมูล</div>}
+          {/* <Col span={24}>
             <Button
               type="primary"
               block
@@ -391,7 +427,7 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
               loading={isProcessing}>
               ไม่ต้องการขอความช่วยเหลือ
             </Button>
-          </Col>
+          </Col> */}
         </Row>
       </Col>
     </Row>
@@ -580,9 +616,9 @@ const DeviceStep = ({ callback }: DeviceStepProps) => {
         </Col>
         <Col xs={24} xl={8} md={8}>
           <div className="doorbell-container">
-            {DEVICE_DATA.map((doorbell) => (
-              <DeviceList key={doorbell.id} data={doorbell} />
-            ))}
+            {EmergencyData? EmergencyDeviceData?.map((doorbell) => (
+              <DeviceList  key={doorbell.deviceId} data={doorbell.deviceDetail} alertType={doorbell.eventsType.nameTh} />
+            )):<div>ไม่มีข้อมูล</div>}
           </div>
         </Col>
       </Row>

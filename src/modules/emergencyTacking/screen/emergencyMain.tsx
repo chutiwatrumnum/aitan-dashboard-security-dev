@@ -348,7 +348,7 @@ const columns: ColumnsType<DataType> = [
           />
         </TabPane>
       </Tabs>
-    </div>:<DeviceStep callback={SetIshowHomeDetail}/>
+    </div>:<DeviceStep ticketId={11} callback={SetIshowHomeDetail}/>
   );
 };
 
