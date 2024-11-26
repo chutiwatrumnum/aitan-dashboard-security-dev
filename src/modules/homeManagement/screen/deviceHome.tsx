@@ -56,7 +56,7 @@ const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
         </div>
       </Col>
       <Col flex="auto">
-        <span>{data.name}</span>
+        <h3>{data.name}</h3>
       </Col>
     </Row>
     <Row className="device-mock">
@@ -100,13 +100,29 @@ const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
 );
 
 const DeviceStatsComponent = ({ icon, color, count, label }: DeviceStats) => (
-  <div className="stat-block">
-    <div className="stat-icon" style={{ backgroundColor: color }}>
+  <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+    <div
+      style={{
+        backgroundColor: color,
+        borderRadius: "50%",
+        width: "40px",
+        height: "40px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "white",
+        marginRight: "12px",
+      }}>
       {icon}
     </div>
-    <div className="stat-content">
-      <div className="stat-count">{count}</div>
-      <div className="stat-label">{label}</div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minWidth: "100px",
+      }}>
+      <div style={{ color: "#666", fontSize: "14px" }}>{label}</div>
+      <div style={{ fontSize: "24px", fontWeight: 500 }}>{count}</div>
     </div>
   </div>
 );
@@ -188,7 +204,6 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
         style={{ marginBottom: "16px" }}>
         back
       </Button>
-
       <Row justify="space-between" align="middle" className="mb-6">
         <Col>
           <h1 className="main-title">ข้อมูลของบ้าน</h1>
@@ -197,12 +212,28 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
           <StatusBadge status={DeviceTableData?.status || "ยังไม่เปิดใช้งาน"} />
         </Col>
       </Row>
-
-      <Card className="mb-6">
-        <Row gutter={24}>
+      <Card className="mb-6" bodyStyle={{ padding: "16px 0" }}>
+        <Row gutter={0} align="middle">
           {statsData.map((stat, index) => (
-            <Col span={6} key={index}>
-              <DeviceStatsComponent {...stat} />
+            <Col
+              span={6}
+              key={index}
+              style={{
+                borderRight:
+                  index !== statsData.length - 1 ? "1px solid #E8EAED" : "none",
+                padding: "0 40px", // เพิ่ม padding ซ้ายขวา
+              }}>
+              <div className="stat-block">
+                <div
+                  className="stat-icon"
+                  style={{ backgroundColor: stat.color }}>
+                  {stat.icon}
+                </div>
+                <div className="stat-content">
+                  <div className="stat-label">{stat.label}</div>
+                  <div className="stat-count">{stat.count}</div>
+                </div>
+              </div>
             </Col>
           ))}
         </Row>

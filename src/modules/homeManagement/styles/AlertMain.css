@@ -31,18 +31,16 @@
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
   margin-bottom: 24px;
   background: white;
-  padding: 20px;
+  padding: 16px 24px;
   border-radius: 8px;
 }
 
 .stat-block {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 20px;
+  padding: 8px 0;
 }
 
 .stat-block:not(:last-child) {
@@ -50,30 +48,35 @@
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
+  margin-right: 12px;
 }
 
 .stat-content {
   display: flex;
   flex-direction: column;
+  min-width: 100px;
 }
 
 .stat-count {
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 500;
   color: #1f1f1f;
+  order: 2;
 }
 
 .stat-label {
-  color: #5F6368;
+  color: #666;
   font-size: 14px;
+  order: 1;
+  margin-bottom: 4px;
 }
 
 /* Location Card */
@@ -235,7 +238,7 @@
 
 .battery-level {
   color: #52c41a;
-  font-weight: 00;
+  font-weight: 500;
 }
 
 .doorbell-container::-webkit-scrollbar {
@@ -251,6 +254,7 @@
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    padding: 12px 16px;
   }
 
   .stat-block:nth-child(2) {
@@ -258,7 +262,7 @@
   }
 
   .stat-block {
-    padding: 16px 0;
+    padding: 12px 0;
     border-bottom: 1px solid #E8EAED;
   }
 
@@ -266,4 +270,38 @@
   .stat-block:nth-last-child(2) {
     border-bottom: none;
   }
+}
+
+.stat-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;  
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.stat-count {
+  font-size: 24px;
+  font-weight: 500;
+  color: #1f1f1f;
 }
