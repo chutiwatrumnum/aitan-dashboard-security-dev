@@ -287,7 +287,6 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
             <HomeOutlined className="home-icon" />
             <span>{EmergencyData ? EmergencyData.address : "-"}</span>
           </Col>
-          {EmergencyData?.}
         </Row>
 
         {/* รายชื่อสมาชิก */}
