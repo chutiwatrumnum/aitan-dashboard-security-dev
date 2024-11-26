@@ -7,6 +7,8 @@ import {
   DisconnectOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
+  WarningOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { encryptStorage } from "../../../utils/encryptStorage";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,17 +41,17 @@ const STEPS: StepInfo[] = [
   {
     title: "Step 2",
     subTitle: "00:00:10",
-    description: "ติดต่อไม่สำเร็จ",
+    description: "โทรหาเจ้าหน้าที่",
   },
   {
     title: "Step 3",
     subTitle: "00:00:10",
-    description: "ส่งเจ้าหน้าที่ไป",
+    description: "ติดตามผลดำเนินการ",
   },
   {
     title: "Step 4",
     subTitle: "00:00:10",
-    description: "ติดตามผลดำเนินการ",
+    description: "ดำเนินการเสร็จสิ้น",
   },
 ];
 
@@ -74,23 +76,6 @@ const FAILURE_REASONS = [
   "สัญญาณขัดข้องชั่วคราว",
   "มีการเปลี่ยนเบอร์ผู้ใช้ไม่ได้แจ้งกับพนักงาน",
 ] as const;
-
-const DEVICE_DATA: DeviceList[] = [
-  {
-    id: "000324",
-    name: "DOOR SENSOR",
-    batteryLevel: 80,
-    imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
-    alerts: [{ type: "danger", message: "ตรวจพบการบุกรุก" }],
-  },
-  {
-    id: "000325",
-    name: "DOOR SENSOR",
-    batteryLevel: 75,
-    imageUrl: "https://aitan-smart.web.app/assets/Sensor01-NPTLW2ew.png",
-    alerts: [{ type: "danger", message: "ตรวจพบการบุกรุก" }],
-  },
-];
 
 const members = [
   {
@@ -127,8 +112,8 @@ const ProgressDot: React.FC<ProgressDotProps> = ({ current, completed }) => (
 const CircleIcon: React.FC = () => (
   <div
     style={{
-      width: "120px",
-      height: "120px",
+      width: "140px",
+      height: "140px",
       background: "#1890ff",
       borderRadius: "50%",
       display: "flex",
@@ -142,28 +127,63 @@ const CircleIcon: React.FC = () => (
 const IconAlert = ({ status }: { status: string }) => {
   switch (status) {
     case "ฉุกเฉิน":
-      return <div
-      className={`alert-dot ${
-         "device-icon-online" 
-      }`}>
-      <WifiOutlined />    </div>
-    case "offline":
-      return <DisconnectOutlined />;
+      return (
+        <div className={`alert-dot ${"device-icon"}`}>
+          <WarningOutlined />
+        </div>
+      );
+    case "อุปกรณ์มีปัญหา":
+      return (
+        <div className={`alert-dot ${"device-icon-warring"}`}>
+          <ExclamationCircleOutlined />
+        </div>
+      );
+    case "อุปกรณ์ออฟไลน์":
+      return (
+        <div className={`alert-dot ${"device-icon-offline"}`}>
+          <DisconnectOutlined />
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+
+const IconAlertCard = ({ status }: { status: string }) => {
+  switch (status) {
+    case "ฉุกเฉิน":
+      return (
+        <div className={`device-icon ${"device-icon"}`}>
+          <BellOutlined className="bell-icon" />
+        </div>
+      );
+    case "อุปกรณ์มีปัญหา":
+      return (
+        <div className={`device-icon ${"device-icon-warring"}`}>
+          <BellOutlined className="bell-icon" />
+        </div>
+      );
+    case "อุปกรณ์ออฟไลน์":
+      return (
+        <div className={`device-icon ${"device-icon-offline"}`}>
+          <BellOutlined className="bell-icon" />
+        </div>
+      );
     default:
       return null;
   }
 };
 // Card Components
-const DeviceList: React.FC<{ data: DeviceListType,alertType: string }> = ({ data,alertType }) => (
+const DeviceList: React.FC<{ data: DeviceListType; alertType: string }> = ({
+  data,
+  alertType,
+}) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
-        <div
-          className={
-            data.online ? "device-icon-online" : "device-icon-offline"
-          }>
-          <BellOutlined className="bell-icon" />
-        </div>
+          <Col>
+            <IconAlertCard status={alertType} />
+          </Col>
       </Col>
       <Col flex="auto">
         <h3>{data.name}</h3>
@@ -178,7 +198,7 @@ const DeviceList: React.FC<{ data: DeviceListType,alertType: string }> = ({ data
       <Col span={24}>
         <Row align="middle" gutter={12}>
           <Col>
-        <IconAlert status={alertType} />
+            <IconAlert status={alertType} />
           </Col>
           <Col flex="auto">
             <span>{alertType}</span>
@@ -205,12 +225,12 @@ const DeviceList: React.FC<{ data: DeviceListType,alertType: string }> = ({ data
 );
 type DeviceStepProps = {
   callback(Ishow: boolean): any;
-  ticketId:number
+  ticketId: number;
 };
 // Main Component
-const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
+const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
   const dispatch = useDispatch<Dispatch>();
-  const { EmergencyData,HelpStepData,EmergencyDeviceData } = useSelector(
+  const { EmergencyData, HelpStepData, EmergencyDeviceData } = useSelector(
     (state: RootState) => state.emergencyList
   );
 
@@ -235,7 +255,7 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
   };
 
   // Handlers
-  const handleStepChange = (increment: number = 1,helpId:number) => {
+  const handleStepChange = (increment: number = 1, helpId: number) => {
     setIsProcessing(true);
     setTimeout(() => {
       if (currentStep < STEPS.length - 1) {
@@ -258,14 +278,13 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
   const renderMemberList = () => (
     <Row>
       <Col span={24}>
-        {/* หัวข้อ */}
         <Title level={4} className="member-list-title">
           รายชื่อสมาชิกในบ้าน
         </Title>
         <Row align="middle" className="address-line">
           <Col>
             <HomeOutlined className="home-icon" />
-            <span>{EmergencyData? EmergencyData.address:"-"}</span>
+            <span>{EmergencyData ? EmergencyData.address : "-"}</span>
           </Col>
         </Row>
 
@@ -292,7 +311,9 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
                                 ? "member-role-owner"
                                 : "member-role"
                             }>
-                           {member.isOwner ? "เจ้าของบ้าน" : "สมาชิกในครอบครัว"}
+                            {member.isOwner
+                              ? "เจ้าของบ้าน"
+                              : "สมาชิกในครอบครัว"}
                           </span>
                         </Col>
                         <Col span={24} className="member-phone">
@@ -306,16 +327,30 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
                     <Col className="member-buttons">
                       <Row gutter={8}>
                         <Col>
-                          <Button disabled={EmergencyData.homeCallSuccess} className="success-button">{member.callSuccessTotal>0?  `สำเร็จ (${member.callSuccessTotal})` : "สำเร็จ"}</Button>
+                          <Button
+                            disabled={EmergencyData.homeCallSuccess}
+                            className="success-button">
+                            สำเร็จ
+                          </Button>
                         </Col>
                         <Col>
-                          <Button disabled={EmergencyData.homeCallSuccess} className="fail-button">{member.callFailTotal>0?  `ไม่สำเร็จ (${member.callFailTotal})` : "ไม่สำเร็จ"}</Button>
+                          <Button
+                            disabled={EmergencyData.homeCallSuccess}
+                            className="fail-button">
+                            {member.callFailTotal > 0
+                              ? `ไม่สำเร็จ (${member.callFailTotal})`
+                              : "ไม่สำเร็จ"}
+                          </Button>
                         </Col>
                       </Row>
                       <Row>
                         <Col span={24}>
                           <span className="last-call">
-                          {member.callHistory.length>0?  `โทรครั้งล่าสุด ${dayjs(member.callHistory[0].createdAt).format("DD/MM/YYYY HH:mm")}` : "ยังไม่มีข้อมูล"}
+                            {member.callHistory.length > 0
+                              ? `โทรครั้งล่าสุด ${dayjs(
+                                  member.callHistory[0].createdAt
+                                ).format("DD/MM/YYYY HH:mm")}`
+                              : "ยังไม่มีข้อมูล"}
                             {/* (โทรครั้งล่าสุด {dayjs().format("DD/MM/YYYY HH:mm")}) */}
                           </span>
                         </Col>
@@ -368,73 +403,32 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
         <Title level={4} style={{ marginBottom: 16 }}>
           2. ต้องการความช่วยเหลือด้านใด
         </Title>
-
         {/* ปุ่มตัวเลือก */}
         <Row gutter={[0, 16]}>
-          {HelpStepData?.length? HelpStepData?.map((step) => (
-               <Col key={step.id} span={24}>
-               <Button
-                 type="primary"
-                 block
-                 style={{ height: 48 }}
-                 onClick={() => handleStepChange(2,step.id)}
-                 disabled={isProcessing}
-                 loading={isProcessing}>
-                 {step.nameTh}
-               </Button>
-             </Col>
-          )):<div>ไม่มีข้อมูล</div>}
-          {/* <Col span={24}>
-            <Button
-              type="primary"
-              block
-              style={{ height: 48 }}
-              onClick={() => handleStepChange(2)}
-              disabled={isProcessing}
-              loading={isProcessing}>
-              ตำรวจ
-            </Button>
-          </Col>
-          <Col span={24}>
-            <Button
-              type="primary"
-              block
-              style={{ height: 48 }}
-              onClick={() => handleStepChange(2)}
-              disabled={isProcessing}
-              loading={isProcessing}>
-              โรงพยาบาล
-            </Button>
-          </Col>
-          <Col span={24}>
-            <Button
-              type="primary"
-              block
-              style={{ height: 48 }}
-              onClick={() => handleStepChange(2)}
-              disabled={isProcessing}
-              loading={isProcessing}>
-              ดับเพลิง
-            </Button>
-          </Col>
-          <Col span={24}>
-            <Button
-              type="primary"
-              block
-              style={{ height: 48 }}
-              onClick={() => handleStepChange(2)}
-              disabled={isProcessing}
-              loading={isProcessing}>
-              ไม่ต้องการขอความช่วยเหลือ
-            </Button>
-          </Col> */}
+          {HelpStepData?.length ? (
+            HelpStepData?.map((step) => (
+              <Col key={step.id} span={24}>
+                <Button
+                  type="primary"
+                  block
+                  style={{ height: 48 }}
+                  onClick={() => handleStepChange(1, step.id)}
+                  disabled={isProcessing}
+                  loading={isProcessing}>
+                  {step.nameTh}
+                </Button>
+              </Col>
+            ))
+          ) : (
+            <div>ไม่มีข้อมูล</div>
+          )}
         </Row>
       </Col>
     </Row>
   );
 
   // Content Components
-  const InitialStepCard = () => (
+  const StepCardOne = () => (
     <>
       <Card className="info-card">
         <Row gutter={24}>
@@ -449,7 +443,7 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
     </>
   );
 
-  const TravelDetailCard = () => (
+  const StepCardTwo = () => (
     <Row gutter={24}>
       <Col xs={24} md={12}>
         {renderMemberList()}
@@ -462,6 +456,14 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
             alignItems: "center",
             width: "100%",
           }}>
+          <div style={{ width: "100%", textAlign: "left" }}>
+            <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
+            <ul style={{ paddingLeft: "20px" }}>
+              <li>โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
+              <li>ประเมินความเสียหาย</li>
+              <li>รายงานผลการตรวจสอบ</li>
+            </ul>
+          </div>
           <CircleIcon />
           <Button
             type="primary"
@@ -477,20 +479,12 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
             }}>
             เดินทางไปบ้านเลขที่ 11/9
           </Button>
-          <div style={{ width: "100%", textAlign: "left" }}>
-            <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
-            <ul style={{ paddingLeft: "20px" }}>
-              <li>ตรวจสอบสถานที่เกิดเหตุ</li>
-              <li>ประเมินความเสียหาย</li>
-              <li>รายงานผลการตรวจสอบ</li>
-            </ul>
-          </div>
         </div>
       </Col>
     </Row>
   );
 
-  const SuccessCard = () => (
+  const StepCardThree = () => (
     <Row gutter={24}>
       <Col xs={24} md={12}>
         {renderMemberList()}
@@ -525,10 +519,64 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
             }}>
             การดำเนินการทั้งหมดเสร็จสิ้น
           </p>
+          <Button
+            type="primary"
+            size="large"
+            block
+            onClick={() => handleStepChange()}
+            loading={isProcessing}
+            style={{
+              height: "48px",
+              fontSize: "16px",
+              borderRadius: "8px",
+              marginBottom: "16px",
+            }}>
+            ดำเนินการสำเร็จ
+          </Button>
         </div>
       </Col>
     </Row>
   );
+
+  const StepCardFour = () => (
+     <Row gutter={24}>
+       <Col xs={24} md={12}>
+         {renderMemberList()}
+       </Col>
+       <Col xs={24} md={12} className="right-section">
+         <div
+           style={{
+             display: "flex",
+             flexDirection: "column",
+             alignItems: "center",
+             width: "100%",
+             height: "100%",
+             justifyContent: "center",
+           }}>
+           <CircleIcon />
+           <h2
+             style={{
+               fontSize: "28px",
+               color: "#333",
+               marginBottom: "16px",
+               textAlign: "center",
+             }}>
+             รอดำเนินการสำเร็จ
+           </h2>
+           <p
+             style={{
+               fontSize: "16px",
+               color: "#666",
+               textAlign: "center",
+               maxWidth: "300px",
+               margin: "0 auto",
+             }}>
+             การดำเนินการทั้งหมดเสร็จสิ้น
+           </p>
+         </div>
+       </Col>
+     </Row>
+   );
 
   const FailureReasonsCard = () => (
     <Card className="failure-reasons-card">
@@ -561,11 +609,13 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
   const renderContent = () => {
     switch (currentStep) {
       case 0:
-        return <InitialStepCard />;
+        return <StepCardOne />;
+      case 1:
+        return <StepCardTwo />;
       case 2:
-        return <TravelDetailCard />;
+        return <StepCardThree />;
       case 3:
-        return <SuccessCard />;
+        return <StepCardFour/>;
       default:
         return <FailureReasonsCard />;
     }
@@ -616,9 +666,17 @@ const DeviceStep = ({ callback,ticketId }: DeviceStepProps) => {
         </Col>
         <Col xs={24} xl={8} md={8}>
           <div className="doorbell-container">
-            {EmergencyData? EmergencyDeviceData?.map((doorbell) => (
-              <DeviceList  key={doorbell.deviceId} data={doorbell.deviceDetail} alertType={doorbell.eventsType.nameTh} />
-            )):<div>ไม่มีข้อมูล</div>}
+            {EmergencyData ? (
+              EmergencyDeviceData?.map((doorbell) => (
+                <DeviceList
+                  key={doorbell.deviceId}
+                  data={doorbell.deviceDetail}
+                  alertType={doorbell.eventsType.nameTh}
+                />
+              ))
+            ) : (
+              <div>ไม่มีข้อมูล</div>
+            )}
           </div>
         </Col>
       </Row>
