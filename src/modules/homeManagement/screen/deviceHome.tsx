@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button } from "antd";
 import {
   DesktopOutlined,
@@ -170,10 +170,29 @@ const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
     </Row>
   </Card>
 );
+type DeviceStatsProps = {
+  color: string;
+  count: number;
+  label: string;
+}
+const DeviceStatsComponents= ({icon,color,count,label}:DeviceStats) => (
+    <div  className="stat-block">
+      <div className="stat-icon" style={{ backgroundColor: color }}>
+        {icon}
+      </div>
+      <div className="stat-content">
+        <div className="stat-count">{count}</div>
+        <div className="stat-label">{label}</div>
+      </div>
+      
+    </div>
 
+
+)
 // Component
 const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
     // Variables
+
     const dispatch = useDispatch<Dispatch>();
     const { DeviceTableData,DeviceListData } = useSelector(
       (state: RootState) => state.deviceList
@@ -205,7 +224,11 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
 
       {/* Device Statistics */}
       <div className="stats-grid">
-        {DEVICE_STATS.map((stat, index) => (
+      <DeviceStatsComponents icon={<DesktopOutlined />} color="#4285F4" count={DeviceListData? DeviceListData?.length:0} label="อุปกรณ์ที่เปิดใช้งาน" />
+      <DeviceStatsComponents icon={<WifiOutlined />} color="#34A853" count={DeviceListData? DeviceListData?.filter((item) => item.online).length:0} label="อุปกรณ์ที่ออนไลน์" />
+      <DeviceStatsComponents icon={<WarningOutlined />} color="#EA4335" count={0} label="อุปกรณ์มีปัญหา" />
+      <DeviceStatsComponents icon={<DisconnectOutlined />} color="#9AA0A6" count={DeviceListData? DeviceListData?.filter((item) => !item.online).length:0} label="อุปกรณ์ออฟไลน์" />
+        {/* {DEVICE_STATS.map((stat, index) => (
           <div key={index} className="stat-block">
             <div className="stat-icon" style={{ backgroundColor: stat.color }}>
               {stat.icon}
@@ -215,7 +238,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
               <div className="stat-label">{stat.label}</div>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
 
       <Row gutter={[24, 24]}>
@@ -261,6 +284,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
 
         {/* Right Column - Devices */}
                 {DeviceListData?DeviceListData?.map((doorbell) => (
+                  
         <Col xs={24} md={8}>
           <Row gutter={[16, 16]}>
             <Col xs={24} xl={24} md={24}>
@@ -271,17 +295,6 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
           </Row>
         </Col>
                 )):<div>no device list</div>}
-        {/* <Col xs={24} md={8}>
-          <Row gutter={[16, 16]}>
-            <Col xs={24} xl={24} md={24}>
-              <div className="doorbell-container">
-                {DEVICE_DATA.map((doorbell) => (
-                  <DeviceList key={doorbell.id} data={doorbell} />
-                ))}
-              </div>
-            </Col>
-          </Row>
-        </Col> */}
       </Row>
     </div>
   );
