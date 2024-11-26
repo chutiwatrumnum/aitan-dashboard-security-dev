@@ -120,6 +120,20 @@ type HomeDashboardProps = {
   callback(Ishow: boolean): any;
   HomeId:number | undefined
 };
+
+const IconAlert=({status}:any) => {
+  switch (status) {
+    case "online":
+    return  <WifiOutlined />
+  
+  case "offline":
+return      <DisconnectOutlined />
+    
+    default:
+      break;
+  }
+}
+
 const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
   <Card className="device-card">
     <Row align="middle" className="device-header">
@@ -137,22 +151,22 @@ const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
         <img src={data.iconFullUrl} alt="Door Sensor" />
       </Col>
     </Row>
-    {/* <Row gutter={[0, 12]} className="device-alerts">
-      {data.status.map((alert, index) => (
-        <Col span={24} key={index}>
+    <Row gutter={[0, 12]} className="device-alerts">
+        <Col span={24} >
           <Row align="middle" gutter={12}>
             <Col>
-              <div className={`alert-dot ${alert.value}`}>
-                <WarningOutlined />
+              <div className={`alert-dot ${data.online?"device-icon-online":"device-icon-offline"}`}>
+                <IconAlert status={data.online?"online":"offline"} />
+                {/* <WarningOutlined /> */}
               </div>
             </Col>
             <Col flex="auto">
-              <span>{alert.code}</span>
+              <span>{data.online ? "Online" : "Offline"}</span>
             </Col>
           </Row>
         </Col>
-      ))}
-    </Row> */}
+    
+    </Row>
     <Row align="middle" justify="space-between" className="device-info">
       <Col>
         <span>SN : </span>
@@ -219,7 +233,7 @@ const HomeDashboard = ({ callback,HomeId }: HomeDashboardProps) => {
       </Button>
       <div className="header-container">
         <h1 className="main-title">ข้อมูลของบ้าน</h1>
-        <div className="status-badge">Partial Armed</div>
+        <div  className="status-badge">Partial Armed</div>
       </div>
 
       {/* Device Statistics */}
