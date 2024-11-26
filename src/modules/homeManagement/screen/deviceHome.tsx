@@ -194,7 +194,7 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
           <h1 className="main-title">ข้อมูลของบ้าน</h1>
         </Col>
         <Col>
-          <StatusBadge status={DeviceTableData?.status || "Disarmed"} />
+          <StatusBadge status={DeviceTableData?.status || "ยังไม่เปิดใช้งาน"} />
         </Col>
       </Row>
 
