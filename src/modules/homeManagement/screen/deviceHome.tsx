@@ -198,18 +198,29 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
 
   return (
     <div className="dashboard-container">
-      <Button
-        type="primary"
-        onClick={async () => await callback(false)}
-        style={{ marginBottom: "16px" }}>
-        back
-      </Button>
-      <Row justify="space-between" align="middle" className="mb-6">
+      <Row
+        justify="space-between"
+        align="middle"
+        className="mb-6"
+        style={{ marginBottom: "24px" }}>
+        <Button
+          type="primary"
+          onClick={async () => await callback(false)}
+          // style={{ marginBottom: "16px" }}
+          >
+          back
+        </Button>
         <Col>
           <h1 className="main-title">ข้อมูลของบ้าน</h1>
         </Col>
         <Col>
-          <StatusBadge status={DeviceTableData?.homeAlarmStatus? DeviceTableData?.homeAlarmStatus.status.name : "ยังไม่เปิดใช้งาน"} />
+          <StatusBadge
+            status={
+              DeviceTableData?.homeAlarmStatus
+                ? DeviceTableData?.homeAlarmStatus.status.name
+                : "ยังไม่เปิดใช้งาน"
+            }
+          />
         </Col>
       </Row>
       <Card className="mb-6" bodyStyle={{ padding: "16px 0" }}>
@@ -238,11 +249,10 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
           ))}
         </Row>
       </Card>
-
-      <Row gutter={24}>
+      <Row gutter={24} style={{ paddingTop: "24px" }}>
         <Col span={8}>
-          <Card className="mb-6">
-            <div style={{ padding: "24px" }}>
+          <Card className="mb-6" style={{ marginBottom: "24px" }}>
+            <div style={{ padding: "16px" }}>
               <h2 className="section-title">ที่อยู่</h2>
               <div className="address" style={{ marginTop: "16px" }}>
                 <HomeOutlined />
@@ -252,7 +262,6 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
               </div>
             </div>
           </Card>
-
           <Card>
             <h2 className="section-title">รายชื่อสมาชิกในบ้าน</h2>
             {DeviceTableData?.homeSecurityMember?.map((member) => (
