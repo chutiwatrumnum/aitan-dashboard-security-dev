@@ -69,4 +69,19 @@ const nextStep3=async(ticketId: number) =>{
       // จัดการ error
     }
   }
-  export {nextStep2,nextStep3,nextStep4,callToMember}
+  const getTicketList=async() =>{
+    try {
+      const response = await axios.get(`/home-security/ticket`);
+      console.log("getTicketList:",response.data.ticket.id);
+      if (response.status===200) {
+        return response.data.ticket.id
+      }
+      
+     
+    } catch (error) {
+        console.error("API Error:", error);
+        return 0
+      // จัดการ error
+    }
+  }
+  export {nextStep2,nextStep3,nextStep4,callToMember,getTicketList}

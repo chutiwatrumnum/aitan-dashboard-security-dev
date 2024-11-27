@@ -11,6 +11,7 @@ import type { ColumnsType } from "antd/es/table";
 import "../styles/emergencyMain.css";
 import { EyeIcon } from "../../../assets/icons/Icons";
 import DeviceStep from "../../deviceManagement/screen/deviceStep";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -61,6 +62,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
 // Main Dashboard Component
 const StatusDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false)
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
@@ -160,7 +162,7 @@ const columns: ColumnsType<DataType> = [
         type="primary"
         icon={<EyeIcon />}
         onClick={() => {
-          setIshowHomeDetail(true)
+            navigate("/dashboard/deviceStep", { state: { ticketId:11, gotoBack: true } });
           console.log(record.workId);
         }}
       />
@@ -253,7 +255,7 @@ const columns: ColumnsType<DataType> = [
 ];
 
   return (
-    !IshowHomeDetail?
+   
     <div className="dashboard-container">
       <div className="page-header">ติดตามสถานะงาน</div>
       <div className="status-cards-wrapper">
@@ -348,8 +350,7 @@ const columns: ColumnsType<DataType> = [
           />
         </TabPane>
       </Tabs>
-    </div>:<DeviceStep ticketId={11} callback={SetIshowHomeDetail}/>
-  );
+    </div>);
 };
 
 export default StatusDashboard;
