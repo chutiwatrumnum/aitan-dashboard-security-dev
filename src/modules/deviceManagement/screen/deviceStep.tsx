@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Steps, Button, Col, Checkbox, message, Row, Modal, Input } from "antd";
+import { Card, Steps, Button, Col, Checkbox, message, Row, Modal, Input, Spin } from "antd";
 import {
   HomeOutlined,
   WifiOutlined,
@@ -9,6 +9,7 @@ import {
   PhoneOutlined,
   WarningOutlined,
   ExclamationCircleOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import { encryptStorage } from "../../../utils/encryptStorage";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,22 +38,22 @@ interface StepInfo {
 const STEPS: StepInfo[] = [
   {
     title: "Step 1",
-    subTitle: "00:00:10",
+    // subTitle: "00:00:10",
     description: "คำอธิบายขั้นตอน\nการดำเนินการ",
   },
   {
     title: "Step 2",
-    subTitle: "00:00:10",
+    // subTitle: "00:00:10",
     description: "โทรหาเจ้าหน้าที่",
   },
   {
     title: "Step 3",
-    subTitle: "00:00:10",
+    // subTitle: "00:00:10",
     description: "ติดตามผลดำเนินการ",
   },
   {
     title: "Step 4",
-    subTitle: "00:00:10",
+    // subTitle: "00:00:10",
     description: "ดำเนินการเสร็จสิ้น",
   },
 ];
@@ -111,6 +112,22 @@ const ProgressDot: React.FC<ProgressDotProps> = ({ current, completed }) => (
   </div>
 );
 
+const CircleIconPhone: React.FC = () => (
+  <div
+    style={{
+      width: "20px",
+      height: "20px",
+      background: "#1890ff",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight:"5px",
+    }}>
+    <PhoneOutlined style={{ fontSize: "12", color: "#fff" }} />
+  </div>
+);
+
 const CircleIcon: React.FC = () => (
   <div
     style={{
@@ -124,6 +141,22 @@ const CircleIcon: React.FC = () => (
       marginBottom: "24px",
     }}>
     <HomeOutlined style={{ fontSize: "48px", color: "#fff" }} />
+  </div>
+);
+
+const CircleIconDone: React.FC = () => (
+  <div
+    style={{
+      width: "140px",
+      height: "140px",
+      background: "#01A171",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: "24px",
+    }}>
+    <CheckOutlined  style={{ fontSize: "48px", color: "#fff" }} />
   </div>
 );
 const IconAlert = ({ status }: { status: string }) => {
@@ -241,21 +274,33 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [HelpStepName, setHelpStepName] = useState<string>("")
-  useEffect(() => {
-    if (ticketId) {
-      dispatch.emergencyList.getEmergencyListData(ticketId);
-      dispatch.emergencyList.getEmergencyDeviceList(ticketId);
-      dispatch.emergencyList.getHelperStepList(ticketId);
-      if (MyHelperStep?.step) {
-        setCurrentSteps(MyHelperStep.step)
-        setHelpStepName(MyHelperStep.helpStepName)
-      }
-    }
-  }, [ticketId]);
-const setCurrentSteps=async(step:number) => {
-  await setCurrentStep(step-1)
-}
+  const [isLoading, setIsLoading] = useState(false);
+   useEffect(() => {
+     const loadData = async () => {
+       if (!ticketId) return;
 
+       setIsLoading(true);
+       try {
+         // เรียกข้อมูลพร้อมกัน
+         await Promise.all([
+           dispatch.emergencyList.getEmergencyListData(ticketId),
+           dispatch.emergencyList.getEmergencyDeviceList(ticketId),
+           dispatch.emergencyList.getHelperStepList(ticketId),
+         ]);
+
+         if (MyHelperStep?.step) {
+           setCurrentStep(MyHelperStep.step - 1);
+           setHelpStepName(MyHelperStep.helpStepName || "");
+         }
+       } catch (error) {
+         console.error(error);
+       } finally {
+         setIsLoading(false);
+       }
+     };
+
+     loadData();
+   }, [ticketId, dispatch.emergencyList]);
   const showMap = () => {
     setIsMapVisible(true);
   };
@@ -265,37 +310,30 @@ const setCurrentSteps=async(step:number) => {
   };
 
   // Handlers
-  const handleStepChange = async(increment: number = 1, helpId: number,helpStepName?:string) => {
-    const Issuccess= await nextStep2(ticketId,helpId)
-    if (Issuccess) {
-              setSelectedReasons([]);
-        message.success(
-          `ดำเนินการขั้นตอนที่ 1 เรียบร้อย`
-        );
-      setCurrentSteps(2)
-      setHelpStepName(helpStepName?helpStepName:"")
-    }else{
+ const handleStepChange = async (
+   increment: number = 1,
+   helpId: number,
+   helpStepName?: string
+ ) => {
+   setIsLoading(true);
+   try {
+     const Issuccess = await nextStep2(ticketId, helpId);
+     if (Issuccess) {
+       setSelectedReasons([]);
+       setCurrentStep(1);
+       setHelpStepName(helpStepName || "");
+       message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
 
-    }
-    // setIsProcessing(true);
-    // setTimeout(() => {
-    //   if (currentStep < STEPS.length - 1) {
-    //     setCurrentStep(currentStep + increment);
-    //     if (currentStep + increment === 2) {
-    //       encryptStorage.removeItem("acceptedRequestId");
-    //       // console.log("acceptedRequestId => REMOVED");
-    //     }
-    //     setSelectedReasons([]);
-    //     message.success(
-    //       `ดำเนินการขั้นตอนที่ ${currentStep + increment} เรียบร้อย`
-    //     );
-    //   } else {
-    //     message.success("ดำเนินการทั้งหมดเสร็จสิ้น");
-    //   }
+       // โหลดข้อมูลใหม่
+       await dispatch.emergencyList.getEmergencyListData(ticketId);
+     }
+   } catch (error) {
+     console.error(error);
+   } finally {
+     setIsLoading(false);
+   }
+ };
 
-    //   setIsProcessing(false);
-    // }, 1000);
-  };
 
   const renderMemberList = () => (
     <Row>
@@ -306,7 +344,9 @@ const setCurrentSteps=async(step:number) => {
         <Row align="middle" className="address-line">
           <Col>
             <HomeOutlined className="home-icon" />
-            <span>{EmergencyData ? EmergencyData.address : "-"}</span>
+            <span className="member-address">
+              {EmergencyData ? EmergencyData.address : "ไม่มีข้อมูลลูกบ้าน"}
+            </span>
           </Col>
         </Row>
 
@@ -338,8 +378,8 @@ const setCurrentSteps=async(step:number) => {
                           </span>
                         </Col>
                         <Col span={24} className="member-phone">
-                          <PhoneOutlined className="phone-icon" />
-                          <span>{member.mobile}</span>
+                          <CircleIconPhone />
+                          <span className="member-text">{member.mobile}</span>
                         </Col>
                       </Row>
                     </Col>
@@ -349,34 +389,43 @@ const setCurrentSteps=async(step:number) => {
                       <Row gutter={8}>
                         <Col>
                           <Button
-                            onClick={async() => {
-                              const Issuccess=await callToMember(ticketId,member.id,true)
+                            onClick={async () => {
+                              const Issuccess = await callToMember(
+                                ticketId,
+                                member.id,
+                                true
+                              );
                               if (Issuccess) {
-                                message.success("ติดต่อสำเร็จ")
-                               await dispatch.emergencyList.getEmergencyListData(ticketId);
-                              }else{
-                                message.destroy("ไม่สำเร็จ")
+                                message.success("ติดต่อสำเร็จ");
+                                await dispatch.emergencyList.getEmergencyListData(
+                                  ticketId
+                                );
+                              } else {
+                                message.destroy("ไม่สำเร็จ");
                               }
-                             
                             }}
-                            disabled={EmergencyData.homeCallSuccess}
                             className="success-button">
-                          {member.callSuccessTotal > 0
-                              ? `เดิม' (${member.callSuccessTotal})`
+                            {member.callSuccessTotal > 0
+                              ? `สำเร็จ (${member.callSuccessTotal})`
                               : "ไม่สำเร็จ"}
                           </Button>
                         </Col>
                         <Col>
                           <Button
-                            onClick={async() => {
-                              const Issuccess=await callToMember(ticketId,member.id,false)
+                            onClick={async () => {
+                              const Issuccess = await callToMember(
+                                ticketId,
+                                member.id,
+                                false
+                              );
                               if (Issuccess) {
-                                message.success("ติดต่อสำเร็จ")
-                               await dispatch.emergencyList.getEmergencyListData(ticketId);
-                              }else{
-                                message.destroy("ไม่สำเร็จ")
+                                message.success("ติดต่อสำเร็จ");
+                                await dispatch.emergencyList.getEmergencyListData(
+                                  ticketId
+                                );
+                              } else {
+                                message.destroy("ไม่สำเร็จ");
                               }
-                             
                             }}
                             disabled={EmergencyData.homeCallSuccess}
                             className="fail-button">
@@ -432,14 +481,18 @@ const setCurrentSteps=async(step:number) => {
         </Title>
         <Row>
           <Col span={24}>
-            <div
+            <p
               style={{
-                marginBottom: 24,
-                borderBottom: "1px solid #f0f0f0",
-                paddingBottom: 16,
+                fontSize: "20px",
+                color: "#666",
+                textAlign: "center",
+                maxWidth: "300px",
+                margin: "0 auto",
+                paddingTop: 12,
+                paddingBottom: 12,
               }}>
               โทรติดต่อลูกค้า
-            </div>
+            </p>
           </Col>
         </Row>
 
@@ -455,11 +508,10 @@ const setCurrentSteps=async(step:number) => {
                   type="primary"
                   block
                   style={{ height: 48 }}
-                  onClick={() => handleStepChange(1, step.id,step.nameTh)}
+                  onClick={() => handleStepChange(1, step.id, step.nameTh)}
                   disabled={isProcessing}
                   loading={isProcessing}>
                   {step.nameTh}
-                 
                 </Button>
               </Col>
             ))
@@ -486,15 +538,22 @@ const setCurrentSteps=async(step:number) => {
       </Card>
     </>
   );
-const handleStepTWo=async(ticketId:number) => {
- const IsSuccess= await nextStep3(ticketId)
- if (IsSuccess) {
-  await setCurrentSteps(3)
-  alert("ติดต่อสำเร็จ")
- }else{
-alert("ไม่สำเร็จ")
- }
-}
+const handleStepTwo = async (ticketId: number) => {
+  setIsLoading(true);
+  try {
+    const isSuccess = await nextStep3(ticketId);
+    if (isSuccess) {
+      await dispatch.emergencyList.getEmergencyListData(ticketId);
+      setCurrentStep(2);
+      message.success("ติดต่อสำเร็จ");
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const StepCardTwo = () => (
     <Row gutter={24}>
@@ -510,27 +569,27 @@ alert("ไม่สำเร็จ")
             width: "100%",
           }}>
           <div style={{ width: "100%", textAlign: "left" }}>
-            <h4 style={{ marginBottom: "12px" }}>ขั้นตอนการดำเนินการ:</h4>
+            <h4 className="member-name" style={{ marginBottom: "12px" }}>
+              ขั้นตอนการดำเนินการ:
+            </h4>
             <ul style={{ paddingLeft: "20px" }}>
               <li>1.โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
-              <li>1.1ติดต่อรถพยาบาล 1669</li>
-              <li>1.2ติดต่อรถพยาบาล 191</li>
             </ul>
-           
           </div>
           <CircleIcon />
-          <p>{HelpStepName}</p>
+          <span className="member-name">{HelpStepName}</span>
           <Button
             type="primary"
             size="large"
             block
-            onClick={() => handleStepTWo(ticketId)}
+            onClick={() => handleStepTwo(ticketId)}
             loading={isProcessing}
             style={{
               height: "48px",
               fontSize: "16px",
               borderRadius: "8px",
               marginBottom: "16px",
+              marginTop:"30px"
             }}>
             ติดต่อสำเร็จ
           </Button>
@@ -538,15 +597,27 @@ alert("ไม่สำเร็จ")
       </Col>
     </Row>
   );
-  const handleStepThree=async(ticketId:number,note:string) => {
-    const IsSuccess= await nextStep4(ticketId,note)
-    if (IsSuccess) {
-     await setCurrentSteps(4)
-     alert("ติดต่อสำเร็จ")
-    }else{
-   alert("ไม่สำเร็จ")
+const handleStepThree = async (ticketId: number, note: string) => {
+  if (!note.trim()) {
+    message.warning("กรุณากรอกรายละเอียด");
+    return;
+  }
+
+  setIsLoading(true);
+  try {
+    const isSuccess = await nextStep4(ticketId, note);
+    if (isSuccess) {
+      await dispatch.emergencyList.getEmergencyListData(ticketId);
+      setCurrentStep(3);
+      message.success("บันทึกข้อมูลเรียบร้อย");
     }
-   }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 const StepCardThree = () => {
   const [note, setNote] = useState(""); 
    const [isSubmitting, setIsSubmitting] = useState(false);
@@ -565,15 +636,15 @@ const StepCardThree = () => {
             height: "100%",
             justifyContent: "center",
           }}>
-          <CircleIcon />
+          {/* <CircleIcon /> */}
           <h2
             style={{
               fontSize: "28px",
               color: "#333",
-              marginBottom: "16px",
+   
               textAlign: "center",
             }}>
-            รอดำเนินการสำเร็จ
+            โทรแจ้งลูกบ้าน
           </h2>
           <p
             style={{
@@ -583,7 +654,7 @@ const StepCardThree = () => {
               maxWidth: "300px",
               margin: "0 auto 24px", // เพิ่ม margin-bottom
             }}>
-            การดำเนินการทั้งหมดเสร็จสิ้น
+            เพื่อรายงานเหตุการณ์
           </p>
 
           {/* เพิ่มส่วน TextArea */}
@@ -595,32 +666,32 @@ const StepCardThree = () => {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="กรอกรายละเอียดเพิ่มเติม..."
-              autoSize={{ minRows: 4, maxRows: 6 }}
-              style={{ marginBottom: "16px" }}
+              autoSize={{ minRows: 8, maxRows: 12 }} // เพิ่มค่า minRows และ maxRows
+              style={{
+                marginBottom: "16px",
+                minHeight: "50px", // เพิ่ม minHeight
+              }}
             />
             <Button
               type="primary"
               block
               onClick={async () => {
-  if (note.trim()) {
-    handleStepThree(ticketId,note)
-    return
-    try {
-      setIsSubmitting(true); // เพิ่ม loading state
-      // สมมติว่ามีการเรียก API
-      // await saveNote(note);
-      
-      message.success("บันทึกข้อมูลเรียบร้อย");
-    } catch (error) {
-      message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
-    } finally {
-      setIsSubmitting(false);
-    }
-  } else {
-    message.warning("กรุณากรอกรายละเอียด");
-  }
-}}
-loading={isSubmitting}>
+                if (note.trim()) {
+                  handleStepThree(ticketId, note);
+                  return;
+                  try {
+                    setIsSubmitting(true);
+                    message.success("บันทึกข้อมูลเรียบร้อย");
+                  } catch (error) {
+                    message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                } else {
+                  message.warning("กรุณากรอกรายละเอียด");
+                }
+              }}
+              loading={isSubmitting}>
               บันทึกข้อมูล
             </Button>
           </div>
@@ -644,7 +715,7 @@ loading={isSubmitting}>
             height: "100%",
             justifyContent: "center",
           }}>
-          <CircleIcon />
+          <CircleIconDone />
           <h2
             style={{
               fontSize: "28px",
@@ -652,24 +723,19 @@ loading={isSubmitting}>
               marginBottom: "16px",
               textAlign: "center",
             }}>
-            รอดำเนินการสำเร็จ
+            ดำเนินการสำเร็จ
           </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              textAlign: "center",
-              maxWidth: "300px",
-              margin: "0 auto",
-            }}>
-            การดำเนินการทั้งหมดเสร็จสิ้น
-          </p>
           <Button
-            type="primary"
+            type="default"
             onClick={async () => {
               await callback(false);
+            }}
+            style={{
+              backgroundColor: "#01A171",
+              borderColor: "#01A171",
+              color:"white"
             }}>
-            back
+            กดเพื่อย้อนกลับ
           </Button>
         </div>
       </Col>
@@ -721,6 +787,23 @@ loading={isSubmitting}>
 
   return (
     <div className="page-container">
+      {isLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Spin />
+        </div>
+      )}
       <Button
         type="primary"
         onClick={async () => {

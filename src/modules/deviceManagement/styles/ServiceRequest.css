@@ -106,24 +106,38 @@
 }
 
 .member-name {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
   display: block;
-  margin-bottom: 4px;
+  color: #000;
 }
 
 .member-role-owner {
   color: #4096ff;
+  font-size: 18px;
 }
 
 .member-role {
-  color: rgba(0, 0, 0, 0.45);
+  color: #616161;
   margin-bottom: 8px;
+  font-size: 18px;
 }
 
 .member-phone {
   display: flex;
   align-items: center;
+}
+
+.member-text {
+  color: #616161;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.member-address {
+  color: #616161;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .phone-icon {
@@ -133,6 +147,7 @@
 
 .member-buttons {
   text-align: right;
+  margin-top: 10%;
 }
 
 .last-call {
@@ -143,17 +158,22 @@
 
 /* Button Styles */
 .success-button {
-  background: #52c41a !important;
-  border-color: #52c41a !important;
+  background: #01A171 !important;
+  border-color: #01A171 !important;
   color: white !important;
+    /* min-width: 52px; */
+    width: 100px;
   height: 32px !important;
   padding: 4px 15px !important;
   border-radius: 6px !important;
 }
 
 .fail-button {
-  color: #ff4d4f !important;
-  border-color: #ff4d4f !important;
+  background: #DC2A31 !important;
+  color: white !important;
+  border-color: #DC2A31 !important;
+  /* min-width: 52px;  */
+     width: 100px;
   height: 32px !important;
   padding: 4px 15px !important;
   border-radius: 6px !important;
@@ -165,7 +185,8 @@
 
 /* Right Section Styles */
 .right-section {
-  padding: 32px;
+  padding-left: 34px;
+    padding-right: 24px;
   border-left: 1px solid #f0f0f0;
 }
 
@@ -206,33 +227,6 @@
 
 .device-icon {
   background-color: #DC4446;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-}
-
-.device-icon-online {
-  background-color: #0ec630;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-}
-
-.device-icon-offline {
-  background-color: #bcc8c6;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-}
-
-.device-icon-warring {
-  background-color: #ea8017;
   width: 48px;
   height: 48px;
   border-radius: 50%;

@@ -49,10 +49,10 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     return icon;
   };
 
-  const acceptRequest = (id: number) => {
-    encryptStorage.setItem("acceptedRequestId", id);
-    navigate("/dashboard/deviceStep", { replace: true });
-  };
+  // const acceptRequest = (id: number) => {
+  //   encryptStorage.setItem("acceptedRequestId", id);
+  //   navigate("/dashboard/deviceStep", { replace: true });
+  // };
 
   useEffect(() => {
     const updateTimes = () => {

@@ -8,12 +8,14 @@ import {
   HomeOutlined,
   BellOutlined,
   ClockCircleOutlined,
+  PhoneOutlined,
 } from "@ant-design/icons";
 import "../styles/AlertMain.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../../../stores";
 import dayjs from "dayjs";
 import { DeviceListType } from "../../../stores/interfaces/DeviceList";
+import Title from "antd/es/typography/Title";
 
 // Types
 interface DeviceStats {
@@ -43,6 +45,23 @@ const IconAlert = ({ status }: { status: string }) => {
       return null;
   }
 };
+
+
+const CircleIconPhone: React.FC = () => (
+  <div
+    style={{
+      width: "20px",
+      height: "20px",
+      background: "#1890ff",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: "5px",
+    }}>
+    <PhoneOutlined style={{ fontSize: "12", color: "#fff" }} />
+  </div>
+);
 
 const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
   <Card className="device-card">
@@ -97,34 +116,6 @@ const DeviceList: React.FC<{ data: DeviceListType }> = ({ data }) => (
       </Col>
     </Row>
   </Card>
-);
-
-const DeviceStatsComponent = ({ icon, color, count, label }: DeviceStats) => (
-  <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-    <div
-      style={{
-        backgroundColor: color,
-        borderRadius: "50%",
-        width: "40px",
-        height: "40px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "white",
-        marginRight: "12px",
-      }}>
-      {icon}
-    </div>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minWidth: "100px",
-      }}>
-      <div style={{ color: "#666", fontSize: "14px" }}>{label}</div>
-      <div style={{ fontSize: "24px", fontWeight: 500 }}>{count}</div>
-    </div>
-  </div>
 );
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
@@ -207,7 +198,7 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
           type="primary"
           onClick={async () => await callback(false)}
           // style={{ marginBottom: "16px" }}
-          >
+        >
           back
         </Button>
         <Col>
@@ -252,38 +243,42 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
       <Row gutter={24} style={{ paddingTop: "24px" }}>
         <Col span={8}>
           <Card className="mb-6" style={{ marginBottom: "24px" }}>
-            <div style={{ padding: "16px" }}>
-              <h2 className="section-title">ที่อยู่</h2>
+            <div style={{ padding: "10px" }}>
+              <Title level={4} className="home-list-title">
+                ที่อยู่บ้าน
+              </Title>
               <div className="address" style={{ marginTop: "16px" }}>
                 <HomeOutlined />
-                <span style={{ marginLeft: "12px" }}>
+                <span className="member-address" style={{ marginLeft: "12px" }}>
                   {DeviceTableData?.address || "-"}
                 </span>
               </div>
             </div>
           </Card>
-          <Card>
-            <h2 className="section-title">รายชื่อสมาชิกในบ้าน</h2>
+          <Card style={{ padding: "10px" }}>
+            <Title className="section-title">รายชื่อสมาชิกในบ้าน</Title>
             {DeviceTableData?.homeSecurityMember?.map((member) => (
               <div key={member.id} className="user-item">
-                <img
-                  src="https://i.pravatar.cc/160"
-                  alt={member.fullname}
-                  className="user-avatar"
-                />
                 <div className="user-info">
-                  <div className="user-name">{member.fullname}</div>
-                  <div className="user-role">
+                  <Col span={24} className="user-name">
+                    {member.fullname}
+                  </Col>
+                  <Col span={24}
+                    className={
+                      member.isOwner ? "member-role-owner" : "member-role"
+                    }>
                     {member.isOwner ? "เจ้าของบ้าน" : "สมาชิกในครอบครัว"}
-                  </div>
-                  <div className="user-phone">{member.mobile}</div>
+                  </Col>
+                  <Col span={24} className="member-phone">
+                    <CircleIconPhone />
+                    <div className="user-phone">{member.mobile}</div>
+                  </Col>
                 </div>
               </div>
             ))}
-            <div className="last-alert">
-              <ClockCircleOutlined />
+            <Col span={24} className="last-alert">
               แจ้งเตือนครั้งล่าสุด {dayjs().format("DD/MM/YYYY HH:mm")}
-            </div>
+            </Col>
           </Card>
         </Col>
 

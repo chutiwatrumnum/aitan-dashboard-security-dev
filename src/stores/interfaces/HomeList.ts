@@ -1,5 +1,6 @@
 export interface HomeListDataType {
   homeListTableData: HomeListTableDataType[];
+  totalTable: number;
 }
 
 export interface HomeListTableDataType {
@@ -29,4 +30,11 @@ export interface HomeAlarmStatus {
 export interface Status {
   name: string;
   code: string;
+}
+
+export interface getTableDataType {
+  curPage: string;
+  perPage: string;
+  searchObject?: string;
+  searchText?: string;
 }

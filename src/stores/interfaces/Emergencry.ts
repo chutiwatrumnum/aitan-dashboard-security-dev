@@ -1,59 +1,67 @@
 import { DeviceListType } from "./DeviceList";
 
 export interface EmergencyListDataType {
-    EmergencyData?: EmergencyDataType;
-    HelpStepData: HelpStep[];
-    EmergencyDeviceData: EmergencyDeviceDataType[];
-    MyHelperStep?: MyHelperStep
+  EmergencyData?: EmergencyDataType;
+  HelpStepData: HelpStep[];
+  EmergencyDeviceData: EmergencyDeviceDataType[];
+  MyHelperStep?: MyHelperStep;
 }
 export interface EmergencyDataType {
-    address: string;
-    lat: number;
-    long: number;
-    step: number;
-    member: Member[];
-    ticketId: number;
-    homeCallSuccess: boolean;
+  address: string;
+  lat: number;
+  long: number;
+  step: number;
+  member: Member[];
+  ticketId: number;
+  homeCallSuccess: boolean;
 }
 
 export interface Member {
-    id: number;
-    fullname: string;
-    homeSecurityId: number;
-    mobile: string;
-    isOwner: boolean;
-    callHistory: CallHistory[];
-    callSuccessTotal: number;
-    callFailTotal: number;
+  id: number;
+  fullname: string;
+  homeSecurityId: number;
+  mobile: string;
+  isOwner: boolean;
+  callHistory: CallHistory[];
+  callSuccessTotal: number;
+  callFailTotal: number;
 }
 export interface CallHistory {
-    callSuccess: boolean;
-    createdAt: Date;
+  callSuccess: boolean;
+  createdAt: Date;
 }
 
 export interface HelpStep {
-    id: number;
-    name: string;
-    nameTh: string;
-    code: string;
-    priority: number;
+  id: number;
+  name: string;
+  nameTh: string;
+  code: string;
+  priority: number;
 }
 
 export interface EmergencyDeviceDataType {
-    deviceId: string;
-    homeId: string;
-    eventsType: EventsType;
-    ticketId: number;
-    deviceDetail: DeviceListType;
+  deviceId: string;
+  homeId: string;
+  eventsType: EventsType;
+  ticketId: number;
+  deviceDetail: DeviceListType;
 }
 export interface EventsType {
-    name: string;
-    nameTh: string;
-    code: string;
-    priority: number;
+  name: string;
+  nameTh: string;
+  code: string;
+  priority: number;
 }
 export interface MyHelperStep {
-    helpStepName : string
-    step: number;
-    HelpStepData: HelpStep[];
+  helpStepName: string;
+  step: number;
+  HelpStepData: HelpStep[];
+}
+
+export interface getTableDataType {
+  curPage: string;
+  perPage: string;
+  searchObject?: string;
+  searchText?: string;
+  filterByType?: string;
 }

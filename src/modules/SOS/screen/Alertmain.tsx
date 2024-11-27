@@ -9,6 +9,7 @@ import { Dispatch, RootState } from "../../../stores";
 import io from "socket.io-client";
 import { SOCKET_API_URL } from "../../../configs/configs";
 import { encryptStorage } from "../../../utils/encryptStorage";
+// import { socket } from "../../../configs/socket";
 
 // components
 import CardList from "../components/CardList";
@@ -38,7 +39,6 @@ function Alertmain() {
   const mapCenterPoint: [number, number] = [
     100.4698173979597, 13.787927837596371,
   ];
-  const [messages, setMessages] = useState<string[]>([]);
 
   // Functions
   const onGoButtonClick = (data: MapDataType, index: number) => {
@@ -75,43 +75,53 @@ function Alertmain() {
   };
 
   const fetchPieStatusData = async () => {
+    console.log("STATUS FETCH");
     await dispatch.alert.getPieStatusData();
   };
 
   const fetchEventData = async () => {
+    console.log("EVENT FETCH");
     await dispatch.alert.getPieEventData();
     await dispatch.alert.getMapInfoData();
   };
 
-  const socketConnect = async () => {};
+  const onActionEventTrigger = async (value: { cmd: string }) => {
+    if (value.cmd === "arm_action") {
+      await fetchPieStatusData();
+    } else if (value.cmd === "new_event") {
+      await fetchEventData();
+    }
+  };
 
   // Actions
   // Socket IO
   useEffect(() => {
-    console.log(SOCKET_SERVER_URL);
-
+    // console.log(accessToken);
     const socket = io(SOCKET_SERVER_URL, {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
-      auth: {
-        token: `Bearer ${accessToken}`,
+      extraHeaders: {
+        authorization: `bearer ${accessToken}`,
       },
     });
 
     socket.on("connect", () => {
       console.log("Socket.IO Connection Opened");
     });
-    socket.on("message", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    socket.on("action", onActionEventTrigger);
+    socket.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
+    });
+    socket.on("reconnect_attempt", (attempt) => {
+      console.log(`Reconnect attempt ${attempt}`);
     });
     socket.on("disconnect", (reason) => {
-      console.log("Socket.IO Connection Closed: Reason is => ", reason);
-      if (reason === "io server disconnect") {
-        // ถ้าเซิร์ฟเวอร์ปิดการเชื่อมต่อให้ทำการ reconnect
-        // socket.connect();
-      }
+      console.log("Socket.IO Connection Closed: Reason is =>", reason);
+      // if (reason === "io server disconnect") {
+      //   socket.connect();
+      // }
     });
     return () => {
       socket.disconnect();

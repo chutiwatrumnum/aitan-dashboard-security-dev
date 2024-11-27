@@ -1,23 +1,21 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from 'firebase/auth'
-import { getFirestore} from 'firebase/firestore'
-import { getMessaging, getToken, onMessage } from 'firebase/messaging'
-import { dataAlert, alertDataLists } from '../stores/interface/alert'
-import dayjs from "dayjs";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-const firebaseConfig: any = {
-  apiKey: "AIzaSyDieoInHS9iTsAThBRvjlYtg0W8--jD23w",
-  authDomain: "docarexartani.firebaseapp.com",
-  projectId: "docarexartani",
-  storageBucket: "docarexartani.appspot.com",
-  messagingSenderId: "438286569970",
-  appId: "1:438286569970:web:ea4651799ad7d36446db6b",
-  measurementId: "G-ZG07968R3R"
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC7tjwfwIvF2E23AYZgeCk-g3X_zExXkXc",
+  authDomain: "aitan-security-dashboard.firebaseapp.com",
+  projectId: "aitan-security-dashboard",
+  storageBucket: "aitan-security-dashboard.firebasestorage.app",
+  messagingSenderId: "650561410027",
+  appId: "1:650561410027:web:98bb4e3125ae6bb6d77fae",
+  measurementId: "G-C68FQCL93S"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app)
-// Initialize Firebase
 
-export {db }
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
