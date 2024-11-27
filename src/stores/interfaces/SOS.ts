@@ -51,3 +51,10 @@ export interface PieStatusDataType {
   status: string;
   total: number;
 }
+export interface CreateTicketRequest {
+  homeId:      number;
+  eventTypeId: number;
+  homeAddress: string;
+  homeLat:     number;
+  homeLong:    number;
+}

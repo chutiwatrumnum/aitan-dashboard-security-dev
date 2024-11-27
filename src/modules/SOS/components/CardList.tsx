@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Card, Button, Row, Col } from "antd";
+import { Card, Button, Row, Col, message } from "antd";
 import { SOSIcon, WarningIcon, OfflineIcon } from "../../../assets/icons/Icons";
-import { MapDataType } from "../../../stores/interfaces/SOS";
+import { CreateTicketRequest, MapDataType } from "../../../stores/interfaces/SOS";
 import { useNavigate } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 // import { Dispatch } from "../../../stores";
@@ -12,6 +12,7 @@ import { encryptStorage } from "../../../utils/encryptStorage";
 
 import "../styles/AlertMain.css";
 import { whiteLabel } from "../../../configs/theme";
+import { acceptAlertCase } from "../service/alertServiceApi";
 
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
@@ -92,6 +93,22 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     return () => clearInterval(intervalId);
   }, [mapInfoData]);
 
+  const acceptRequest=async(data:MapDataType) => {
+   const dataRequest: CreateTicketRequest = {
+     homeId: data.homeId,
+     eventTypeId: data.eventTypeId,
+     homeAddress: data.homeAddress,
+     homeLat: data.homeLat,
+     homeLong: data.homeLong
+   }
+    const Issuccess=await acceptAlertCase(dataRequest)
+    if (Issuccess) {
+      message.success("create ticket success")
+    }else{
+      message.error("create ticket failed")
+    }
+  }
+
   return (
     <div style={{ padding: "5px" }}>
       {mapInfoData.map((item, index) => (
@@ -144,7 +161,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
               <Col span={8}>
                 <Button
                   onClick={() => {
-                    acceptRequest(item.homeId);
+                    acceptRequest(item);
                   }}
                   className="cardBtn_CL greenBtn"
                 >
