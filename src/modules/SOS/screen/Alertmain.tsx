@@ -214,9 +214,11 @@ function Alertmain() {
         <Col span={16}>
           <Row
             style={{ height: "40vh", padding: 24, paddingRight: 0 }}
-            justify="space-between"
-          >
-            <Col style={{ width: "48.5%" }} className="pieContainer">
+            justify="space-between">
+          <Col style={{ width: "48.5%" }} className="pieContainer">
+    <span style={{ display: "block", textAlign: "right" }}>
+      ข้อมูลระบบรักษาความปลอดภัย
+    </span>
               <PieStatus data={pieStatusData} />
             </Col>
             <Col style={{ width: "48.5%" }} className="pieContainer">
@@ -237,8 +239,7 @@ function Alertmain() {
         <Col
           span={8}
           className="card-list-scroll"
-          style={{ padding: 24, maxHeight: "100vh" }}
-        >
+          style={{ padding: 24, maxHeight: "100vh" }}>
           {/* <CardAlert /> */}
           <CardList
             mapInfoData={mapInfoData}

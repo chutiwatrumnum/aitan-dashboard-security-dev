@@ -158,14 +158,18 @@ const columns: ColumnsType<DataType> = [
     width: 80,
     align: "center", // เพิ่มบรรทัดนี้
     render: (_, record) => (
-      <Button
-        type="primary"
-        icon={<EyeIcon />}
-        onClick={() => {
-            navigate("/dashboard/deviceStep", { state: { ticketId:11, gotoBack: true } });
-          console.log(record.workId);
-        }}
-      />
+       <Button
+          type="primary"
+          icon={<EyeIcon />}
+          onClick={() => {
+            navigate("/dashboard/deviceStep", { state: { ticketId:16, gotoBack: true } });
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        />
     ),
   },
   {

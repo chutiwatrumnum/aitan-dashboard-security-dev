@@ -139,8 +139,11 @@ const HomeMain = () => {
           onClick={() => {
             setHomeId(record.id);
             setIshowHomeDetail(true);
-            // console.log(record.workId);
-            // console.log("HOME LIST DATA =>", homeListTableData);
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         />
       ),

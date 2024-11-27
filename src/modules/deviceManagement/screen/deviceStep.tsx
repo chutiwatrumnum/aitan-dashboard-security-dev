@@ -345,7 +345,7 @@ const { ticketId, gotoBack } = state; // Read values passed on state
     <Row>
       <Col span={24}>
         <Title level={4} className="member-list-title">
-          รายชื่อสมาชิกในบ้าน
+          ที่อยู่บ้านและสมาชิกในบ้าน
         </Title>
         <Row align="middle" className="address-line">
           <Col>
@@ -578,9 +578,9 @@ const handleStepTwo = async (ticketId: number) => {
             <h4 className="member-name" style={{ marginBottom: "12px" }}>
               ขั้นตอนการดำเนินการ:
             </h4>
-            <ul style={{ paddingLeft: "20px" }}>
+            <span className="member-address" style={{ paddingLeft: "20px" }}>
               <li>1.โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
-            </ul>
+            </span>
           </div>
           <CircleIcon />
           <span className="member-name">{HelpStepName}</span>
@@ -595,7 +595,7 @@ const handleStepTwo = async (ticketId: number) => {
               fontSize: "16px",
               borderRadius: "8px",
               marginBottom: "16px",
-              marginTop:"30px"
+              marginTop: "30px",
             }}>
             ติดต่อสำเร็จ
           </Button>
@@ -818,12 +818,13 @@ const StepCardThree = () => {
       <Button
         type="primary"
         onClick={async () => {
-          if (currentStep==2) {
-            const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
+          if (currentStep == 2) {
+            const acceptedRequestId =
+              encryptStorage.getItem("acceptedRequestId");
             if (acceptedRequestId) {
               encryptStorage.removeItem("acceptedRequestId");
             }
-            await  navigate("/dashboard/EmergencyMain", { replace: true });
+            await navigate("/dashboard/EmergencyMain", { replace: true });
           }
         }}>
         back
@@ -865,16 +866,31 @@ const StepCardThree = () => {
         <Col xs={24} xl={8} md={8}>
           <div className="doorbell-container">
             {EmergencyDeviceData ? (
-              EmergencyDeviceData?.map((doorbell) => (
-                doorbell.deviceDetail?
-                <DeviceList
-                  key={doorbell.deviceId}
-                  data={doorbell.deviceDetail}
-                  alertType={doorbell.eventsType.nameTh}
-                />:<div>ไม่มีข้อมูล</div>
-              ))
+              EmergencyDeviceData?.map((doorbell) =>
+                doorbell.deviceDetail ? (
+                  <DeviceList
+                    key={doorbell.deviceId}
+                    data={doorbell.deviceDetail}
+                    alertType={doorbell.eventsType.nameTh}
+                  />
+                ) : (
+                  <Col span={24}>
+                    <Card className="device-card">
+                      <div style={{ textAlign: "center", padding: "24px" }}>
+                        no device list
+                      </div>
+                    </Card>
+                  </Col>
+                )
+              )
             ) : (
-              <div>ไม่มีข้อมูล</div>
+              <Col span={24}>
+                <Card className="device-card">
+                  <div style={{ textAlign: "center", padding: "24px" }}>
+                    no device list
+                  </div>
+                </Card>
+              </Col>
             )}
           </div>
         </Col>

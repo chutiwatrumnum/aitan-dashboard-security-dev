@@ -106,7 +106,7 @@
 }
 
 .member-name {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   display: block;
   color: #000;
@@ -114,13 +114,13 @@
 
 .member-role-owner {
   color: #4096ff;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .member-role {
   color: #616161;
   margin-bottom: 8px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .member-phone {
