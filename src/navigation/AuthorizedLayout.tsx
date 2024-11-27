@@ -39,7 +39,7 @@ function AuthorizedLayout() {
 
   useLayoutEffect(() => {
     if (acceptedRequestId) {
-      navigate("/dashboard/deviceStep", { replace: true });
+      navigate("/dashboard/deviceStep", { state: { ticketId:acceptedRequestId, gotoBack: true } });
     }
   }, [location.pathname]);
 

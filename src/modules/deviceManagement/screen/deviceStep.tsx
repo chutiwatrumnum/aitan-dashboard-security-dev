@@ -19,6 +19,7 @@ import Title from "antd/es/typography/Title";
 import dayjs from "dayjs";
 import { DeviceListType } from "../../../stores/interfaces/DeviceList";
 import { callToMember, nextStep2, nextStep3, nextStep4 } from "../service/emergencyApi";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -261,9 +262,13 @@ const DeviceList: React.FC<{ data: DeviceListType; alertType: string }> = ({
 type DeviceStepProps = {
   callback(Ishow: boolean): any;
   ticketId: number;
+  fromMapView:boolean
 };
 // Main Component
-const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
+const DeviceStep = () => {
+  const navigate = useNavigate();
+  const {state} = useLocation();
+const { ticketId, gotoBack } = state; // Read values passed on state
   const dispatch = useDispatch<Dispatch>();
   const { EmergencyData, HelpStepData, EmergencyDeviceData,MyHelperStep } = useSelector(
     (state: RootState) => state.emergencyList
@@ -287,11 +292,12 @@ const DeviceStep = ({ callback, ticketId }: DeviceStepProps) => {
            dispatch.emergencyList.getEmergencyDeviceList(ticketId),
            dispatch.emergencyList.getHelperStepList(ticketId),
          ]);
-
          if (MyHelperStep?.step) {
            setCurrentStep(MyHelperStep.step - 1);
            setHelpStepName(MyHelperStep.helpStepName || "");
          }
+         console.log("MyHelperStep?.step:",MyHelperStep?.step);
+         
        } catch (error) {
          console.error(error);
        } finally {
@@ -610,6 +616,10 @@ const handleStepThree = async (ticketId: number, note: string) => {
       await dispatch.emergencyList.getEmergencyListData(ticketId);
       setCurrentStep(3);
       message.success("บันทึกข้อมูลเรียบร้อย");
+      const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
+      if (acceptedRequestId) {
+        encryptStorage.removeItem("acceptedRequestId");
+      }
     }
   } catch (error) {
     console.error(error);
@@ -728,7 +738,8 @@ const StepCardThree = () => {
           <Button
             type="default"
             onClick={async () => {
-              await callback(false);
+              await  navigate("/dashboard/EmergencyMain", { replace: true });
+             // await callback(false);
             }}
             style={{
               backgroundColor: "#01A171",
@@ -807,7 +818,13 @@ const StepCardThree = () => {
       <Button
         type="primary"
         onClick={async () => {
-          await callback(false);
+          if (currentStep==2) {
+            const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
+            if (acceptedRequestId) {
+              encryptStorage.removeItem("acceptedRequestId");
+            }
+            await  navigate("/dashboard/EmergencyMain", { replace: true });
+          }
         }}>
         back
       </Button>
@@ -847,13 +864,14 @@ const StepCardThree = () => {
         </Col>
         <Col xs={24} xl={8} md={8}>
           <div className="doorbell-container">
-            {EmergencyData ? (
+            {EmergencyDeviceData ? (
               EmergencyDeviceData?.map((doorbell) => (
+                doorbell.deviceDetail?
                 <DeviceList
                   key={doorbell.deviceId}
                   data={doorbell.deviceDetail}
                   alertType={doorbell.eventsType.nameTh}
-                />
+                />:<div>ไม่มีข้อมูล</div>
               ))
             ) : (
               <div>ไม่มีข้อมูล</div>

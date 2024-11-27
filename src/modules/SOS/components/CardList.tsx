@@ -13,6 +13,7 @@ import { encryptStorage } from "../../../utils/encryptStorage";
 import "../styles/AlertMain.css";
 import { whiteLabel } from "../../../configs/theme";
 import { acceptAlertCase } from "../service/alertServiceApi";
+import { getTicketList } from "../../deviceManagement/service/emergencyApi";
 
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
@@ -101,9 +102,17 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
      homeLat: data.homeLat,
      homeLong: data.homeLong
    }
-    const Issuccess=await acceptAlertCase(dataRequest)
-    if (Issuccess) {
+   
+  
+
+   const Issuccess=await acceptAlertCase(dataRequest)
+   if (Issuccess) {
+     const ticketId=await getTicketList()
+     console.log("ticketId:",ticketId);
+      await encryptStorage.setItem("acceptedRequestId", ticketId);
       message.success("create ticket success")
+    navigate("/dashboard/deviceStep", { state: { ticketId:ticketId, gotoBack: true } });
+  
     }else{
       message.error("create ticket failed")
     }
