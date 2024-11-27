@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Card, Steps, Button, Col, Checkbox, message, Row, Modal, Input, Spin } from "antd";
+import {
+  Card,
+  Steps,
+  Button,
+  Col,
+  Checkbox,
+  message,
+  Row,
+  Modal,
+  Input,
+  Spin,
+} from "antd";
 import {
   HomeOutlined,
   WifiOutlined,
@@ -18,8 +29,14 @@ import "../styles/ServiceRequest.css";
 import Title from "antd/es/typography/Title";
 import dayjs from "dayjs";
 import { DeviceListType } from "../../../stores/interfaces/DeviceList";
-import { callToMember, nextStep2, nextStep3, nextStep4 } from "../service/emergencyApi";
+import {
+  callToMember,
+  nextStep2,
+  nextStep3,
+  nextStep4,
+} from "../service/emergencyApi";
 import { useLocation, useNavigate } from "react-router-dom";
+import MapWithMarker from "./MapWithMarker";
 
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -123,7 +140,7 @@ const CircleIconPhone: React.FC = () => (
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      marginRight:"5px",
+      marginRight: "5px",
     }}>
     <PhoneOutlined style={{ fontSize: "12", color: "#fff" }} />
   </div>
@@ -157,7 +174,7 @@ const CircleIconDone: React.FC = () => (
       justifyContent: "center",
       marginBottom: "24px",
     }}>
-    <CheckOutlined  style={{ fontSize: "48px", color: "#fff" }} />
+    <CheckOutlined style={{ fontSize: "48px", color: "#fff" }} />
   </div>
 );
 const IconAlert = ({ status }: { status: string }) => {
@@ -217,9 +234,9 @@ const DeviceList: React.FC<{ data: DeviceListType; alertType: string }> = ({
   <Card className="device-card">
     <Row align="middle" className="device-header">
       <Col>
-          <Col>
-            <IconAlertCard status={alertType} />
-          </Col>
+        <Col>
+          <IconAlertCard status={alertType} />
+        </Col>
       </Col>
       <Col flex="auto">
         <h3>{data.name}</h3>
@@ -262,51 +279,49 @@ const DeviceList: React.FC<{ data: DeviceListType; alertType: string }> = ({
 type DeviceStepProps = {
   callback(Ishow: boolean): any;
   ticketId: number;
-  fromMapView:boolean
+  fromMapView: boolean;
 };
 // Main Component
 const DeviceStep = () => {
   const navigate = useNavigate();
-  const {state} = useLocation();
-const { ticketId, gotoBack } = state; // Read values passed on state
+  const { state } = useLocation();
+  const { ticketId, gotoBack } = state; // Read values passed on state
   const dispatch = useDispatch<Dispatch>();
-  const { EmergencyData, HelpStepData, EmergencyDeviceData,MyHelperStep } = useSelector(
-    (state: RootState) => state.emergencyList
-  );
+  const { EmergencyData, HelpStepData, EmergencyDeviceData, MyHelperStep } =
+    useSelector((state: RootState) => state.emergencyList);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
-  const [HelpStepName, setHelpStepName] = useState<string>("")
+  const [HelpStepName, setHelpStepName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-   useEffect(() => {
-     const loadData = async () => {
-       if (!ticketId) return;
+  useEffect(() => {
+    const loadData = async () => {
+      if (!ticketId) return;
 
-       setIsLoading(true);
-       try {
-         // เรียกข้อมูลพร้อมกัน
-         await Promise.all([
-           dispatch.emergencyList.getEmergencyListData(ticketId),
-           dispatch.emergencyList.getEmergencyDeviceList(ticketId),
-           dispatch.emergencyList.getHelperStepList(ticketId),
-         ]);
-         if (MyHelperStep?.step) {
-           setCurrentStep(MyHelperStep.step - 1);
-           setHelpStepName(MyHelperStep.helpStepName || "");
-         }
-         console.log("MyHelperStep?.step:",MyHelperStep?.step);
-         
-       } catch (error) {
-         console.error(error);
-       } finally {
-         setIsLoading(false);
-       }
-     };
+      setIsLoading(true);
+      try {
+        // เรียกข้อมูลพร้อมกัน
+        await Promise.all([
+          dispatch.emergencyList.getEmergencyListData(ticketId),
+          dispatch.emergencyList.getEmergencyDeviceList(ticketId),
+          dispatch.emergencyList.getHelperStepList(ticketId),
+        ]);
+        if (MyHelperStep?.step) {
+          setCurrentStep(MyHelperStep.step - 1);
+          setHelpStepName(MyHelperStep.helpStepName || "");
+        }
+        console.log("MyHelperStep?.step:", MyHelperStep?.step);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-     loadData();
-   }, [ticketId, dispatch.emergencyList]);
+    loadData();
+  }, [ticketId, dispatch.emergencyList]);
   const showMap = () => {
     setIsMapVisible(true);
   };
@@ -316,30 +331,29 @@ const { ticketId, gotoBack } = state; // Read values passed on state
   };
 
   // Handlers
- const handleStepChange = async (
-   increment: number = 1,
-   helpId: number,
-   helpStepName?: string
- ) => {
-   setIsLoading(true);
-   try {
-     const Issuccess = await nextStep2(ticketId, helpId);
-     if (Issuccess) {
-       setSelectedReasons([]);
-       setCurrentStep(1);
-       setHelpStepName(helpStepName || "");
-       message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
+  const handleStepChange = async (
+    increment: number = 1,
+    helpId: number,
+    helpStepName?: string
+  ) => {
+    setIsLoading(true);
+    try {
+      const Issuccess = await nextStep2(ticketId, helpId);
+      if (Issuccess) {
+        setSelectedReasons([]);
+        setCurrentStep(1);
+        setHelpStepName(helpStepName || "");
+        message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
 
-       // โหลดข้อมูลใหม่
-       await dispatch.emergencyList.getEmergencyListData(ticketId);
-     }
-   } catch (error) {
-     console.error(error);
-   } finally {
-     setIsLoading(false);
-   }
- };
-
+        // โหลดข้อมูลใหม่
+        await dispatch.emergencyList.getEmergencyListData(ticketId);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderMemberList = () => (
     <Row>
@@ -413,7 +427,7 @@ const { ticketId, gotoBack } = state; // Read values passed on state
                             className="success-button">
                             {member.callSuccessTotal > 0
                               ? `สำเร็จ (${member.callSuccessTotal})`
-                              : "ไม่สำเร็จ"}
+                              : "สำเร็จ"}
                           </Button>
                         </Col>
                         <Col>
@@ -482,9 +496,13 @@ const { ticketId, gotoBack } = state; // Read values passed on state
     <Row>
       <Col span={24} className="right-section">
         {/* หัวข้อและคำอธิบาย */}
-        <Title level={4} style={{ marginBottom: 4 }}>
+        <Title level={4} style={{ marginBottom: 4, paddingBottom: "5px" }}>
           1. ขั้นตอนการดำเนินการแก้ไข
         </Title>
+        {/* <span className="member-address" style={{ paddingLeft: "20px" }}>
+          โทรหาลูกบ้านและรายละเอียดเหตุการณ์ที่ต้องแจ้งเตือน
+        </span> */}
+
         <Row>
           <Col span={24}>
             <p
@@ -497,7 +515,7 @@ const { ticketId, gotoBack } = state; // Read values passed on state
                 paddingTop: 12,
                 paddingBottom: 12,
               }}>
-              โทรติดต่อลูกค้า
+              โทรหาลูกบ้านและแจ้งรายละเอียดเหตุการณ์ที่ต้องแจ้งเตือน
             </p>
           </Col>
         </Row>
@@ -522,7 +540,20 @@ const { ticketId, gotoBack } = state; // Read values passed on state
               </Col>
             ))
           ) : (
-            <div>ไม่มีข้อมูล</div>
+            <Col span={24}>
+              <p
+                style={{
+                  fontSize: "20px",
+                  color: "#666",
+                  textAlign: "center",
+                  maxWidth: "300px",
+                  margin: "0 auto",
+                  paddingTop: 12,
+                  paddingBottom: 12,
+                }}>
+                ไม่มีข้อมูล
+              </p>
+            </Col>
           )}
         </Row>
       </Col>
@@ -544,22 +575,21 @@ const { ticketId, gotoBack } = state; // Read values passed on state
       </Card>
     </>
   );
-const handleStepTwo = async (ticketId: number) => {
-  setIsLoading(true);
-  try {
-    const isSuccess = await nextStep3(ticketId);
-    if (isSuccess) {
-      await dispatch.emergencyList.getEmergencyListData(ticketId);
-      setCurrentStep(2);
-      message.success("ติดต่อสำเร็จ");
+  const handleStepTwo = async (ticketId: number) => {
+    setIsLoading(true);
+    try {
+      const isSuccess = await nextStep3(ticketId);
+      if (isSuccess) {
+        await dispatch.emergencyList.getEmergencyListData(ticketId);
+        setCurrentStep(2);
+        message.success("ติดต่อสำเร็จ");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   const StepCardTwo = () => (
     <Row gutter={24}>
@@ -573,17 +603,20 @@ const handleStepTwo = async (ticketId: number) => {
             flexDirection: "column",
             alignItems: "center",
             width: "100%",
+            textAlign: "center",
           }}>
-          <div style={{ width: "100%", textAlign: "left" }}>
-            <h4 className="member-name" style={{ marginBottom: "12px" }}>
-              ขั้นตอนการดำเนินการ:
-            </h4>
-            <span className="member-address" style={{ paddingLeft: "20px" }}>
-              <li>1.โทรติดต่อเจ้าหน้าที่เพื่อแจ้ง</li>
-            </span>
+          <div style={{ width: "100%", textAlign: "center" }}>
+            <Title level={2} style={{ marginBottom: 4 }}>
+              ขั้นตอนการดำเนินการ
+            </Title>
+            <Title level={4} style={{ marginBottom: 4, paddingBottom: "20px" }}>
+              1.โทรติดต่อเพื่อแจ้งเจ้าหน้าที่
+            </Title>
           </div>
           <CircleIcon />
-          <span className="member-name">{HelpStepName}</span>
+          <Title level={3} style={{ marginBottom: 4 }}>
+            {HelpStepName}
+          </Title>
           <Button
             type="primary"
             size="large"
@@ -603,113 +636,110 @@ const handleStepTwo = async (ticketId: number) => {
       </Col>
     </Row>
   );
-const handleStepThree = async (ticketId: number, note: string) => {
-  if (!note.trim()) {
-    message.warning("กรุณากรอกรายละเอียด");
-    return;
-  }
-
-  setIsLoading(true);
-  try {
-    const isSuccess = await nextStep4(ticketId, note);
-    if (isSuccess) {
-      await dispatch.emergencyList.getEmergencyListData(ticketId);
-      setCurrentStep(3);
-      message.success("บันทึกข้อมูลเรียบร้อย");
-      const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
-      if (acceptedRequestId) {
-        encryptStorage.removeItem("acceptedRequestId");
-      }
+  const handleStepThree = async (ticketId: number, note: string) => {
+    if (!note.trim()) {
+      message.warning("กรุณากรอกรายละเอียด");
+      return;
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsLoading(false);
-  }
-};
 
-const StepCardThree = () => {
-  const [note, setNote] = useState(""); 
-   const [isSubmitting, setIsSubmitting] = useState(false);
-  return (
-    <Row gutter={24}>
-      <Col xs={24} md={12}>
-        {renderMemberList()}
-      </Col>
-      <Col xs={24} md={12} className="right-section">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-          }}>
-          {/* <CircleIcon /> */}
-          <h2
-            style={{
-              fontSize: "28px",
-              color: "#333",
-   
-              textAlign: "center",
-            }}>
-            โทรแจ้งลูกบ้าน
-          </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              textAlign: "center",
-              maxWidth: "300px",
-              margin: "0 auto 24px", // เพิ่ม margin-bottom
-            }}>
-            เพื่อรายงานเหตุการณ์
-          </p>
+    setIsLoading(true);
+    try {
+      const isSuccess = await nextStep4(ticketId, note);
+      if (isSuccess) {
+        await dispatch.emergencyList.getEmergencyListData(ticketId);
+        setCurrentStep(3);
+        message.success("บันทึกข้อมูลเรียบร้อย");
+        const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
+        if (acceptedRequestId) {
+          encryptStorage.removeItem("acceptedRequestId");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-          {/* เพิ่มส่วน TextArea */}
-          <div style={{ width: "100%", maxWidth: "500px" }}>
-            <div style={{ marginBottom: "8px", fontWeight: "500" }}>
-              บันทึกเพิ่มเติม
-            </div>
-            <TextArea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="กรอกรายละเอียดเพิ่มเติม..."
-              autoSize={{ minRows: 8, maxRows: 12 }} // เพิ่มค่า minRows และ maxRows
+  const StepCardThree = () => {
+    const [note, setNote] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    return (
+      <Row gutter={24}>
+        <Col xs={24} md={12}>
+          {renderMemberList()}
+        </Col>
+        <Col xs={24} md={12} className="right-section">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+            }}>
+            {/* <CircleIcon /> */}
+
+            <Title level={2} style={{ marginBottom: 4 }}>
+              โทรแจ้งกลับหาลูกบ้าน
+            </Title>
+
+            {/* เพิ่มส่วน TextArea */}
+            <div
               style={{
-                marginBottom: "16px",
-                minHeight: "50px", // เพิ่ม minHeight
-              }}
-            />
-            <Button
-              type="primary"
-              block
-              onClick={async () => {
-                if (note.trim()) {
-                  handleStepThree(ticketId, note);
-                  return;
-                  try {
-                    setIsSubmitting(true);
-                    message.success("บันทึกข้อมูลเรียบร้อย");
-                  } catch (error) {
-                    message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
-                  } finally {
-                    setIsSubmitting(false);
+                width: "100%",
+                maxWidth: "500px",
+                paddingBottom: "20px",
+                paddingTop:"20px"
+              }}>
+              <span className="member-role">บันทึกเพิ่มเติม</span>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "500px",
+               
+              }}>
+              <TextArea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="กรอกรายละเอียดเพิ่มเติม..."
+                autoSize={{ minRows: 8, maxRows: 12 }} // เพิ่มค่า minRows และ maxRows
+                style={{
+                  marginBottom: "16px",
+                  minHeight: "50px", // เพิ่ม minHeight
+                }}
+              />
+              <Button
+                type="primary"
+                block
+                onClick={async () => {
+                  if (note.trim()) {
+                    handleStepThree(ticketId, note);
+                    return;
+                    try {
+                      setIsSubmitting(true);
+                      message.success("บันทึกข้อมูลเรียบร้อย");
+                    } catch (error) {
+                      message.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  } else {
+                    message.warning("กรุณากรอกรายละเอียด");
                   }
-                } else {
-                  message.warning("กรุณากรอกรายละเอียด");
-                }
-              }}
-              loading={isSubmitting}>
-              บันทึกข้อมูล
-            </Button>
+                }}
+                loading={isSubmitting}>
+                บันทึกข้อมูล
+              </Button>
+            </div>
           </div>
-        </div>
-      </Col>
-    </Row>
-  );
-};
+        </Col>
+      </Row>
+    );
+  };
   const StepCardFour = () => (
     <Row gutter={24}>
       <Col xs={24} md={12}>
@@ -738,13 +768,13 @@ const StepCardThree = () => {
           <Button
             type="default"
             onClick={async () => {
-              await  navigate("/dashboard/EmergencyMain", { replace: true });
-             // await callback(false);
+              await navigate("/dashboard/EmergencyMain", { replace: true });
+              // await callback(false);
             }}
             style={{
               backgroundColor: "#01A171",
               borderColor: "#01A171",
-              color:"white"
+              color: "white",
             }}>
             กดเพื่อย้อนกลับ
           </Button>
@@ -790,7 +820,7 @@ const StepCardThree = () => {
       case 2:
         return <StepCardThree />;
       case 3:
-        return <StepCardFour/>;
+        return <StepCardFour />;
       default:
         return <FailureReasonsCard />;
     }
@@ -815,7 +845,7 @@ const StepCardThree = () => {
           <Spin />
         </div>
       )}
-      <Button
+      {/* <Button
         type="primary"
         onClick={async () => {
           if (currentStep == 2) {
@@ -828,7 +858,7 @@ const StepCardThree = () => {
           }
         }}>
         back
-      </Button>
+      </Button> */}
       <div className="steps-container">
         <Steps
           current={currentStep}
@@ -906,24 +936,7 @@ const StepCardThree = () => {
           </Button>,
         ]}
         width={800}>
-        <div
-          style={{
-            width: "100%",
-            height: "400px",
-            background: "#f5f5f5",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.9572635011583!2d100.5982313!3d13.7238899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ed419c84529%3A0x8f84e39892588c24!2z4LiL4Lit4Lii4Lit4Lij4Lij4LiW4Liq4Li44LiZ4LiX4Lij!5e0!3m2!1sth!2sth!4v1701144444444!5m2!1sth!2sth"
-            width="100%"
-            height="400"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+        <MapWithMarker lat={13.7876731} lng={100.4794405} />
       </Modal>
     </div>
   );

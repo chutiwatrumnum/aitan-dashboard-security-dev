@@ -13,6 +13,7 @@
   "dependencies": {
     "@ant-design/charts": "v1",
     "@ant-design/plots": "^1.2.5",
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@react-google-maps/api": "^2.20.3",
     "@rematch/core": "^2.2.0",
     "antd": "^5.2.2",

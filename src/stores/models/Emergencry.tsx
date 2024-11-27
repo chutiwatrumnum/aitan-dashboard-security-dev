@@ -2,7 +2,7 @@ import { createModel } from "@rematch/core";
 import {
   EmergencyListDataType,
   MyHelperStep,
-  getTableDataType,
+  GetTableDataType,
 } from "../interfaces/Emergencry";
 import { RootModel } from "./index";
 import axios from "axios";
@@ -13,6 +13,9 @@ export const emergencyList = createModel<RootModel>()({
     EmergencyData: undefined,
     HelpStepData: [],
     MyHelperStep: undefined,
+    emergencyTableData: [],
+    cardCount: undefined,
+    totalTable: 10,
   } as EmergencyListDataType,
   reducers: {
     updateEmergencyListDataState: (state, payload) => {
@@ -33,6 +36,18 @@ export const emergencyList = createModel<RootModel>()({
         EmergencyDeviceData: payload,
       };
     },
+    updateEmergencyTableDataState: (state, payload) => ({
+      ...state,
+      emergencyTableData: payload,
+    }),
+    updateCardCountState: (state, payload) => ({
+      ...state,
+      cardCount: payload,
+    }),
+    updateTotalTableState: (state, payload) => ({
+      ...state,
+      totalTable: payload,
+    }),
   },
   effects: (dispatch) => ({
     async getEmergencyListData(id: number) {
@@ -76,18 +91,29 @@ export const emergencyList = createModel<RootModel>()({
         // จัดการ error
       }
     },
-    async getEmergencyTableData(payload: getTableDataType) {
-      try {
-        const response = await axios.get(`/home-security/ticket/device/${id}`);
-        console.log("getEmergencyDeviceList:", response.data.result);
+    async getEmergencyTableData(payload: GetTableDataType) {
+      let URL = `/home-security/ticket-list?curPage=${payload.curPage}&&perPage=${payload.perPage}`;
+      if (payload.searchObject && payload.searchText)
+        URL += `&&searchObject=${payload.searchObject}&&searchText=${payload.searchText}`;
+      if (payload.filterByType) URL += `&&filterByType=${payload.filterByType}`;
 
-        dispatch.emergencyList.updateEmergencyDeviceListDataState(
-          response.data.result
-        );
-      } catch (error) {
-        console.error("API Error:", error);
-        // จัดการ error
-      }
+      // console.log(URL);
+
+      await axios
+        .get(URL)
+        .then((res) => {
+          // console.log(res.data.result.cardCount);
+          dispatch.emergencyList.updateTotalTableState(res.data.result.total);
+          dispatch.emergencyList.updateCardCountState(
+            res.data.result.cardCount
+          );
+          dispatch.emergencyList.updateEmergencyTableDataState(
+            res.data.result.rows
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
   }),
 });

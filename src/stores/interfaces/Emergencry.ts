@@ -5,6 +5,9 @@ export interface EmergencyListDataType {
   HelpStepData: HelpStep[];
   EmergencyDeviceData: EmergencyDeviceDataType[];
   MyHelperStep?: MyHelperStep;
+  emergencyTableData?: TableDataType[];
+  cardCount?: CardCount;
+  totalTable: number;
 }
 export interface EmergencyDataType {
   address: string;
@@ -58,10 +61,53 @@ export interface MyHelperStep {
   HelpStepData: HelpStep[];
 }
 
-export interface getTableDataType {
+export interface GetTableDataType {
   curPage: string;
   perPage: string;
   searchObject?: string;
   searchText?: string;
   filterByType?: string;
+}
+
+export interface TableDataType {
+  id: number;
+  address: string;
+  homeId: number;
+  lat: number;
+  long: number;
+  step: number;
+  eventTypeId: number;
+  complete: boolean;
+  adminNote?: string | null;
+  helpId?: number | null;
+  createdBy: CreatedBy;
+  createdAt: string;
+  homeOwner: HomeOwner;
+  eventType: EventType;
+}
+
+export interface CreatedBy {
+  lastName: string;
+  firstName: string;
+  middleName: string;
+}
+
+export interface HomeOwner {
+  fullname: string;
+  mobile: string;
+  isOwner: boolean;
+}
+
+export interface EventType {
+  name: string;
+  nameTh: string;
+  code: string;
+}
+
+export interface CardCount {
+  total: number;
+  newEvent: number;
+  deviceProblem: number;
+  deviceOffline: number;
+  complete: number;
 }

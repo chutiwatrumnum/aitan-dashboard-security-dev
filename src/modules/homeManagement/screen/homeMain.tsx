@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../../../stores";
 
 import type { ColumnsType } from "antd/es/table";
-import type { InputRef, TableColumnsType, TableColumnType } from "antd";
+import type { InputRef, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { HomeListTableDataType } from "../../../stores/interfaces/HomeList";
 
@@ -154,7 +154,9 @@ const HomeMain = () => {
       key: "no",
       width: 80,
       align: "center", // เพิ่มบรรทัดนี้
-      render: (_, record, index) => <span>{index + 1}</span>,
+      render: (_, record, index) => (
+        <span>{index + 1 + (page - 1) * pageSize}</span>
+      ),
     },
     {
       title: "บ้านเลขที่",

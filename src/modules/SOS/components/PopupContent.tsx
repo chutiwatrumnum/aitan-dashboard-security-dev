@@ -16,13 +16,13 @@ const PopupContent = (props: MapDataType) => {
   const iconSelector = (alertType: string) => {
     let icon = <SOSIcon />;
     switch (alertType) {
-      case "ฉุกเฉิน":
+      case "new_event":
         icon = <SOSIcon className="cardIcon_CL" />;
         break;
-      case "อุปกรณ์มีปัญหา":
+      case "device_problem":
         icon = <WarningIcon className="cardIcon_CL" />;
         break;
-      case "อุปกรณ์ออฟไลน์":
+      case "device_offline":
         icon = <OfflineIcon className="cardIcon_CL" />;
         break;
 
@@ -35,13 +35,13 @@ const PopupContent = (props: MapDataType) => {
   const colorSelector = (alertType: string) => {
     let color = whiteLabel.mainTextColor;
     switch (alertType) {
-      case "ฉุกเฉิน":
+      case "new_event":
         color = whiteLabel.dangerTextColor;
         break;
-      case "อุปกรณ์มีปัญหา":
+      case "device_problem":
         color = whiteLabel.warningTextColor;
         break;
-      case "อุปกรณ์ออฟไลน์":
+      case "device_offline":
         color = whiteLabel.grayTextColor;
         break;
 
@@ -54,12 +54,12 @@ const PopupContent = (props: MapDataType) => {
   return (
     <Row className="notification">
       <Col span={6} className="icon-container">
-        {iconSelector(props.eventTypeNameTH)}
+        {iconSelector(props.eventTypeCode)}
       </Col>
       <Col span={18} className="info">
         <div className="titlePopupContainer_PC">
           <h2
-            style={{ color: colorSelector(props.eventTypeNameTH) }}
+            style={{ color: colorSelector(props.eventTypeCode) }}
             className="status"
           >
             {props.eventTypeNameTH}

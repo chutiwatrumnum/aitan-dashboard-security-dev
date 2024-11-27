@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card, Button, Row, Col, message } from "antd";
 import { SOSIcon, WarningIcon, OfflineIcon } from "../../../assets/icons/Icons";
-import { CreateTicketRequest, MapDataType } from "../../../stores/interfaces/SOS";
+import {
+  CreateTicketRequest,
+  MapDataType,
+} from "../../../stores/interfaces/SOS";
 import { useNavigate } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 // import { Dispatch } from "../../../stores";
@@ -35,13 +38,13 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
   const iconSelector = (alertType: string) => {
     let icon = <SOSIcon />;
     switch (alertType) {
-      case "ฉุกเฉิน":
+      case "new_event":
         icon = <SOSIcon className="cardIcon_CL" />;
         break;
-      case "อุปกรณ์มีปัญหา":
+      case "device_problem":
         icon = <WarningIcon className="cardIcon_CL" />;
         break;
-      case "อุปกรณ์ออฟไลน์":
+      case "device_offline":
         icon = <OfflineIcon className="cardIcon_CL" />;
         break;
 
@@ -94,29 +97,28 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     return () => clearInterval(intervalId);
   }, [mapInfoData]);
 
-  const acceptRequest=async(data:MapDataType) => {
-   const dataRequest: CreateTicketRequest = {
-     homeId: data.homeId,
-     eventTypeId: data.eventTypeId,
-     homeAddress: data.homeAddress,
-     homeLat: data.homeLat,
-     homeLong: data.homeLong
-   }
-   
-  
+  const acceptRequest = async (data: MapDataType) => {
+    const dataRequest: CreateTicketRequest = {
+      homeId: data.homeId,
+      eventTypeId: data.eventTypeId,
+      homeAddress: data.homeAddress,
+      homeLat: data.homeLat,
+      homeLong: data.homeLong,
+    };
 
-   const Issuccess=await acceptAlertCase(dataRequest)
-   if (Issuccess) {
-     const ticketId=await getTicketList()
-     console.log("ticketId:",ticketId);
+    const Issuccess = await acceptAlertCase(dataRequest);
+    if (Issuccess) {
+      const ticketId = await getTicketList();
+      console.log("ticketId:", ticketId);
       await encryptStorage.setItem("acceptedRequestId", ticketId);
-      message.success("create ticket success")
-    navigate("/dashboard/deviceStep", { state: { ticketId:ticketId, gotoBack: true } });
-  
-    }else{
-      message.error("create ticket failed")
+      message.success("create ticket success");
+      navigate("/dashboard/deviceStep", {
+        state: { ticketId: ticketId, gotoBack: true },
+      });
+    } else {
+      message.error("create ticket failed");
     }
-  }
+  };
 
   return (
     <div style={{ padding: "5px" }}>
@@ -133,7 +135,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
           <Col span={24}>
             <Row>
               <Col className="iconContainer_CL" span={4}>
-                {iconSelector(item.eventTypeNameTH)}
+                {iconSelector(item.eventTypeCode)}
               </Col>
               <Col className="contentContainer_CL" span={20}>
                 <h2

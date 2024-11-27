@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Card, Row, Col, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Button, Spin } from "antd";
 import {
   DesktopOutlined,
   WifiOutlined,
@@ -152,13 +152,25 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
   const { DeviceTableData, DeviceListData } = useSelector(
     (state: RootState) => state.deviceList
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (HomeId) {
-      dispatch.deviceList.getDeviceListTableData(HomeId);
-      dispatch.deviceList.getDeviceList(HomeId);
-    }
-  }, [HomeId, dispatch.deviceList]);
+    const loadData = async () => {
+      if (!HomeId) return;
+
+      setIsLoading(true);
+      try {
+        await dispatch.deviceList.getDeviceListTableData(HomeId);
+        await dispatch.deviceList.getDeviceList(HomeId);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [HomeId]);
 
   const statsData = [
     {
@@ -189,6 +201,23 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
 
   return (
     <div className="dashboard-container">
+      {isLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}>
+          <Spin size="large" />
+        </div>
+      )}
       <Row
         justify="space-between"
         align="middle"
@@ -263,7 +292,8 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
                   <Col span={24} className="user-name">
                     {member.fullname}
                   </Col>
-                  <Col span={24}
+                  <Col
+                    span={24}
                     className={
                       member.isOwner ? "member-role-owner" : "member-role"
                     }>

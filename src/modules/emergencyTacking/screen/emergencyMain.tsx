@@ -1,39 +1,34 @@
 // StatusDashboard.tsx
-import React, { useState } from "react";
-import { Table, Row, Col, Tabs, Button } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Table, Row, Col, Tabs, Button, Input, Space } from "antd";
 import {
   DownloadOutlined,
   FileTextOutlined,
   LaptopOutlined,
-  CheckCircleOutlined,
+  WifiOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
 import "../styles/emergencyMain.css";
-import { EyeIcon } from "../../../assets/icons/Icons";
+import { EyeIcon, OfflineIcon } from "../../../assets/icons/Icons";
 import DeviceStep from "../../deviceManagement/screen/deviceStep";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "../../../stores";
+import { whiteLabel } from "../../../configs/theme";
+
+import type { ColumnsType } from "antd/es/table";
+import type { InputRef, TableColumnType } from "antd";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+import { TableDataType } from "../../../stores/interfaces/Emergencry";
+import dayjs from "dayjs";
 
 const { TabPane } = Tabs;
 
-// Define interfaces
-interface DataType {
-  key: string;
-  no: number;
-  workId: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  description: string;
-  staff: string;
-  phone: string;
-  step: string;
-  type: string;
-}
+type DataIndex = keyof TableDataType;
 
 interface StatusCardProps {
   icon: React.ReactNode;
   title: string;
-  count: number;
+  count: number | string;
   color: string;
   filterType: string;
   isActive: boolean;
@@ -49,10 +44,10 @@ const StatusCard: React.FC<StatusCardProps> = ({
   isActive,
   onClick,
 }) => (
-  <div
-    className={`status-card ${color}`}
-    onClick={onClick}>
-    <div className={`status-icon ${color} ${isActive ? "active" : ""}`}>{icon}</div>
+  <div className={`status-card ${color}`} onClick={onClick}>
+    <div className={`status-icon ${color} ${isActive ? "active" : ""}`}>
+      {icon}
+    </div>
     <div className="status-info">
       <div>{title}</div>
       <div className="status-count">{count}</div>
@@ -62,204 +57,262 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
 // Main Dashboard Component
 const StatusDashboard: React.FC = () => {
-  const navigate = useNavigate();
-  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false)
+  const dispatch = useDispatch<Dispatch>();
+  const { emergencyTableData, cardCount, totalTable } = useSelector(
+    (state: RootState) => state.emergencyList
+  );
+  const [IshowHomeDetail, setIshowHomeDetail] = useState<boolean>(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchObject, setSearchObject] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [activeKey, setActiveKey] = useState("all");
+  const [ticketId, setTicketId] = useState<number>();
+  const searchInput = useRef<InputRef>(null);
 
-  // Sample data
-  const data: DataType[] = [
-    {
-      key: "1",
-      no: 1,
-      workId: "111/546",
-      startDate: "15/10/2024 09:18",
-      endDate: "15/10/2024 10:20",
-      status: "เสร็จสิ้น",
-      description: "สมชาย ใจดี",
-      staff: "เจ้าหน้าที่คนที่ 1",
-      phone: "0845625777",
-      step: "Step 4",
-      type: "completed",
-    },
-    {
-      key: "2",
-      no: 2,
-      workId: "111/547",
-      startDate: "15/10/2024 10:30",
-      endDate: "15/10/2024 11:45",
-      status: "ฉุกเฉิน",
-      description: "วันดี มีสุข",
-      staff: "เจ้าหน้าที่คนที่ 2",
-      phone: "0845625778",
-      step: "Step 1",
-      type: "emergency",
-    },
-    {
-      key: "3",
-      no: 3,
-      workId: "111/548",
-      startDate: "15/10/2024 11:00",
-      endDate: "15/10/2024 12:15",
-      status: "ปัญหาอุปกรณ์",
-      description: "มานี รักดี",
-      staff: "เจ้าหน้าที่คนที่ 3",
-      phone: "0845625779",
-      step: "Step 2",
-      type: "equipment",
-    },
-    {
-      key: "4",
-      no: 4,
-      workId: "111/549",
-      startDate: "15/10/2024 13:20",
-      endDate: "15/10/2024 14:30",
-      status: "ยืนยันแล้ว",
-      description: "สมศรี ดีใจ",
-      staff: "เจ้าหน้าที่คนที่ 4",
-      phone: "0845625780",
-      step: "Step 4",
-      type: "confirmed",
-    },
-  ];
   const SetIshowHomeDetail = (Ishow: boolean) => setIshowHomeDetail(Ishow);
   const handleCardClick = (filterType: string) => {
+    if (filterType == "all") {
+      setActiveKey("all");
+      setActiveFilter(null);
+      return;
+    }
     setActiveFilter(activeFilter === filterType ? null : filterType);
+    setActiveKey("in-progress");
   };
 
-  const getFilteredData = () => {
-    if (!activeFilter) return data;
-    return data.filter((item) => {
-      switch (activeFilter) {
-        case "completed":
-          return item.status === "เสร็จสิ้น";
-        case "emergency":
-          return item.status === "ฉุกเฉิน";
-        case "equipment":
-          return item.status === "ปัญหาอุปกรณ์";
-        case "confirmed":
-          return item.status === "ยืนยันแล้ว";
-        default:
-          return true;
-      }
+  // Functions
+  const fetchData = async () => {
+    await dispatch.emergencyList.getEmergencyTableData({
+      curPage: page.toString(),
+      perPage: pageSize.toString(),
+      searchObject: searchObject,
+      searchText: searchText,
+      filterByType: activeFilter ?? undefined,
     });
   };
 
-  const counts = {
-    completed: data.filter((item) => item.status === "เสร็จสิ้น").length,
-    emergency: data.filter((item) => item.status === "ฉุกเฉิน").length,
-    equipment: data.filter((item) => item.status === "ปัญหาอุปกรณ์").length,
-    confirmed: data.filter((item) => item.status === "ยืนยันแล้ว").length,
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchObject(dataIndex);
   };
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "ดูข้อมูล",
-    key: "action",
-    width: 80,
-    align: "center", // เพิ่มบรรทัดนี้
-    render: (_, record) => (
-       <Button
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<TableDataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters && handleReset(clearFilters);
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? whiteLabel.whiteColor : whiteLabel.whiteColor,
+        }}
+      />
+    ),
+    render: (text) => text,
+  });
+
+  const onTabsChange = (activeKey: string) => {
+    setActiveKey(activeKey);
+    if (activeKey == "all") {
+      setActiveFilter(null);
+      return;
+    }
+    setActiveFilter(activeKey);
+  };
+
+  const columns: ColumnsType<TableDataType> = [
+    {
+      title: "ดูข้อมูล",
+      key: "action",
+      width: 80,
+      align: "center",
+      render: (_, record) => (
+        <Button
           type="primary"
           icon={<EyeIcon />}
           onClick={() => {
-            navigate("/dashboard/deviceStep", { state: { ticketId:16, gotoBack: true } });
-          }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            console.log(record.id);
+            // setTicketId();
+            // setIshowHomeDetail(true);
           }}
         />
-    ),
-  },
-  {
-    title: "ลำดับ",
-    dataIndex: "no",
-    key: "no",
-    width: 80,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "บ้านเลขที่",
-    dataIndex: "workId",
-    key: "workId",
-    width: 100,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "เวลาแจ้งเหตุ",
-    dataIndex: "startDate",
-    key: "startDate",
-    width: 150,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "เวลารับเรื่อง",
-    dataIndex: "endDate",
-    key: "endDate",
-    width: 150,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "ประเภทเหตุการณ์",
-    dataIndex: "status",
-    key: "status",
-    width: 150,
-    align: "center", // เพิ่มบรรทัดนี้
-    render: (status: string) => {
-      let className = "";
-      switch (status) {
-        case "ฉุกเฉิน":
-          className = "emergency";
-          break;
-        case "ปัญหาอุปกรณ์":
-          className = "equipment";
-          break;
-        case "เสร็จสิ้น":
-          className = "completed";
-          break;
-        case "ยืนยันแล้ว":
-          className = "confirmed";
-          break;
-      }
-      return <span className={`status-tag ${className}`}>{status}</span>;
+      ),
     },
-  },
-  {
-    title: "ชื่อเจ้าของบ้าน",
-    dataIndex: "description",
-    key: "description",
-    width: 200,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "เจ้าหน้าที่",
-    dataIndex: "staff",
-    key: "staff",
-    width: 150,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "เบอร์โทรศัพท์",
-    dataIndex: "phone",
-    key: "phone",
-    width: 150,
-    align: "center", // เพิ่มบรรทัดนี้
-  },
-  {
-    title: "รายงานเหตุการณ์",
-    dataIndex: "step",
-    key: "step",
-    width: 120,
-    align: "center", // เพิ่มบรรทัดนี้
-    render: (step: string) => (
-      <span className={`step-tag step-${step.split(" ")[1]}`}>{step}</span>
-    ),
-  },
-];
+    {
+      title: "ลำดับ",
+      dataIndex: "no",
+      key: "no",
+      width: 80,
+      align: "center",
+      render: (_, record, index) => (
+        <span>{index + 1 + (page - 1) * pageSize}</span>
+      ),
+    },
+    {
+      title: "บ้านเลขที่",
+      dataIndex: "address",
+      key: "address",
+      width: 100,
+      align: "center",
+      ...getColumnSearchProps("address"),
+    },
+    {
+      title: "เวลาแจ้งเหตุ",
+      dataIndex: "createdAt",
+      key: "startDate",
+      width: 150,
+      align: "center",
+      render: (_, record) => {
+        return (
+          <span>{dayjs(record.createdAt).format("DD/MM/YYYY HH:mm")}</span>
+        );
+      },
+    },
+    {
+      title: "เวลารับเรื่อง",
+      dataIndex: "createdAt",
+      key: "endDate",
+      width: 150,
+      align: "center",
+      render: (_, record) => {
+        return (
+          <span>{dayjs(record.createdAt).format("DD/MM/YYYY HH:mm")}</span>
+        );
+      },
+    },
+    {
+      title: "ประเภทเหตุการณ์",
+      key: "eventType",
+      width: 150,
+      align: "center",
+      render: (_, record) => {
+        let className = "";
+        switch (record.eventType.code) {
+          case "new_event":
+            className = "sos";
+            break;
+          case "device_problem":
+            className = "warning";
+            break;
+          case "device_offline":
+            className = "offline";
+            break;
+        }
+        return (
+          <span className={`${className}`}>{record.eventType.nameTh}</span>
+        );
+      },
+    },
+    {
+      title: "ชื่อเจ้าของบ้าน",
+      key: "homeOwner",
+      width: 200,
+      align: "center",
+      ...getColumnSearchProps("ownerName"),
+      render(_, record) {
+        return <span>{record.homeOwner.fullname ?? "-"}</span>;
+      },
+    },
+    {
+      title: "ชือเจ้าหน้าที่",
+      key: "createdBy",
+      width: 200,
+      align: "center",
+      ...getColumnSearchProps("officerName"),
+      render(_, record) {
+        return <span>{record.createdBy.firstName ?? "-"}</span>;
+      },
+    },
+    {
+      title: "เบอร์โทรศัพท์",
+      key: "mobile",
+      width: 150,
+      align: "center",
+      ...getColumnSearchProps("mobile"),
+      render(_, record) {
+        return <span>{record.homeOwner.mobile ?? "-"}</span>;
+      },
+    },
+    {
+      title: "รายงานเหตุการณ์",
+      dataIndex: "step",
+      key: "step",
+      width: 120,
+      align: "center",
+      render: (step: string) => (
+        <span className={`step-tag step-${step}`}>Step {step}</span>
+      ),
+    },
+  ];
 
-  return (
-   
+  // Actions
+  useEffect(() => {
+    fetchData();
+  }, [page, pageSize, searchObject, searchText, activeFilter]);
+
+  return !IshowHomeDetail ? (
     <div className="dashboard-container">
       <div className="page-header">ติดตามสถานะงาน</div>
       <div className="status-cards-wrapper">
@@ -268,93 +321,114 @@ const columns: ColumnsType<DataType> = [
             <StatusCard
               icon={<DownloadOutlined />}
               title="เคลียร์ทั้งหมด"
-              count={counts.completed}
+              count={cardCount?.total ?? "-"}
               color="blue"
-              filterType="completed"
-              isActive={activeFilter === "completed"}
-              onClick={() => handleCardClick("completed")}
+              filterType="all"
+              isActive={activeKey === "all"}
+              onClick={() => handleCardClick("all")}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <StatusCard
               icon={<FileTextOutlined />}
               title="มีเหตุการณ์เกิดขึ้น"
-              count={counts.emergency}
+              count={cardCount?.newEvent ?? "-"}
               color="red"
-              filterType="emergency"
-              isActive={activeFilter === "emergency"}
-              onClick={() => handleCardClick("emergency")}
+              filterType="new_event"
+              isActive={activeFilter === "new_event"}
+              onClick={() => handleCardClick("new_event")}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <StatusCard
               icon={<LaptopOutlined />}
               title="ปัญหาอุปกรณ์"
-              count={counts.equipment}
+              count={cardCount?.deviceProblem ?? "-"}
               color="orange"
-              filterType="equipment"
-              isActive={activeFilter === "equipment"}
-              onClick={() => handleCardClick("equipment")}
+              filterType="device_problem"
+              isActive={activeFilter === "device_problem"}
+              onClick={() => handleCardClick("device_problem")}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <StatusCard
-              icon={<CheckCircleOutlined />}
-              title="ยืนยันการจัดงาน"
-              count={counts.confirmed}
-              color="green"
-              filterType="confirmed"
-              isActive={activeFilter === "confirmed"}
-              onClick={() => handleCardClick("confirmed")}
+              icon={<WifiOutlined />}
+              title="อุปกรณ์ออฟไลน์"
+              count={cardCount?.deviceOffline ?? "-"}
+              color="gray"
+              filterType="device_offline"
+              isActive={activeFilter === "device_offline"}
+              onClick={() => handleCardClick("device_offline")}
             />
           </Col>
         </Row>
       </div>
 
-      <Tabs defaultActiveKey="1" className="custom-tabs">
-        <TabPane tab="ทั้งหมด" key="1">
+      <Tabs
+        // defaultActiveKey="all"
+        activeKey={activeKey}
+        className="custom-tabs"
+        onChange={onTabsChange}
+      >
+        <TabPane tab="ทั้งหมด" key="all">
           <Table
             columns={columns}
-            dataSource={getFilteredData()}
+            dataSource={emergencyTableData}
             scroll={{ x: 1300 }}
             pagination={{
-              pageSize: 10,
+              total: totalTable,
+              pageSize: pageSize,
               showSizeChanger: true,
-              showQuickJumper: true,
+              onChange(page, pageSize) {
+                setPage(page);
+                setPageSize(pageSize);
+              },
             }}
             className="custom-table"
           />
         </TabPane>
-        <TabPane tab="รอดำเนินการ" key="2">
+        <TabPane tab="รอดำเนินการ" key="in-progress">
           <Table
             columns={columns}
-            dataSource={data.filter((item) =>
-              ["Step 1", "Step 2", "Step 3"].includes(item.step)
-            )}
+            dataSource={emergencyTableData}
             scroll={{ x: 1300 }}
             pagination={{
-              pageSize: 10,
+              total: totalTable,
+              pageSize: pageSize,
               showSizeChanger: true,
-              showQuickJumper: true,
+              onChange(page, pageSize) {
+                setPage(page);
+                setPageSize(pageSize);
+              },
             }}
             className="custom-table"
           />
         </TabPane>
-        <TabPane tab="ดำเนินการสำเร็จ" key="3">
+        <TabPane
+          tab={`ดำเนินการสำเร็จ (${cardCount?.complete})`}
+          key="complete"
+        >
           <Table
             columns={columns}
-            dataSource={data.filter((item) => item.step === "Step 4")}
+            dataSource={emergencyTableData}
             scroll={{ x: 1300 }}
             pagination={{
-              pageSize: 10,
+              total: totalTable,
+              pageSize: pageSize,
               showSizeChanger: true,
-              showQuickJumper: true,
+              onChange(page, pageSize) {
+                setPage(page);
+                setPageSize(pageSize);
+              },
             }}
             className="custom-table"
           />
         </TabPane>
       </Tabs>
-    </div>);
+    </div>
+  ) : (
+    <DeviceStep ticketId={ticketId} callback={SetIshowHomeDetail} />
+  );
 };
 
 export default StatusDashboard;

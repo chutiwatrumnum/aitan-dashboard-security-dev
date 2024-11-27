@@ -58,13 +58,13 @@ function Alertmain() {
   const markerColorSelector = (alertType: string) => {
     let color = "#212121";
     switch (alertType) {
-      case "ฉุกเฉิน":
+      case "new_event":
         color = "#DC2A31";
         break;
-      case "อุปกรณ์มีปัญหา":
+      case "device_problem":
         color = "#F28F1E";
         break;
-      case "อุปกรณ์ออฟไลน์":
+      case "device_offline":
         color = "#595959";
         break;
 
@@ -161,7 +161,7 @@ function Alertmain() {
       el.style.cursor = "pointer";
       el.innerHTML = ReactDOMServer.renderToString(
         <MarkerIcon
-          color={markerColorSelector(marker.eventTypeNameTH)}
+          color={markerColorSelector(marker.eventTypeCode)}
           className="marker_AM"
         />
       );
@@ -215,13 +215,17 @@ function Alertmain() {
           <Row
             style={{ height: "40vh", padding: 24, paddingRight: 0 }}
             justify="space-between">
-          <Col style={{ width: "48.5%" }} className="pieContainer">
-    <span style={{ display: "block", textAlign: "right" }}>
-      ข้อมูลระบบรักษาความปลอดภัย
-    </span>
+            <Col style={{ width: "48.5%" }} className="pieContainer">
+              <span style={{ display: "block", textAlign: "right",fontWeight:"700" }}>
+                ข้อมูลระบบรักษาความปลอดภัย
+              </span>
               <PieStatus data={pieStatusData} />
             </Col>
             <Col style={{ width: "48.5%" }} className="pieContainer">
+              <span style={{ display: "block", textAlign: "right",fontWeight:"700" }}>
+                สถานะอุปกรณ์
+              </span>
+
               <PieEvent data={pieEventData} />
             </Col>
           </Row>

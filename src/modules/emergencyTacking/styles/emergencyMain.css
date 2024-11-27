@@ -65,7 +65,7 @@
 
 .status-card.green .status-icon {
   background: #f6ffed;
-  color: #52c41a;
+  color: var(--gray-color);
 }
 
 .status-info {
@@ -108,22 +108,38 @@
   color: #1890ff;
 }
 
+.sos {
+  color: var(--danger-color);
+}
+
+.warning {
+  color: var(--warning-color);
+}
+
+.offline {
+  color: var(--gray-color);
+}
+
 .step-tag {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
 }
 
-.step-tag.step-1 {
+.step-1 {
   color: #ff4d4f;
 }
 
-.step-tag.step-2 {
+.step-2 {
   color: #faad14;
 }
 
-.step-tag.step-3 {
+.step-3 {
   color: #1890ff;
+}
+
+.step-4 {
+  color: var(--success-color);
 }
 
 /* เพิ่ม CSS สำหรับ active state ของ status-icon */
@@ -142,7 +158,7 @@
   color: #ffffff;
 }
 
-.status-icon.active.green {
-  background: #52c41a;
+.status-icon.active.gray {
+  background: var(--gray-color);
   color: #ffffff;
 }
