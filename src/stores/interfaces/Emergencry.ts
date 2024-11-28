@@ -4,8 +4,7 @@ export interface EmergencyListDataType {
   EmergencyData?: EmergencyDataType;
   HelpStepData: HelpStep[];
   EmergencyDeviceData: EmergencyDeviceDataType[];
-  MyHelperStep: number;
-  MyHelperName:string
+  MyHelperStep?: MyHelperStep;
   emergencyTableData?: TableDataType[];
   cardCount?: CardCount;
   totalTable: number;

@@ -324,7 +324,7 @@ const HomeDashboard = ({ callback, HomeId }: HomeDashboardProps) => {
               <Col span={24}>
                 <Card className="device-card">
                   <div style={{ textAlign: "center", padding: "24px" }}>
-                    no device list
+                    ไม่พบอุปกรณ์ในระบบ
                   </div>
                 </Card>
               </Col>

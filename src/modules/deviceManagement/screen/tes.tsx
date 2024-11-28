@@ -266,11 +266,13 @@ const DeviceList: React.FC<{ data: DeviceListType; alertType: string }> = ({
   </Card>
 );
 
+interface DeviceStepProps {
+  ticketId: number;
+  callback: (show: boolean) => void;
+}
 // Main Component
-const DeviceStep = () => {
+const DeviceStep: React.FC<DeviceStepProps> = ({ ticketId, callback }) => {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const { ticketId} = state; // Read values passed on state
   const dispatch = useDispatch<Dispatch>();
   const { EmergencyData, HelpStepData, EmergencyDeviceData, MyHelperStep } =
     useSelector((state: RootState) => state.emergencyList);
@@ -282,56 +284,56 @@ const DeviceStep = () => {
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [HelpStepName, setHelpStepName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
- useEffect(() => {
-   const loadData = async () => {
-     if (!ticketId) return;
-     setIsLoading(true);
-     try {
-       await Promise.all([
-         dispatch.emergencyList.getEmergencyListData(ticketId),
-         dispatch.emergencyList.getEmergencyDeviceList(ticketId),
-         dispatch.emergencyList.getHelperStepList(ticketId),
-       ]);
-     } finally {
-       setIsLoading(false);
-     }
-   };
+  useEffect(() => {
+    const loadData = async () => {
+      if (!ticketId) return;
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          dispatch.emergencyList.getEmergencyListData(ticketId),
+          dispatch.emergencyList.getEmergencyDeviceList(ticketId),
+          dispatch.emergencyList.getHelperStepList(ticketId),
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-   loadData();
- }, [ticketId]);
+    loadData();
+  }, [ticketId]);
 
- // เพิ่ม useEffect ใหม่เพื่อติดตาม MyHelperStep
- useEffect(() => {
-   if (MyHelperStep?.step) {
-     setCurrentStep(MyHelperStep.step - 1);
-     setHelpStepName(MyHelperStep.helpStepName || "");
-   }
- }, [MyHelperStep]);
+  // เพิ่ม useEffect ใหม่เพื่อติดตาม MyHelperStep
+  useEffect(() => {
+    if (MyHelperStep?.step) {
+      setCurrentStep(MyHelperStep.step - 1);
+      setHelpStepName(MyHelperStep.helpStepName || "");
+    }
+  }, [MyHelperStep]);
 
- useEffect(() => {
-   const loadData = async () => {
-     if (!ticketId) return;
-     setIsLoading(true);
-     try {
-       await Promise.all([
-         dispatch.emergencyList.getEmergencyListData(ticketId),
-         dispatch.emergencyList.getEmergencyDeviceList(ticketId),
-         dispatch.emergencyList.getHelperStepList(ticketId),
-       ]);
-     } finally {
-       setIsLoading(false);
-     }
-   };
+  useEffect(() => {
+    const loadData = async () => {
+      if (!ticketId) return;
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          dispatch.emergencyList.getEmergencyListData(ticketId),
+          dispatch.emergencyList.getEmergencyDeviceList(ticketId),
+          dispatch.emergencyList.getHelperStepList(ticketId),
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-   loadData();
+    loadData();
 
-   // Cleanup function
-   return () => {
-     setCurrentStep(0);
-     setHelpStepName("");
-     setSelectedReasons([]);
-   };
- }, [ticketId]);
+    // Cleanup function
+    return () => {
+      setCurrentStep(0);
+      setHelpStepName("");
+      setSelectedReasons([]);
+    };
+  }, [ticketId]);
 
   const showMap = () => {
     setIsMapVisible(true);
@@ -342,28 +344,28 @@ const DeviceStep = () => {
   };
 
   // Handlers
-const handleStepChange = async (
-  increment: number = 1,
-  helpId: number,
-  helpStepName?: string
-) => {
-  setIsLoading(true);
-  try {
-    const Issuccess = await nextStep2(ticketId, helpId);
-    if (Issuccess) {
-      setSelectedReasons([]);
-      await Promise.all([
-        dispatch.emergencyList.getEmergencyListData(ticketId),
-        dispatch.emergencyList.getHelperStepList(ticketId),
-      ]);
-      message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
+  const handleStepChange = async (
+    increment: number = 1,
+    helpId: number,
+    helpStepName?: string
+  ) => {
+    setIsLoading(true);
+    try {
+      const Issuccess = await nextStep2(ticketId, helpId);
+      if (Issuccess) {
+        setSelectedReasons([]);
+        await Promise.all([
+          dispatch.emergencyList.getEmergencyListData(ticketId),
+          dispatch.emergencyList.getHelperStepList(ticketId),
+        ]);
+        message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const renderMemberList = () => (
     <Row>
@@ -457,7 +459,10 @@ const handleStepChange = async (
                                 message.destroy("ไม่สำเร็จ");
                               }
                             }}
-                            disabled={EmergencyData.homeCallSuccess}
+                            disabled={
+                              EmergencyData.homeCallSuccess ||
+                              member.callSuccessTotal > 0
+                            }
                             className="fail-button">
                             {member.callFailTotal > 0
                               ? `ไม่สำเร็จ (${member.callFailTotal})`
@@ -701,7 +706,7 @@ const handleStepChange = async (
                 width: "100%",
                 maxWidth: "500px",
                 paddingBottom: "20px",
-                paddingTop:"20px"
+                paddingTop: "20px",
               }}>
               <span className="member-role">บันทึกเพิ่มเติม</span>
             </div>
@@ -710,7 +715,6 @@ const handleStepChange = async (
               style={{
                 width: "100%",
                 maxWidth: "500px",
-               
               }}>
               <TextArea
                 value={note}
@@ -777,15 +781,8 @@ const handleStepChange = async (
           </h2>
           <Button
             type="default"
-            onClick={async () => {
-              try {
-                await navigate("/dashboard/EmergencyMain", {
-                  replace: true,
-                  state: { selectedMenu: "/dashboard/EmergencyMain" },
-                });
-              } catch (error) {
-                console.error("Navigation error:", error);
-              }
+            onClick={() => {
+              callback(false); // เรียกใช้ callback เพื่อเปลี่ยนค่า IshowHomeDetail กลับเป็น false
             }}
             style={{
               backgroundColor: "#01A171",
@@ -861,7 +858,7 @@ const handleStepChange = async (
           <Spin />
         </div>
       )}
-      {/* <Button
+      <Button
         type="primary"
         onClick={async () => {
           if (currentStep == 2) {
@@ -870,11 +867,11 @@ const handleStepChange = async (
             if (acceptedRequestId) {
               encryptStorage.removeItem("acceptedRequestId");
             }
-            await navigate("/dashboard/EmergencyMain", { replace: true });
+            callback(false);
           }
         }}>
         back
-      </Button> */}
+      </Button>
       <div className="steps-container">
         <Steps
           current={currentStep}
@@ -923,7 +920,7 @@ const handleStepChange = async (
                   <Col span={24}>
                     <Card className="device-card">
                       <div style={{ textAlign: "center", padding: "24px" }}>
-                    ไม่พบอุปกรณ์ในระบบ
+                        ไม่พบอุปกรณ์ในระบบ
                       </div>
                     </Card>
                   </Col>

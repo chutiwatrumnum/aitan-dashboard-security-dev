@@ -20,7 +20,6 @@ import type { InputRef, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { TableDataType } from "../../../stores/interfaces/Emergencry";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -58,7 +57,6 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
 // Main Dashboard Component
 const StatusDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<Dispatch>();
   const { emergencyTableData, cardCount, totalTable } = useSelector(
     (state: RootState) => state.emergencyList
@@ -196,11 +194,8 @@ const StatusDashboard: React.FC = () => {
           icon={<EyeIcon />}
           onClick={() => {
             console.log(record.id);
-            navigate("/dashboard/deviceStep", {
-              state: { ticketId: record.id, gotoBack: true },
-            });
-            // setTicketId();
-            // setIshowHomeDetail(true);
+            setTicketId(record.id); // ส่งค่า record.id
+            setIshowHomeDetail(true);
           }}
         />
       ),
@@ -317,121 +312,119 @@ const StatusDashboard: React.FC = () => {
     fetchData();
   }, [page, pageSize, searchObject, searchText, activeFilter]);
 
-  return  (
-    <div className="dashboard-container">
-      <div className="page-header">ติดตามสถานะงาน</div>
-      <div className="status-cards-wrapper">
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} md={6}>
-            <StatusCard
-              icon={<DownloadOutlined />}
-              title="เคลียร์ทั้งหมด"
-              count={cardCount?.total ?? "-"}
-              color="blue"
-              filterType="all"
-              isActive={activeKey === "all"}
-              onClick={() => handleCardClick("all")}
-            />
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <StatusCard
-              icon={<FileTextOutlined />}
-              title="มีเหตุการณ์เกิดขึ้น"
-              count={cardCount?.newEvent ?? "-"}
-              color="red"
-              filterType="new_event"
-              isActive={activeFilter === "new_event"}
-              onClick={() => handleCardClick("new_event")}
-            />
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <StatusCard
-              icon={<LaptopOutlined />}
-              title="ปัญหาอุปกรณ์"
-              count={cardCount?.deviceProblem ?? "-"}
-              color="orange"
-              filterType="device_problem"
-              isActive={activeFilter === "device_problem"}
-              onClick={() => handleCardClick("device_problem")}
-            />
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <StatusCard
-              icon={<WifiOutlined />}
-              title="อุปกรณ์ออฟไลน์"
-              count={cardCount?.deviceOffline ?? "-"}
-              color="gray"
-              filterType="device_offline"
-              isActive={activeFilter === "device_offline"}
-              onClick={() => handleCardClick("device_offline")}
-            />
-          </Col>
-        </Row>
-      </div>
-
-      <Tabs
-        // defaultActiveKey="all"
-        activeKey={activeKey}
-        className="custom-tabs"
-        onChange={onTabsChange}
-      >
-        <TabPane tab="ทั้งหมด" key="all">
-          <Table
-            columns={columns}
-            dataSource={emergencyTableData}
-            scroll={{ x: 1300 }}
-            pagination={{
-              total: totalTable,
-              pageSize: pageSize,
-              showSizeChanger: true,
-              onChange(page, pageSize) {
-                setPage(page);
-                setPageSize(pageSize);
-              },
-            }}
-            className="custom-table"
+return !IshowHomeDetail ? (
+  <div className="dashboard-container">
+    <div className="page-header">ติดตามสถานะงาน</div>
+    <div className="status-cards-wrapper">
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} md={6}>
+          <StatusCard
+            icon={<DownloadOutlined />}
+            title="เคลียร์ทั้งหมด"
+            count={cardCount?.total ?? "-"}
+            color="blue"
+            filterType="all"
+            isActive={activeKey === "all"}
+            onClick={() => handleCardClick("all")}
           />
-        </TabPane>
-        <TabPane tab="รอดำเนินการ" key="in-progress">
-          <Table
-            columns={columns}
-            dataSource={emergencyTableData}
-            scroll={{ x: 1300 }}
-            pagination={{
-              total: totalTable,
-              pageSize: pageSize,
-              showSizeChanger: true,
-              onChange(page, pageSize) {
-                setPage(page);
-                setPageSize(pageSize);
-              },
-            }}
-            className="custom-table"
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <StatusCard
+            icon={<FileTextOutlined />}
+            title="มีเหตุการณ์เกิดขึ้น"
+            count={cardCount?.newEvent ?? "-"}
+            color="red"
+            filterType="new_event"
+            isActive={activeFilter === "new_event"}
+            onClick={() => handleCardClick("new_event")}
           />
-        </TabPane>
-        <TabPane
-          tab={`ดำเนินการสำเร็จ (${cardCount?.complete})`}
-          key="complete"
-        >
-          <Table
-            columns={columns}
-            dataSource={emergencyTableData}
-            scroll={{ x: 1300 }}
-            pagination={{
-              total: totalTable,
-              pageSize: pageSize,
-              showSizeChanger: true,
-              onChange(page, pageSize) {
-                setPage(page);
-                setPageSize(pageSize);
-              },
-            }}
-            className="custom-table"
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <StatusCard
+            icon={<LaptopOutlined />}
+            title="ปัญหาอุปกรณ์"
+            count={cardCount?.deviceProblem ?? "-"}
+            color="orange"
+            filterType="device_problem"
+            isActive={activeFilter === "device_problem"}
+            onClick={() => handleCardClick("device_problem")}
           />
-        </TabPane>
-      </Tabs>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <StatusCard
+            icon={<WifiOutlined />}
+            title="อุปกรณ์ออฟไลน์"
+            count={cardCount?.deviceOffline ?? "-"}
+            color="gray"
+            filterType="device_offline"
+            isActive={activeFilter === "device_offline"}
+            onClick={() => handleCardClick("device_offline")}
+          />
+        </Col>
+      </Row>
     </div>
-  ) ;
+
+    <Tabs
+      // defaultActiveKey="all"
+      activeKey={activeKey}
+      className="custom-tabs"
+      onChange={onTabsChange}>
+      <TabPane tab="ทั้งหมด" key="all">
+        <Table
+          columns={columns}
+          dataSource={emergencyTableData}
+          scroll={{ x: 1300 }}
+          pagination={{
+            total: totalTable,
+            pageSize: pageSize,
+            showSizeChanger: true,
+            onChange(page, pageSize) {
+              setPage(page);
+              setPageSize(pageSize);
+            },
+          }}
+          className="custom-table"
+        />
+      </TabPane>
+      <TabPane tab="รอดำเนินการ" key="in-progress">
+        <Table
+          columns={columns}
+          dataSource={emergencyTableData}
+          scroll={{ x: 1300 }}
+          pagination={{
+            total: totalTable,
+            pageSize: pageSize,
+            showSizeChanger: true,
+            onChange(page, pageSize) {
+              setPage(page);
+              setPageSize(pageSize);
+            },
+          }}
+          className="custom-table"
+        />
+      </TabPane>
+      <TabPane tab={`ดำเนินการสำเร็จ (${cardCount?.complete})`} key="complete">
+        <Table
+          columns={columns}
+          dataSource={emergencyTableData}
+          scroll={{ x: 1300 }}
+          pagination={{
+            total: totalTable,
+            pageSize: pageSize,
+            showSizeChanger: true,
+            onChange(page, pageSize) {
+              setPage(page);
+              setPageSize(pageSize);
+            },
+          }}
+          className="custom-table"
+        />
+      </TabPane>
+    </Tabs>
+  </div>
+) : (
+  <DeviceStep ticketId={ticketId} callback={SetIshowHomeDetail} />
+);
 };
 
 export default StatusDashboard;

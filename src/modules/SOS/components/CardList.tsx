@@ -92,7 +92,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     };
 
     updateTimes();
-    const intervalId = setInterval(updateTimes, 1000);
+    const intervalId = setInterval(updateTimes, 30000);
 
     return () => clearInterval(intervalId);
   }, [mapInfoData]);
@@ -111,12 +111,12 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
       const ticketId = await getTicketList();
       console.log("ticketId:", ticketId);
       await encryptStorage.setItem("acceptedRequestId", ticketId);
-      message.success("create ticket success");
+      message.success("กดรับการแจ้งเตือนสำเร็จ");
       navigate("/dashboard/deviceStep", {
         state: { ticketId: ticketId, gotoBack: true },
       });
     } else {
-      message.error("create ticket failed");
+      message.error("ไม่สามารถรับได้ โปรดตรวจเช็คงานที่ค้าง");
     }
   };
 

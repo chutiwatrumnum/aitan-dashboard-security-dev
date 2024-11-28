@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, Spin } from "antd";
 import ReactDOMServer from "react-dom/server";
 import mapboxgl from "mapbox-gl";
 import { MapDataType } from "../../../stores/interfaces/SOS";
@@ -33,6 +33,7 @@ function Alertmain() {
   const mapContainerRef = useRef<any>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // useState
   const [currentPopupIndex, setCurrentPopupIndex] = useState(-1);
@@ -74,24 +75,42 @@ function Alertmain() {
     return color;
   };
 
-  const fetchPieStatusData = async () => {
-    console.log("STATUS FETCH");
-    await dispatch.alert.getPieStatusData();
-  };
+ const fetchPieStatusData = async () => {
+   try {
+     setIsLoading(true);
+     await dispatch.alert.getPieStatusData();
+   } catch (error) {
+     console.error("Error fetching status data:", error);
+   }
+ };
 
-  const fetchEventData = async () => {
-    console.log("EVENT FETCH");
-    await dispatch.alert.getPieEventData();
-    await dispatch.alert.getMapInfoData();
-  };
+ const fetchEventData = async () => {
+   try {
+     setIsLoading(true);
+     await Promise.all([
+       dispatch.alert.getPieEventData(),
+       dispatch.alert.getMapInfoData(),
+     ]);
+   } catch (error) {
+     console.error("Error fetching event data:", error);
+   } finally {
+     setIsLoading(false);
+   }
+ };
 
-  const onActionEventTrigger = async (value: { cmd: string }) => {
-    if (value.cmd === "arm_action") {
-      await fetchPieStatusData();
-    } else if (value.cmd === "new_event") {
-      await fetchEventData();
-    }
-  };
+ const onActionEventTrigger = async (value: { cmd: string }) => {
+   try {
+     setIsLoading(true);
+     if (value.cmd === "arm_action") {
+       await fetchPieStatusData();
+     } else if (value.cmd === "new_event") {
+       await fetchEventData();
+     }
+   } finally {
+     setIsLoading(false);
+   }
+ };
+
 
   // Actions
   // Socket IO
@@ -210,19 +229,46 @@ function Alertmain() {
   return (
     <>
       <Row className="noScroll">
+        {isLoading && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}>
+            <Spin size="large" />
+          </div>
+        )}
         {/* map view */}
         <Col span={16}>
           <Row
             style={{ height: "40vh", padding: 24, paddingRight: 0 }}
             justify="space-between">
             <Col style={{ width: "48.5%" }} className="pieContainer">
-              <span style={{ display: "block", textAlign: "right",fontWeight:"700" }}>
+              <span
+                style={{
+                  display: "block",
+                  textAlign: "right",
+                  fontWeight: "700",
+                }}>
                 ข้อมูลระบบรักษาความปลอดภัย
               </span>
               <PieStatus data={pieStatusData} />
             </Col>
             <Col style={{ width: "48.5%" }} className="pieContainer">
-              <span style={{ display: "block", textAlign: "right",fontWeight:"700" }}>
+              <span
+                style={{
+                  display: "block",
+                  textAlign: "right",
+                  fontWeight: "700",
+                }}>
                 สถานะอุปกรณ์
               </span>
 

@@ -12,8 +12,7 @@ export const emergencyList = createModel<RootModel>()({
     EmergencyDeviceData: [],
     EmergencyData: undefined,
     HelpStepData: [],
-    MyHelperStep:1,
-    MyHelperName:"",
+    MyHelperStep: undefined,
     emergencyTableData: [],
     cardCount: undefined,
     totalTable: 10,
@@ -25,22 +24,10 @@ export const emergencyList = createModel<RootModel>()({
         EmergencyData: payload,
       };
     },
-    updateHelpStepDataState: (state, payload) => {
-      return {
-        ...state,
-        HelpStepData: payload,
-      };
-    },
-    updateMyHelpStepDataState: (state, payload) => {
+    updateHelpStepListDataState: (state, payload) => {
       return {
         ...state,
         MyHelperStep: payload,
-      };
-    },
-    updateMyHelpNameDataState: (state, payload) => {
-      return {
-        ...state,
-        MyHelperName: payload,
       };
     },
     updateEmergencyDeviceListDataState: (state, payload) => {
@@ -85,9 +72,7 @@ export const emergencyList = createModel<RootModel>()({
           HelpStepData: response.data.masterData.helpStep,
         };
         console.log("getHelperStepList:", data);
-        dispatch.emergencyList.updateMyHelpNameDataState(response.data.ticket.helpStep?.nameTh?response.data.ticket.helpStep?.nameTh:"")
-        dispatch.emergencyList.updateMyHelpStepDataState(response.data.ticket.step?response.data.ticket.step-1:0);
-        dispatch.emergencyList.getHelperStepList(response.data.masterData.helpStep);
+        dispatch.emergencyList.updateHelpStepListDataState(data);
       } catch (error) {
         console.error("API Error:", error);
         // จัดการ error

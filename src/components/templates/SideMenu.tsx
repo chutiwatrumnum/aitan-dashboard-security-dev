@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -27,11 +27,13 @@ interface MenuItem {
 const MAIN_LINK = "/dashboard";
 
 const SideMenu = () => {
+  const location = useLocation();
+  const [activeKey, setActiveKey] = useState<string>(
+    location.state?.selectedMenu || location.pathname
+  );
   const dispatch = useDispatch<Dispatch>();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [activeKey, setActiveKey] = useState<string>(location.pathname);
 
   const handleLogout = () => {
     ConfirmModal({
@@ -81,13 +83,21 @@ const SideMenu = () => {
     },
   ];
 
+  useEffect(() => {
+    if (location.state?.selectedMenu) {
+      setActiveKey(location.state.selectedMenu);
+    }
+  }, [location]);
+
   const handleMenuClick = (key: string) => {
     const item = menuItems.find((menuItem) => menuItem.key === key);
     if (item?.onClick) {
       item.onClick();
     } else if (item?.path) {
-      navigate(item.path);
-      setActiveKey(item.path);
+      navigate(item.path, {
+        state: { selectedMenu: key },
+      });
+      setActiveKey(key);
     }
   };
 
