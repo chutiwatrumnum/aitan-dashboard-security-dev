@@ -287,14 +287,12 @@ const DeviceStep = () => {
   const { state } = useLocation();
   const { ticketId, gotoBack } = state; // Read values passed on state
   const dispatch = useDispatch<Dispatch>();
-  const { EmergencyData, HelpStepData, EmergencyDeviceData, MyHelperStep } =
+  const { EmergencyData, HelpStepData,MyHelperName,EmergencyDeviceData, MyHelperStep } =
     useSelector((state: RootState) => state.emergencyList);
 
-  const [currentStep, setCurrentStep] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
-  const [HelpStepName, setHelpStepName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const loadData = async () => {
@@ -308,11 +306,7 @@ const DeviceStep = () => {
           dispatch.emergencyList.getEmergencyDeviceList(ticketId),
           dispatch.emergencyList.getHelperStepList(ticketId),
         ]);
-        if (MyHelperStep?.step) {
-          setCurrentStep(MyHelperStep.step - 1);
-          setHelpStepName(MyHelperStep.helpStepName || "");
-        }
-        console.log("MyHelperStep?.step:", MyHelperStep?.step);
+        
       } catch (error) {
         console.error(error);
       } finally {
@@ -321,7 +315,8 @@ const DeviceStep = () => {
     };
 
     loadData();
-  }, [ticketId, dispatch.emergencyList]);
+  }, [ticketId]);
+  
   const showMap = () => {
     setIsMapVisible(true);
   };
@@ -341,8 +336,9 @@ const DeviceStep = () => {
       const Issuccess = await nextStep2(ticketId, helpId);
       if (Issuccess) {
         setSelectedReasons([]);
-        setCurrentStep(1);
-        setHelpStepName(helpStepName || "");
+        dispatch.emergencyList.updateMyHelpStepDataState(1);
+        dispatch.emergencyList.updateMyHelpNameDataState(helpStepName || "");
+       // setHelpStepName(helpStepName || "");
         message.success("ดำเนินการขั้นตอนที่ 1 เรียบร้อย");
 
         // โหลดข้อมูลใหม่
@@ -525,8 +521,8 @@ const DeviceStep = () => {
         </Title>
         {/* ปุ่มตัวเลือก */}
         <Row gutter={[0, 16]}>
-          {MyHelperStep?.HelpStepData?.length ? (
-            MyHelperStep?.HelpStepData?.map((step) => (
+          {HelpStepData?.length ? (
+            HelpStepData?.map((step) => (
               <Col key={step.id} span={24}>
                 <Button
                   type="primary"
@@ -581,7 +577,7 @@ const DeviceStep = () => {
       const isSuccess = await nextStep3(ticketId);
       if (isSuccess) {
         await dispatch.emergencyList.getEmergencyListData(ticketId);
-        setCurrentStep(2);
+        dispatch.emergencyList.updateMyHelpStepDataState(2);
         message.success("ติดต่อสำเร็จ");
       }
     } catch (error) {
@@ -615,7 +611,7 @@ const DeviceStep = () => {
           </div>
           <CircleIcon />
           <Title level={3} style={{ marginBottom: 4 }}>
-            {HelpStepName}
+            {MyHelperName}
           </Title>
           <Button
             type="primary"
@@ -647,7 +643,7 @@ const DeviceStep = () => {
       const isSuccess = await nextStep4(ticketId, note);
       if (isSuccess) {
         await dispatch.emergencyList.getEmergencyListData(ticketId);
-        setCurrentStep(3);
+        dispatch.emergencyList.updateMyHelpStepDataState(3);
         message.success("บันทึกข้อมูลเรียบร้อย");
         const acceptedRequestId = encryptStorage.getItem("acceptedRequestId");
         if (acceptedRequestId) {
@@ -812,7 +808,7 @@ const DeviceStep = () => {
   );
 
   const renderContent = () => {
-    switch (currentStep) {
+    switch (MyHelperStep) {
       case 0:
         return <StepCardOne />;
       case 1:
@@ -861,7 +857,7 @@ const DeviceStep = () => {
       </Button> */}
       <div className="steps-container">
         <Steps
-          current={currentStep}
+          current={MyHelperStep}
           progressDot={(dot, { status, index }) => (
             <ProgressDot
               current={status === "process"}
