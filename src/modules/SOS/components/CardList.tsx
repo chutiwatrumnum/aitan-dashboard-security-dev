@@ -113,7 +113,12 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
       await encryptStorage.setItem("acceptedRequestId", ticketId);
       message.success("กดรับการแจ้งเตือนสำเร็จ");
       navigate("/dashboard/deviceStep", {
-        state: { ticketId: ticketId, gotoBack: true },
+        replace: true,
+        state: {
+          ticketId: ticketId,
+          gotoBack: true,
+          selectedMenu: "/dashboard/EmergencyMain",
+        },
       });
     } else {
       message.error("ไม่สามารถรับได้ โปรดตรวจเช็คงานที่ค้าง");
@@ -130,8 +135,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
             borderRadius: "8px",
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
           }}
-          bodyStyle={{ padding: "12px" }}
-        >
+          bodyStyle={{ padding: "12px" }}>
           <Col span={24}>
             <Row>
               <Col className="iconContainer_CL" span={4}>
@@ -142,14 +146,12 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
                   style={{
                     fontWeight: whiteLabel.boldWeight,
                     marginBottom: "4px",
-                  }}
-                >
+                  }}>
                   ผ่านมาแล้ว :{" "}
                   <span
                     style={{
                       color: timeAgos[index]?.color,
-                    }}
-                  >
+                    }}>
                     {timeAgos[index]?.formattedDuration}
                   </span>
                 </h2>
@@ -164,8 +166,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
                       ? onGoButtonClick(item, index)
                       : console.log("No function!");
                   }}
-                  className="cardBtn_CL blueBtn"
-                >
+                  className="cardBtn_CL blueBtn">
                   ดูแผนที่
                 </Button>
               </Col>
@@ -174,8 +175,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
                   onClick={() => {
                     acceptRequest(item);
                   }}
-                  className="cardBtn_CL greenBtn"
-                >
+                  className="cardBtn_CL greenBtn">
                   กดรับเคส
                 </Button>
               </Col>
