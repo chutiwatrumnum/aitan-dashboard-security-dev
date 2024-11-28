@@ -20,6 +20,7 @@ import type { InputRef, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { TableDataType } from "../../../stores/interfaces/Emergencry";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -57,6 +58,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
 // Main Dashboard Component
 const StatusDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch<Dispatch>();
   const { emergencyTableData, cardCount, totalTable } = useSelector(
     (state: RootState) => state.emergencyList
@@ -195,7 +197,9 @@ const StatusDashboard: React.FC = () => {
           onClick={() => {
             console.log(record.id);
             setTicketId(record.id); // ส่งค่า record.id
-            setIshowHomeDetail(true);
+            navigate("/dashboard/deviceStep", {
+              state: { ticketId: record.id, gotoBack: true },
+            });
           }}
         />
       ),
@@ -312,7 +316,7 @@ const StatusDashboard: React.FC = () => {
     fetchData();
   }, [page, pageSize, searchObject, searchText, activeFilter]);
 
-return !IshowHomeDetail ? (
+return  (
   <div className="dashboard-container">
     <div className="page-header">ติดตามสถานะงาน</div>
     <div className="status-cards-wrapper">
@@ -422,8 +426,6 @@ return !IshowHomeDetail ? (
       </TabPane>
     </Tabs>
   </div>
-) : (
-  <DeviceStep ticketId={ticketId} callback={SetIshowHomeDetail} />
 );
 };
 
