@@ -11,7 +11,7 @@ import {
   AlertOutlined,
   FileSearchOutlined,
 } from "@ant-design/icons";
-import MENU_LOGO from "../../assets/images/AiTAN-logo.png";
+import MENU_LOGO from "../../assets/images/AiTAN-logo-white.png";
 import "../styles/sideMenu.css";
 
 const { Sider } = Layout;

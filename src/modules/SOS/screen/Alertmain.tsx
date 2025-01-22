@@ -42,18 +42,24 @@ function Alertmain() {
   ];
 
   // Functions
-  const onGoButtonClick = (data: MapDataType, index: number) => {
+  const onGoButtonClick = (
+    data: MapDataType,
+    index: number | null,
+    zoom?: number
+  ) => {
     if (currentPopupIndex != -1) {
       markersRef.current[currentPopupIndex].getPopup()?.remove();
       setCurrentPopupIndex(-1);
     }
     mapRef?.current?.flyTo({
       center: [data.homeLong, data.homeLat],
-      zoom: 20,
+      zoom: zoom ?? 19,
       essential: true,
     });
-    markersRef?.current[index]?.getPopup()?.addTo(mapRef?.current);
-    setCurrentPopupIndex(index);
+    if (index !== null) {
+      markersRef?.current[index]?.getPopup()?.addTo(mapRef?.current);
+      setCurrentPopupIndex(index);
+    }
   };
 
   const markerColorSelector = (alertType: string) => {
@@ -75,47 +81,48 @@ function Alertmain() {
     return color;
   };
 
- const fetchPieStatusData = async () => {
-   try {
-     setIsLoading(true);
-     await dispatch.alert.getPieStatusData();
-   } catch (error) {
-     console.error("Error fetching status data:", error);
-   }
- };
+  const fetchPieStatusData = async () => {
+    try {
+      setIsLoading(true);
+      await dispatch.alert.getPieStatusData();
+    } catch (error) {
+      console.error("Error fetching status data:", error);
+    }
+  };
 
- const fetchEventData = async () => {
-   try {
-     setIsLoading(true);
-     await Promise.all([
-       dispatch.alert.getPieEventData(),
-       dispatch.alert.getMapInfoData(),
-     ]);
-   } catch (error) {
-     console.error("Error fetching event data:", error);
-   } finally {
-     setIsLoading(false);
-   }
- };
+  const fetchEventData = async () => {
+    try {
+      setIsLoading(true);
+      await Promise.all([
+        dispatch.alert.getPieEventData(),
+        dispatch.alert.getMapInfoData(),
+      ]);
+      onGoButtonClick(mapInfoData[0], null, 14);
+    } catch (error) {
+      console.error("Error fetching event data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
- const onActionEventTrigger = async (value: { cmd: string }) => {
-   try {
-     setIsLoading(true);
-     if (value.cmd === "arm_action") {
-       await fetchPieStatusData();
-     } else if (value.cmd === "new_event") {
-       await fetchEventData();
-     }
-   } finally {
-     setIsLoading(false);
-   }
- };
-
+  const onActionEventTrigger = async (value: { cmd: string }) => {
+    console.log("Action Event Triggered:");
+    try {
+      setIsLoading(true);
+      if (value.cmd === "arm_action") {
+        await fetchPieStatusData();
+      } else if (value.cmd === "new_event") {
+        await fetchEventData();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Actions
   // Socket IO
   useEffect(() => {
-    // console.log(accessToken);
+    // console.log(SOCKET_SERVER_URL);
     const socket = io(SOCKET_SERVER_URL, {
       reconnection: true,
       reconnectionAttempts: 5,
@@ -242,7 +249,8 @@ function Alertmain() {
               justifyContent: "center",
               alignItems: "center",
               zIndex: 1000,
-            }}>
+            }}
+          >
             <Spin size="large" />
           </div>
         )}
@@ -250,14 +258,16 @@ function Alertmain() {
         <Col span={16}>
           <Row
             style={{ height: "40vh", padding: 24, paddingRight: 0 }}
-            justify="space-between">
+            justify="space-between"
+          >
             <Col style={{ width: "48.5%" }} className="pieContainer">
               <span
                 style={{
                   display: "block",
                   textAlign: "right",
                   fontWeight: "700",
-                }}>
+                }}
+              >
                 ข้อมูลระบบรักษาความปลอดภัย
               </span>
               <PieStatus data={pieStatusData} />
@@ -268,7 +278,8 @@ function Alertmain() {
                   display: "block",
                   textAlign: "right",
                   fontWeight: "700",
-                }}>
+                }}
+              >
                 สถานะอุปกรณ์
               </span>
 
@@ -289,7 +300,8 @@ function Alertmain() {
         <Col
           span={8}
           className="card-list-scroll"
-          style={{ padding: 24, maxHeight: "100vh" }}>
+          style={{ padding: 24, maxHeight: "100vh" }}
+        >
           {/* <CardAlert /> */}
           <CardList
             mapInfoData={mapInfoData}
