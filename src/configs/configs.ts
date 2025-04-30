@@ -1,4 +1,4 @@
-export const MODE = "dev"; // dev, uat
+export const MODE = "prod"; // dev, uat
 
 // [0] == version
 // [1] == type of server
@@ -26,7 +26,7 @@ export const APP_VERSION =
 
 export const API_URL =
   MODE === "uat"
-    ? "https://uat.thestage.artanitech.com/api/v1.0"
+    ? "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/api/v1.0/"
     : MODE === "prod"
       ? "https://aitan-security-platform-api-5ljmm.ondigitalocean.app/api/v1.0/"
       : "https://sc-security-platform-bauvo.ondigitalocean.app/api/v1.0/";

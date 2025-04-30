@@ -92,7 +92,7 @@ const CardList = ({ mapInfoData, onGoButtonClick }: CardListType) => {
     };
 
     updateTimes();
-    const intervalId = setInterval(updateTimes, 30000);
+    const intervalId = setInterval(updateTimes, 1000);
 
     return () => clearInterval(intervalId);
   }, [mapInfoData]);
