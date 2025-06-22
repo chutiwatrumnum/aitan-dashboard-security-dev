@@ -34,6 +34,7 @@ const SideMenu = () => {
   const dispatch = useDispatch<Dispatch>();
   const navigate = useNavigate();
 
+
   const handleLogout = () => {
     ConfirmModal({
       title: "ต้องการออกจากระบบใช่หรือไม่?",
@@ -73,7 +74,6 @@ const SideMenu = () => {
       key: "logout",
       icon: (
         <LogOutIcon
-          color={whiteLabel.whiteTransColor}
           className="sideMenuIcon"
         />
       ),
@@ -106,6 +106,7 @@ const SideMenu = () => {
       collapsible={false}
       className="sideContainer"
       width={80}
+      style={{ backgroundColor: "#ffffff" }}
       collapsedWidth={80}>
       <div className="layout-container">
         <div className="sideMenuLogo">
@@ -115,7 +116,7 @@ const SideMenu = () => {
         <Menu
           selectedKeys={[activeKey]}
           mode="inline"
-          theme="dark"
+          style={{ backgroundColor: "#ffffff" }}
           className="main-menu">
           {menuItems.map((item) => (
             <Menu.Item

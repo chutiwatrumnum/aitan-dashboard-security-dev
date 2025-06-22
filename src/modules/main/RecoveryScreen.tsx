@@ -134,10 +134,6 @@ const RecoveryScreen = () => {
                 <br />
                 with ease
               </h1>
-              <p>
-                We'll send you a secure link to reset your password and get you
-                back to your account.
-              </p>
             </div>
           </div>
         </Col>

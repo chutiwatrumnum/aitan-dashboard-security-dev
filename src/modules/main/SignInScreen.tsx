@@ -92,7 +92,7 @@ const SignInScreen = () => {
               onFinishFailed={onFinishFailed}
               autoComplete="off">
               {/* Google Sign In Button */}
-              <Button
+              {/* <Button
                 size="large"
                 block
                 className="google-signin-button"
@@ -117,12 +117,12 @@ const SignInScreen = () => {
                   </svg>
                 }>
                 Sign in with Google
-              </Button>
+              </Button> */}
 
               {/* Divider */}
-              <div className="signin-divider">
+              {/* <div className="signin-divider">
                 <span>Or sign in with email</span>
-              </div>
+              </div> */}
 
               {/* Email Input */}
               <Form.Item name="username" rules={requiredRule}>
@@ -169,14 +169,14 @@ const SignInScreen = () => {
               </Form.Item>
 
               {/* Sign Up Link */}
-              <div className="signup-section">
+              {/* <div className="signup-section">
                 <Text className="signup-text">
                   Don't have an account?{" "}
                   <Link to="/signup" className="signup-link">
                     Sign up
                   </Link>
                 </Text>
-              </div>
+              </div> */}
             </Form>
           </div>
         </Col>
@@ -196,11 +196,11 @@ const SignInScreen = () => {
 
             {/* Main Text */}
             <div className="main-text">
-              <h1>
-                Changing the way
-                <br />
-                the world writes
-              </h1>
+              <img
+                src={LOGO}
+                alt="Central Pattana Residence"
+                className="central-pattana-logo"
+              />
             </div>
           </div>
         </Col>
