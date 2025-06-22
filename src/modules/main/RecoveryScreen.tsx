@@ -1,19 +1,15 @@
 import { useRef } from "react";
-import { Col, Space, Typography, Form, Input } from "antd";
+import { Col, Row, Typography, Form, Input, Button } from "antd";
+import { Link } from "react-router-dom";
 import { emailRule } from "../../configs/inputRule";
-import MediumButton from "../../components/common/MediumButton";
-import MediumActionButton from "../../components/common/MediumActionButton";
 import SuccessModal from "../../components/common/SuccessModal";
 import FailedModal from "../../components/common/FailedModal";
-import { EmailIcon } from "../../assets/icons/Icons";
-import { whiteLabel } from "../../configs/theme";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../../stores";
 import { useNavigate } from "react-router-dom";
 
+import LOGO from "../../assets/images/Central-Pattan-Residence.png";
 import type { FormInstance } from "antd/es/form";
-
-import LOGO from "../../assets/images/REAL-ASSET-LOGO-RED.png";
 
 import "./styles/forgotPassword.css";
 
@@ -44,55 +40,109 @@ const RecoveryScreen = () => {
   };
 
   return (
-    <Col className="forgotContainer">
-      <Space direction="vertical" size={0} style={{ alignItems: "center" }}>
-        <img src={LOGO} alt="logo" className="logo" />
-      </Space>
-      <Col className="forgotPasswordTitle">
-        <Title level={2} style={{ fontWeight: whiteLabel.normalWeight }}>
-          Forgot your password?
-        </Title>
-        <p className="mainTextColor">
-          Enter your email to receive further guidance
-        </p>
-      </Col>
-      <Form
-        name="recovery"
-        ref={formRef}
-        form={form}
-        className="formForgotPassword"
-        layout="vertical"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label={<Text className="textColor">Email</Text>}
-          name="email"
-          rules={emailRule}
-        >
-          <Input
-            prefix={<EmailIcon color={whiteLabel.grayColor} />}
-            size="large"
-          />
-        </Form.Item>
+    <div className="modern-recovery-container">
+      <Row className="modern-recovery-row">
+        {/* Left Side - Form */}
+        <Col xs={24} lg={12} className="recovery-form-section">
+          <div className="modern-recovery-form-container">
+            {/* Logo and Header */}
+            <div className="recovery-header">
+              <div className="logo-container">
+                <img
+                  src={LOGO}
+                  alt="Central Pattana Residence"
+                  className="central-pattana-logo"
+                />
+              </div>
 
-        <Form.Item>
-          <MediumActionButton
-            className="forgotButton cancelBtnColor mainTextColor smokeBorderColor"
-            message="Cancel"
-            type="default"
-            onClick={onCancel}
-          />
-          <MediumButton
-            className="forgotButton sendButton"
-            message="Send"
-            form={form}
-          />
-        </Form.Item>
-      </Form>
-    </Col>
+              <Title level={2} className="recovery-title">
+                Forgot Password?
+              </Title>
+
+              <Text className="recovery-subtitle">
+                Enter your email to receive further guidance
+              </Text>
+            </div>
+
+            <Form
+              name="recovery"
+              ref={formRef}
+              form={form}
+              className="modern-recovery-form"
+              layout="vertical"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off">
+              {/* Email Input */}
+              <Form.Item name="email" rules={emailRule}>
+                <Input
+                  size="large"
+                  placeholder="Email"
+                  className="modern-input"
+                />
+              </Form.Item>
+
+              {/* Action Buttons */}
+              <div className="recovery-actions">
+                <Button
+                  size="large"
+                  className="cancel-button"
+                  onClick={onCancel}>
+                  Cancel
+                </Button>
+
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  className="send-button">
+                  Send
+                </Button>
+              </div>
+            </Form>
+
+            {/* Back to Login */}
+            <div className="back-to-login">
+              <Text className="back-text">
+                Remember your password?{" "}
+                <Link to="/auth" className="back-link">
+                  Sign in
+                </Link>
+              </Text>
+            </div>
+          </div>
+        </Col>
+
+        {/* Right Side - Illustration */}
+        <Col xs={0} lg={12} className="modern-illustration-section">
+          <div className="illustration-content">
+            {/* Background Shapes */}
+            <div className="bg-shapes">
+              <div className="shape shape-1"></div>
+              <div className="shape shape-2"></div>
+              <div className="shape shape-3"></div>
+              <div className="shape shape-4"></div>
+              <div className="shape shape-5"></div>
+              <div className="shape shape-6"></div>
+            </div>
+
+            {/* Main Text */}
+            <div className="main-text">
+              <h1>
+                Reset your password
+                <br />
+                with ease
+              </h1>
+              <p>
+                We'll send you a secure link to reset your password and get you
+                back to your account.
+              </p>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </div>
   );
 };
 
