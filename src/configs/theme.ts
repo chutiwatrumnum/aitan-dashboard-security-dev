@@ -1,3 +1,4 @@
+// src/configs/theme.ts - Central Pattana Residence Theme
 interface WhiteLabelType {
   fontSizeSm: string;
   fontSize1xl: string;
@@ -10,43 +11,49 @@ interface WhiteLabelType {
   fontSize8xl: string;
 
   buttonShape: "default" | "round";
-  primaryColor: string;
-  secondaryColor: string;
-  loginColor: string;
-  logoutColor: string;
+
+  // Central Pattana Brand Colors
+  primaryColor: string;          // สีทองหลัก (PATTANA)
+  secondaryColor: string;        // สีดำ (CENTRAL/RESIDENCE)
+  accentGold: string;           // สีทองเข้ม
+  lightGold: string;            // สีทองอ่อน
+
+  // Neutral Colors
   whiteColor: string;
   whiteTransColor: string;
-  blackColor: string;
+  blackColor: string;           // ดำของแบรนด์
+  charcoalColor: string;        // เทาดำ
   grayColor: string;
-  cardBGColor: string;
   grayTransColor: string;
+  platinumColor: string;        // เงินอ่อน
 
-  // Semantic Colors
+  // Semantic Colors (ปรับให้เข้ากับแบรนด์)
   dangerColor: string;
   warningColor: string;
   successColor: string;
 
-  // Text colors
+  // Text Colors
   mainTextColor: string;
   whiteTextColor: string;
+  goldTextColor: string;        // ข้อความสีทอง
+  mutedTextColor: string;       // ข้อความอ่อน
   menuTextColor: string;
   menuTextActiveColor: string;
   subMenuTextColor: string;
   subMenuTextActiveColor: string;
-  warningTextColor: string;
-  successTextColor: string;
-  dangerTextColor: string;
-  grayTextColor: string;
 
-  // BG colors
+  // Background Colors
   mainBgColor: string;
+  luxuryBgColor: string;        // พื้นหลังหรู
   menuBgColor: string;
   menuBgActiveColor: string;
   subMenuBgColor: string;
   subMenuBgActiveColor: string;
+  cardBgColor: string;
 
-  // Button colors
+  // Button Colors
   mainBtnColor: string;
+  goldBtnColor: string;         // ปุ่มทอง
   cancelBtnColor: string;
   mainBtnTextColor: string;
   cancelBtnTextColor: string;
@@ -56,7 +63,7 @@ interface WhiteLabelType {
   tableHeadTextColor: string;
   subTableHeadBgColor: string;
 
-  // Font weights
+  // Font Weights
   normalWeight: number;
   semiBoldWeight: number;
   boldWeight: number;
@@ -65,14 +72,23 @@ interface WhiteLabelType {
 export const theme: object = {
   token: {
     fontFamily: "Prompt",
-    colorPrimary: "#3C8BF1",
-    colorText: "#3F3F3F",
-    colorInfo: "#3F3F3F",
-    colorLink: "#3F3F3F",
+    colorPrimary: "#C9A96E",      // สีทอง Central Pattana
+    colorText: "#1A1A1A",        // ดำอ่อน
+    colorInfo: "#C9A96E",
+    colorLink: "#C9A96E",
+    colorBgContainer: "#FFFFFF",
+    colorBorder: "#E8E8E8",
+    borderRadius: 8,
+
+    // Component specific tokens
+    colorSuccess: "#52C41A",
+    colorWarning: "#FAAD14",
+    colorError: "#FF4D4F",
   },
 };
 
 export const whiteLabel: WhiteLabelType = {
+  // Font Sizes
   fontSizeSm: "0.75rem",
   fontSize1xl: "1.25rem",
   fontSize2xl: "1.5rem",
@@ -83,54 +99,61 @@ export const whiteLabel: WhiteLabelType = {
   fontSize7xl: "2.75rem",
   fontSize8xl: "3rem",
 
+  // Central Pattana Design System
   buttonShape: "round",
-  primaryColor: "#3C8BF1",
-  secondaryColor: "#75a8ea",
-  loginColor: "#413A39",
-  logoutColor: "#221F20",
+
+  // Brand Colors - ตามโลโก้ Central Pattana
+  primaryColor: "#C9A96E",        // สีทองหลัก (PATTANA)
+  secondaryColor: "#1A1A1A",      // สีดำ (CENTRAL/RESIDENCE)
+  accentGold: "#B8860B",          // ทองเข้ม
+  lightGold: "#F4E4BC",           // ทองอ่อน
+
+  // Neutral Palette
   whiteColor: "#FFFFFF",
-  whiteTransColor: "rgba(255, 255, 255, 0.8)",
-  blackColor: "#403D38",
-  grayColor: "#595959",
-  cardBGColor: "#6297de",
+  whiteTransColor: "rgba(255, 255, 255, 0.9)",
+  blackColor: "#1A1A1A",          // ดำของแบรนด์
+  charcoalColor: "#2C2C2C",       // เทาดำ
+  grayColor: "#6B6B6B",
   grayTransColor: "#B0B0B0",
+  platinumColor: "#F5F5F5",       // เงินอ่อน
 
-  // Semantic Colors
-  dangerColor: "#DC2A31",
-  warningColor: "#F28F1E",
-  successColor: "#01A171",
+  // Semantic Colors - ปรับให้สอดคล้องกับแบรนด์
+  dangerColor: "#D32F2F",         // แดงเข้ม
+  warningColor: "#F57C00",        // ส้มทอง
+  successColor: "#388E3C",        // เขียวเข้ม
 
-  // Text colors
-  mainTextColor: "#3F3F3F",
+  // Typography Colors
+  mainTextColor: "#1A1A1A",       // ดำหลัก
   whiteTextColor: "#FFFFFF",
-  dangerTextColor: "#DC2A31",
-  warningTextColor: "#F28F1E",
-  successTextColor: "#63A164",
+  goldTextColor: "#C9A96E",       // ทองสำหรับไฮไลท์
+  mutedTextColor: "#6B6B6B",      // เทาสำหรับข้อความรอง
   menuTextColor: "#FFFFFF",
-  menuTextActiveColor: "#3C8BF1",
-  subMenuTextColor: "#7B7B7B",
-  subMenuTextActiveColor: "#3C8BF1",
-  grayTextColor: "#595959",
+  menuTextActiveColor: "#C9A96E", // ทองเมื่อ active
+  subMenuTextColor: "#6B6B6B",
+  subMenuTextActiveColor: "#C9A96E",
 
-  // BG colors
-  mainBgColor: "#3C8BF1",
-  menuBgColor: "#75a8ea",
-  menuBgActiveColor: "#5F2424",
+  // Background Colors
+  mainBgColor: "#C9A96E",         // ทองหลัก
+  luxuryBgColor: "#F8F6F0",       // ครีมหรู
+  menuBgColor: "#1A1A1A",         // ดำสำหรับเมนู
+  menuBgActiveColor: "#2C2C2C",   // เทาดำเมื่อ active
   subMenuBgColor: "#FFFFFF",
-  subMenuBgActiveColor: "#E4CFCF",
+  subMenuBgActiveColor: "#F4E4BC", // ทองอ่อน
+  cardBgColor: "#FFFFFF",
 
-  // Button colors
-  mainBtnColor: "#3C8BF1",
-  cancelBtnColor: "#9F9C9B",
+  // Button System
+  mainBtnColor: "#C9A96E",        // ปุ่มหลักสีทอง
+  goldBtnColor: "#B8860B",        // ปุ่มทองเข้ม
+  cancelBtnColor: "#F5F5F5",      // ปุ่มยกเลิก
   mainBtnTextColor: "#FFFFFF",
-  cancelBtnTextColor: "#3F3F3F",
+  cancelBtnTextColor: "#1A1A1A",
 
-  // Table colors
-  tableHeadBgColor: "#75a8ea",
+  // Table Design
+  tableHeadBgColor: "#1A1A1A",    // หัวตารางดำ
   tableHeadTextColor: "#FFFFFF",
-  subTableHeadBgColor: "#9F9C9B",
+  subTableHeadBgColor: "#F4E4BC", // หัวตารางรองทองอ่อน
 
-  // Font weights
+  // Typography Weights
   normalWeight: 400,
   semiBoldWeight: 600,
   boldWeight: 700,

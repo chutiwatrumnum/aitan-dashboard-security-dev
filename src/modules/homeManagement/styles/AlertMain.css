@@ -126,7 +126,7 @@
 }
 
 .user-role-owner {
-  color: #4096ff;
+  color: var(--primary-color);
   font-size: 18px;
   margin-bottom: 4px;
 }
@@ -366,5 +366,5 @@
 
 .ant-spin-text {
   margin-top: 8px;
-  color: #1890ff;
+  color: var(--primary-color);
 }

@@ -41,11 +41,11 @@
 }
 
 .custom-dot.completed {
-  background: #1890ff;
+  background: var(--secondary-color);
 }
 
 .custom-dot.current {
-  background: #1890ff;
+  background: var(--secondary-color);
 }
 
 .dot-pulse {
@@ -53,7 +53,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(24, 144, 255, 0.2);
+  background: rgba(201, 169, 110, 0.5);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -66,7 +66,7 @@
 }
 
 .member-list-title {
-  color: #4096ff !important;
+  color: var(--primary-color) !important;
   margin-bottom: 8px !important;
   font-size: 20px !important;
 }
@@ -113,7 +113,7 @@
 }
 
 .member-role-owner {
-  color: #4096ff;
+  color: var(--primary-color);
   font-size: 16px;
 }
 
@@ -141,7 +141,7 @@
 }
 
 .phone-icon {
-  color: #4096ff;
+  color: var(--primary-color);
   margin-right: 8px;
 }
 
@@ -393,7 +393,7 @@
 }
 
 .ant-steps-item-finish .ant-steps-item-tail::after {
-  background: #1890ff !important;
+  background: var(--secondary-color) !important;
 }
 
 .ant-steps-item-title {

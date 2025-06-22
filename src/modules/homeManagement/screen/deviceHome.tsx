@@ -46,13 +46,12 @@ const IconAlert = ({ status }: { status: string }) => {
   }
 };
 
-
 const CircleIconPhone: React.FC = () => (
   <div
     style={{
       width: "20px",
       height: "20px",
-      background: "#1890ff",
+      background: "#C9A96E",
       borderRadius: "50%",
       display: "flex",
       alignItems: "center",

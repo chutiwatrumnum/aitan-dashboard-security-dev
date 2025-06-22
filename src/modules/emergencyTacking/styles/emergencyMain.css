@@ -50,7 +50,7 @@
 
 .status-card.blue .status-icon {
   background: #e6f7ff;
-  color: #1890ff;
+  color: var(--primary-color);
 }
 
 .status-card.red .status-icon {
@@ -105,7 +105,7 @@
 }
 
 .stay {
-  color: #1890ff;
+  color: var(--primary-color);
 }
 
 .sos {
@@ -135,7 +135,7 @@
 }
 
 .step-3 {
-  color: #1890ff;
+  color: var(--primary-color);
 }
 
 .step-4 {
@@ -144,7 +144,7 @@
 
 /* เพิ่ม CSS สำหรับ active state ของ status-icon */
 .status-icon.active.blue {
-  background: #1890ff;
+  background: var(--primary-color);
   color: #ffffff;
 }
 

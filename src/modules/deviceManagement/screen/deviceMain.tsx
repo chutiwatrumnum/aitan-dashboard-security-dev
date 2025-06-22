@@ -21,7 +21,7 @@ const { Search } = Input;
 const deviceMain = () => {
   // ข้อมูลสถิติอุปกรณ์
   const statistics = [
-    { title: "อุปกรณ์ที่เปิดใช้งาน", count: 0, color: "#4E79F3" },
+    { title: "อุปกรณ์ที่เปิดใช้งาน", count: 0, color: "#C9A96E" },
     { title: "อุปกรณ์ที่ออนไลน์", count: 0, color: "#2FB344" },
     { title: "อุปกรณ์ออฟไลน์", count: 0, color: "#DC3545" },
     { title: "อุปกรณ์มีปัญหา", count: 0, color: "#FDA94F" },

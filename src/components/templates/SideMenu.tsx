@@ -11,7 +11,7 @@ import {
   AlertOutlined,
   FileSearchOutlined,
 } from "@ant-design/icons";
-import MENU_LOGO from "../../assets/images/AiTAN-logo-white.png";
+import MENU_LOGO from "../../assets/images/Central-Pattan-Residence.png";
 import "../styles/sideMenu.css";
 
 const { Sider } = Layout;
@@ -33,7 +33,6 @@ const SideMenu = () => {
   );
   const dispatch = useDispatch<Dispatch>();
   const navigate = useNavigate();
-
 
   const handleLogout = () => {
     ConfirmModal({
